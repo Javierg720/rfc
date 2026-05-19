@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rival Callout UI - High Depth</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-red: #ff1a1a;
+            --neon-blue: #00ccff;
+            --metal-shine: linear-gradient(135deg, #333 0%, #111 25%, #666 50%, #111 75%, #333 100%);
+        }
+
+        body {
+            background-color: #030303;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            font-family: 'Roboto Condensed', sans-serif;
+            perspective: 1000px; /* Base for 3D effects */
+        }
+
+        /* 3D Scene Container */
+        .scene {
+            width: 100%;
+            max-width: 1200px;
+            transform: rotateX(2deg);
+        }
+
+        .main-container {
+            position: relative;
+            background: 
+                radial-gradient(circle at center, rgba(30,30,30,0.4) 0%, rgba(0,0,0,0.9) 100%),
+                repeating-linear-gradient(90deg, transparent 0, transparent 50px, rgba(255,255,255,0.03) 51px);
+            border: 1px solid #222;
+            border-radius: 40px;
+            box-shadow: 
+                0 50px 100px -20px rgba(0,0,0,0.8),
+                inset 0 0 80px rgba(0,0,0,0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            overflow: hidden;
+            gap: 2rem;
+            z-index: 1;
+        }
+
+        @media (min-width: 768px) {
+            .main-container {
+                flex-direction: row;
+                aspect-ratio: 16/7;
+                padding: 0 5%;
+            }
+        }
+
+        /* Heavy Beveled Metallic Edge */
+        .beveled-edge {
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            border: 8px solid transparent;
+            background: var(--metal-shine) border-box;
+            -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: destination-out;
+            mask-composite: exclude;
+            pointer-events: none;
+            box-shadow: inset 0 2px 2px rgba(255,255,255,0.2), inset 0 -2px 2px rgba(0,0,0,0.5);
+        }
+
+        /* Red/Blue Floating Glow Strips */
+        .glow-strip {
+            position: absolute;
+            width: 4px;
+            top: 15%;
+            bottom: 15%;
+            border-radius: 10px;
+            filter: blur(1px);
+        }
+        .glow-left { left: 10px; background: var(--neon-red); box-shadow: 0 0 20px var(--neon-red), 0 0 40px rgba(255,0,0,0.4); }
+        .glow-right { right: 10px; background: var(--neon-blue); box-shadow: 0 0 20px var(--neon-blue), 0 0 40px rgba(0,204,255,0.4); }
+
+        /* The Title with "Floating" shadow */
+        .title-group {
+            text-align: center;
+            z-index: 20;
+            transform: translateZ(50px); /* 3D pop */
+        }
+
+        .main-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: clamp(3rem, 10vw, 7rem);
+            line-height: 0.85;
+            text-transform: uppercase;
+            font-style: italic;
+            color: #ff3333;
+            /* Multi-layer text shadow for depth */
+            text-shadow: 
+                0 1px 0 #800,
+                0 2px 0 #700,
+                0 3px 0 #600,
+                0 4px 0 #500,
+                0 10px 20px rgba(0,0,0,0.8),
+                0 0 20px rgba(255,0,0,0.3);
+            letter-spacing: -2px;
+            filter: drop-shadow(0 0 10px rgba(255,0,0,0.5));
+        }
+
+        /* Octagon Cages with Inset Shadows */
+        .portrait-cage {
+            width: clamp(140px, 40vw, 260px);
+            aspect-ratio: 3/4;
+            position: relative;
+            background: linear-gradient(180deg, #111, #000);
+            border: 2px solid #333;
+            clip-path: polygon(15% 0%, 85% 0%, 100% 15%, 100% 85%, 85% 100%, 15% 100%, 0% 85%, 0% 15%);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            transform: translateZ(30px);
+        }
+
+        /* Thick Octagon Rim */
+        .cage-rim {
+            position: absolute;
+            inset: 0;
+            border: 6px solid rgba(255,255,255,0.05);
+            clip-path: inherit;
+            pointer-events: none;
+        }
+
+        .cage-red { border-color: #600; box-shadow: inset 0 0 50px rgba(255,0,0,0.15), 0 10px 30px rgba(0,0,0,0.5); }
+        .cage-blue { border-color: #004466; box-shadow: inset 0 0 50px rgba(0,204,255,0.15), 0 10px 30px rgba(0,0,0,0.5); }
+
+        @media (min-width: 768px) {
+            .portrait-cage { width: 20%; }
+        }
+
+        /* Detailed Subtext */
+        .yellow-text {
+            color: #ffcc00;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: clamp(0.7rem, 2vw, 1rem);
+            letter-spacing: 2px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .divider-line {
+            height: 2px;
+            width: 60px;
+            opacity: 0.8;
+        }
+
+        .texture-scratches {
+            position: absolute;
+            inset: 0;
+            background: url('https://www.transparenttextures.com/patterns/stardust.png');
+            opacity: 0.15;
+            mix-blend-mode: overlay;
+            pointer-events: none;
+        }
+
+        .light-sweep {
+            position: absolute;
+            top: 0; left: -100%; width: 60%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            transform: skewX(-30deg);
+            animation: sweep 12s infinite linear;
+        }
+
+        @keyframes sweep {
+            0% { transform: translateX(-100%) skewX(-30deg); }
+            30% { transform: translateX(300%) skewX(-30deg); }
+            100% { transform: translateX(300%) skewX(-30deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="scene">
+        <div class="main-container">
+            <div class="beveled-edge"></div>
+            <div class="glow-strip glow-left"></div>
+            <div class="glow-strip glow-right"></div>
+            <div class="texture-scratches"></div>
+            <div class="light-sweep"></div>
+
+            <!-- Left Portrait -->
+            <div class="portrait-cage cage-red">
+                <div class="cage-rim"></div>
+                <div class="absolute inset-0 flex items-center justify-center opacity-10">
+                    <svg viewBox="0 0 24 24" class="w-2/3 h-2/3 fill-current text-red-500"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+                </div>
+            </div>
+
+            <!-- Center Content -->
+            <div class="title-group">
+                <h1 class="main-title">
+                    Rival<br>Callout
+                </h1>
+
+                <div class="flex items-center justify-center gap-4 mt-6">
+                    <div class="divider-line hidden md:block" style="background: linear-gradient(90deg, transparent, #ff1a1a);"></div>
+                    <span class="yellow-text">One Cage Away &bull; Crowd Heat Rises</span>
+                    <div class="divider-line hidden md:block" style="background: linear-gradient(90deg, #00ccff, transparent);"></div>
+                </div>
+
+                <div class="text-gray-500 uppercase tracking-widest text-[10px] md:text-xs mt-4 font-bold opacity-60">
+                    Anticipation Feature &bull; Wins still settle from RGS
+                </div>
+            </div>
+
+            <!-- Right Portrait -->
+            <div class="portrait-cage cage-blue">
+                <div class="cage-rim"></div>
+                <div class="absolute inset-0 flex items-center justify-center opacity-10">
+                    <svg viewBox="0 0 24 24" class="w-2/3 h-2/3 fill-current text-blue-500"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

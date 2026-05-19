@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Controls</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,900;1,900&family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background: transparent; overflow: hidden; margin: 0; padding: 0; }
+    .font-heavy { font-family: 'Montserrat', sans-serif; font-weight: 900; }
+    .perspective-stage { perspective: 1800px; perspective-origin: 50% 50%; }
+    .medallion-wrapper { transform-style: preserve-3d; transform: rotateX(0deg) rotateY(0deg); transition: transform 0.12s cubic-bezier(0.16, 1, 0.3, 1); will-change: transform; }
+    .depth-base { transform: translateZ(0px); filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.9)); }
+    .depth-wings { transform: translateZ(2px); }
+    .depth-side-glows { transform: translateZ(3px); mix-blend-mode: color-dodge; }
+    .depth-neon-ring { transform: translateZ(4px); mix-blend-mode: color-dodge; }
+    .depth-honeycomb { transform: translateZ(5px); }
+    .depth-octagon-bezel { transform: translateZ(6px); }
+    .depth-spin-text { transform: translateZ(8px); filter: drop-shadow(0 4px 6px rgba(255, 0, 0, 0.2)) drop-shadow(0 4px 10px rgba(0, 0, 0, 0.9)); }
+    .medallion-button:active .medallion-wrapper { transform: rotateX(0deg) rotateY(0deg) scale(0.92) !important; transition: transform 0.04s ease-out; }
+    .medallion-button:active .depth-base { transform: translateZ(-2px); }
+    .medallion-button:active .depth-wings { transform: translateZ(-1px); }
+    .medallion-button:active .depth-side-glows { transform: translateZ(1px); }
+    .medallion-button:active .depth-neon-ring { transform: translateZ(1.5px); }
+    .medallion-button:active .depth-honeycomb { transform: translateZ(2px); }
+    .medallion-button:active .depth-octagon-bezel { transform: translateZ(2.5px); }
+    .medallion-button:active .depth-spin-text { transform: translateZ(3.5px); }
+    @media (min-width: 1024px) {
+      .depth-base { transform: translateZ(0px); filter: drop-shadow(0 25px 35px rgba(0, 0, 0, 0.98)); }
+      .depth-wings { transform: translateZ(20px); }
+      .depth-side-glows { transform: translateZ(35px); mix-blend-mode: color-dodge; }
+      .depth-neon-ring { transform: translateZ(55px); mix-blend-mode: color-dodge; }
+      .depth-honeycomb { transform: translateZ(70px); }
+      .depth-octagon-bezel { transform: translateZ(90px); }
+      .depth-spin-text { transform: translateZ(120px); filter: drop-shadow(0 15px 15px rgba(255, 0, 0, 0.25)) drop-shadow(0 15px 25px rgba(0, 0, 0, 1)); }
+      .medallion-button:active .depth-base { transform: translateZ(-25px); }
+      .medallion-button:active .depth-wings { transform: translateZ(-10px); }
+      .medallion-button:active .depth-side-glows { transform: translateZ(5px); }
+      .medallion-button:active .depth-neon-ring { transform: translateZ(15px); }
+      .medallion-button:active .depth-honeycomb { transform: translateZ(20px); }
+      .medallion-button:active .depth-octagon-bezel { transform: translateZ(35px); }
+      .medallion-button:active .depth-spin-text { transform: translateZ(55px); filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.98)); }
+    }
+    @keyframes laserPulse {
+      0%, 100% { opacity: 0.9; filter: drop-shadow(0 0 15px #ff0000) brightness(0.95); }
+      50% { opacity: 1; filter: drop-shadow(0 0 35px #ff0000) brightness(1.5); }
+    }
+    .neon-pulse-glow { animation: laserPulse 1s infinite ease-in-out; }
+    .neon-pulse-glow-turbo { animation: laserPulse 0.4s infinite ease-in-out; }
+    .console-btn { transition: transform 0.1s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.1s ease, border-color 0.2s ease; }
+    .console-btn:active { transform: scale(0.95); }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-center p-4 md:p-6 text-slate-100 select-none">
+
+  <svg style="display: block; width: 0; height: 0; position: absolute;">
+    <defs>
+      <linearGradient id="armorSteel" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#141416" /><stop offset="15%" stop-color="#0a0a0c" /><stop offset="50%" stop-color="#000000" /><stop offset="85%" stop-color="#0a0a0c" /><stop offset="100%" stop-color="#101114" />
+      </linearGradient>
+      <linearGradient id="wingBevel" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#000000" /><stop offset="50%" stop-color="#3d0000" /><stop offset="100%" stop-color="#800000" />
+      </linearGradient>
+      <linearGradient id="crimsonGlow" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#ff0000" /><stop offset="50%" stop-color="#8c0000" /><stop offset="100%" stop-color="#300000" />
+      </linearGradient>
+      <linearGradient id="heavyOctMetal" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#141416" /><stop offset="100%" stop-color="#000000" />
+      </linearGradient>
+      <linearGradient id="ironOctEdge" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#3d0000" /><stop offset="50%" stop-color="#a80000" /><stop offset="100%" stop-color="#ff0000" />
+      </linearGradient>
+      <linearGradient id="textBrushedWhite" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#ffffff" /><stop offset="60%" stop-color="#f8fafc" /><stop offset="100%" stop-color="#e2e8f0" />
+      </linearGradient>
+      <pattern id="hexGridPattern" width="14" height="24.25" patternUnits="userSpaceOnUse">
+        <path d="M 7 0 L 14 4 L 14 12 L 7 16 L 0 12 L 0 4 Z" fill="none" stroke="#ff0000" stroke-width="1.8" opacity="0.45" />
+        <path d="M 7 24.25 L 14 28.25 L 14 36.25 L 7 40.25 L 0 36.25 L 0 28.25 Z" fill="none" stroke="#ff0000" stroke-width="1.8" opacity="0.45" />
+      </pattern>
+      <radialGradient id="hexFade"><stop offset="65%" stop-color="#fff" /><stop offset="100%" stop-color="#000" /></radialGradient>
+      <mask id="hexMask"><circle cx="200" cy="200" r="124" fill="url(#hexFade)" /></mask>
+      <filter id="neonBrightRed" x="-30%" y="-30%" width="160%" height="160%">
+        <feGaussianBlur stdDeviation="5.5" result="blur1" /><feGaussianBlur stdDeviation="16" result="blur2" /><feGaussianBlur stdDeviation="32" result="blur3" />
+        <feMerge><feMergeNode in="blur3" /><feMergeNode in="blur2" /><feMergeNode in="blur1" /><feMergeNode in="SourceGraphic" /></feMerge>
+      </filter>
+      <filter id="frameWellShadow" x="-10%" y="-10%" width="120%" height="120%">
+        <feOffset dx="0" dy="20" /><feGaussianBlur stdDeviation="16" result="offset-blur" />
+        <feComposite operator="out" in="SourceGraphic" in2="offset-blur" result="inverse" />
+        <feFlood flood-color="black" flood-opacity="1" result="color" />
+        <feComposite operator="in" in="color" in2="inverse" result="shadow" />
+        <feComposite operator="over" in="shadow" in2="SourceGraphic" />
+      </filter>
+    </defs>
+  </svg>
+
+  <main class="w-full max-w-6xl flex items-center justify-center py-4 px-2 md:px-4 perspective-stage mx-auto">
+    <!-- MOBILE -->
+    <div class="lg:hidden w-full max-w-sm bg-neutral-950/95 rounded-2xl p-3.5 border border-neutral-800/80 shadow-[0_30px_70px_rgba(0,0,0,0.95)] flex flex-col gap-3 relative overflow-hidden">
+      <div class="absolute left-0 top-6 bottom-6 w-1 bg-gradient-to-b from-transparent via-red-600 to-transparent opacity-80 shadow-[0_0_10px_#ff0000]"></div>
+      <div class="grid grid-cols-3 items-center justify-items-center gap-2 relative">
+        <button id="betMinus" class="console-btn w-14 h-11 rounded-xl bg-gradient-to-b from-neutral-850 to-neutral-950 border border-neutral-800 text-white font-black text-xl flex items-center justify-center hover:border-red-600/30 hover:from-neutral-800 shadow-md">
+          <svg class="h-5 w-5 text-neutral-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4" /></svg>
+        </button>
+        <div class="relative w-32 h-32 flex items-center justify-center z-30">
+          <button id="spinBtn" class="spin-button-trigger spin-new absolute w-32 h-32 focus:outline-none select-none cursor-pointer group rounded-full">
+            <div class="spin-new-halo"></div>
+            <div class="spin-new-outer"></div>
+            <div class="spin-new-glow"></div>
+            <div class="spin-new-face"></div>
+            <div class="spin-new-bevel"></div>
+            <div class="spin-new-gem"></div>
+            <div class="spin-new-text"><span>SPIN</span></div>
+            <div class="spin-new-accent spin-new-accent-tl"></div>
+            <div class="spin-new-accent spin-new-accent-tr"></div>
+            <div class="spin-new-accent spin-new-accent-bl"></div>
+            <div class="spin-new-accent spin-new-accent-br"></div>
+          </button>
+        </div>
+        <button id="betPlus" class="console-btn w-14 h-11 rounded-xl bg-gradient-to-b from-neutral-850 to-neutral-950 border border-neutral-800 text-white font-black text-xl flex items-center justify-center hover:border-red-600/30 hover:from-neutral-800 shadow-md">
+          <svg class="h-5 w-5 text-neutral-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
+        </button>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div class="h-11 bg-black rounded-lg border border-neutral-850 flex flex-col justify-center px-3 relative overflow-hidden shadow-inner">
+          <span class="text-[7px] text-neutral-500 font-extrabold uppercase tracking-widest leading-none">BALANCE</span>
+          <span id="balanceDisplay" class="text-sm md:text-base font-heavy text-white leading-none mt-0.5">949.00</span>
+        </div>
+        <div class="h-11 bg-black rounded-lg border border-neutral-850 flex flex-col justify-center px-3 relative overflow-hidden shadow-inner">
+          <span class="text-[7px] text-neutral-500 font-extrabold uppercase tracking-widest leading-none">TOTAL BET</span>
+          <span id="betDisplay" class="text-sm md:text-base font-heavy text-white leading-none mt-0.5">1.00</span>
+        </div>
+      </div>
+      <div class="grid grid-cols-3 gap-2">
+        <button id="buyBonusBtn" class="console-btn h-10 rounded-xl bg-gradient-to-b from-red-600 via-red-850 to-red-955 border border-red-500/60 shadow-[0_4px_10px_rgba(220,38,38,0.45),inset_0_1px_2px_rgba(255,255,255,0.2)] active:scale-95 transition-all text-center flex flex-col justify-center items-center">
+          <span class="text-[7px] text-red-200 font-extrabold uppercase tracking-widest leading-none mb-0.5">BUY</span>
+          <span class="text-[9px] text-white font-heavy uppercase tracking-wider leading-none">BONUS</span>
+        </button>
+        <button id="autoBtn" class="console-btn h-10 rounded-xl bg-gradient-to-b from-neutral-850 to-neutral-950 border border-neutral-800 hover:border-red-600/30 flex flex-col items-center justify-center shadow-md relative overflow-hidden">
+          <span id="autoIndicator" class="absolute top-1 w-1.5 h-1.5 rounded-full bg-neutral-800 transition-all"></span>
+          <span class="text-[9px] text-neutral-400 font-extrabold uppercase tracking-widest mt-1">AUTO</span>
+        </button>
+        <button id="turboBtn" class="console-btn h-10 rounded-xl bg-gradient-to-b from-neutral-850 to-neutral-950 border border-neutral-800 hover:border-red-600/30 flex flex-col items-center justify-center shadow-md relative overflow-hidden">
+          <span id="turboIndicator" class="absolute top-1 w-1.5 h-1.5 rounded-full bg-neutral-800 transition-all"></span>
+          <span class="text-[9px] text-neutral-400 font-extrabold uppercase tracking-widest mt-1">TURBO</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- DESKTOP -->
+    <div class="hidden lg:flex items-center justify-center gap-4 w-full">
+      <button id="buyBonusBtnDesktop" class="console-btn flex flex-col items-center justify-center w-28 h-20 rounded-xl bg-gradient-to-b from-red-600 via-red-850 to-red-955 border-2 border-red-500/60 shadow-[0_10px_25px_rgba(220,38,38,0.35),inset_0_2px_4px_rgba(255,255,255,0.2)] hover:brightness-110 active:scale-95 transition-all text-center">
+        <span class="text-[10px] text-red-200 font-extrabold uppercase tracking-widest leading-none mb-1">BUY</span>
+        <span class="text-xs text-white font-heavy uppercase tracking-wider leading-none" style="text-shadow: 0 2px 4px rgba(0,0,0,0.8)">BONUS</span>
+      </button>
+      <div class="flex-1 h-32 bg-gradient-to-r from-neutral-900 via-neutral-950 to-neutral-900 rounded-2xl border-t-2 border-b-4 border-x border-neutral-800 shadow-[0_25px_60px_rgba(0,0,0,0.95)] flex items-center justify-between px-6 relative">
+        <div class="absolute left-0 top-3 bottom-3 w-1 bg-gradient-to-b from-transparent via-red-600 to-transparent opacity-60"></div>
+        <div class="absolute right-0 top-3 bottom-3 w-1 bg-gradient-to-b from-transparent via-red-600 to-transparent opacity-60"></div>
+        <div class="flex-1 max-w-[200px] h-14 bg-black rounded-lg border-2 border-neutral-800 flex flex-col justify-center px-4 relative overflow-hidden shadow-inner">
+          <div class="absolute inset-0 bg-gradient-to-b from-transparent via-neutral-900/10 to-transparent pointer-events-none"></div>
+          <span class="text-[8px] text-neutral-500 font-bold uppercase tracking-widest leading-none">BALANCE</span>
+          <span id="balanceDisplayDesktop" class="text-lg font-heavy text-white leading-none mt-1">949.00</span>
+        </div>
+        <div class="flex items-center gap-2 px-2">
+          <button id="autoBtnDesktop" class="console-btn h-12 px-4 rounded-xl bg-gradient-to-b from-neutral-850 to-neutral-950 border border-neutral-800 hover:border-red-600/30 flex flex-col items-center justify-center shadow-md relative overflow-hidden">
+            <span id="autoIndicatorDesktop" class="absolute top-1 w-1.5 h-1.5 rounded-full bg-neutral-800 transition-all"></span>
+            <span class="text-[10px] text-neutral-400 font-extrabold uppercase tracking-widest mt-1">AUTO</span>
+          </button>
+          <button id="turboBtnDesktop" class="console-btn h-12 px-4 rounded-xl bg-gradient-to-b from-neutral-850 to-neutral-950 border border-neutral-800 hover:border-red-600/30 flex flex-col items-center justify-center shadow-md relative overflow-hidden">
+            <span id="turboIndicatorDesktop" class="absolute top-1 w-1.5 h-1.5 rounded-full bg-neutral-800 transition-all"></span>
+            <span class="text-[10px] text-neutral-400 font-extrabold uppercase tracking-widest mt-1">TURBO</span>
+          </button>
+        </div>
+        <div class="flex items-center justify-center gap-3 md:gap-4 mx-auto py-2 lg:py-0 lg:mr-4">
+          <button id="betMinusDesktop" class="console-btn w-12 h-12 rounded-xl bg-gradient-to-b from-neutral-850 to-neutral-950 border border-neutral-800 text-white font-black text-2xl flex items-center justify-center hover:border-red-600/30 hover:from-neutral-800 shadow-md">
+            <svg class="h-5 w-5 text-neutral-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4" /></svg>
+          </button>
+          <div class="relative w-48 h-48 flex items-center justify-center -mt-1 z-30">
+            <button id="spinBtnDesktop" class="spin-button-trigger spin-new absolute w-48 h-48 focus:outline-none select-none cursor-pointer group rounded-full">
+              <div class="spin-new-halo"></div>
+              <div class="spin-new-outer"></div>
+              <div class="spin-new-glow"></div>
+              <div class="spin-new-face"></div>
+              <div class="spin-new-bevel"></div>
+              <div class="spin-new-gem"></div>
+              <div class="spin-new-text"><span>SPIN</span></div>
+              <div class="spin-new-accent spin-new-accent-tl"></div>
+              <div class="spin-new-accent spin-new-accent-tr"></div>
+              <div class="spin-new-accent spin-new-accent-bl"></div>
+              <div class="spin-new-accent spin-new-accent-br"></div>
+            </button>
+          </div>
+          <button id="betPlusDesktop" class="console-btn w-12 h-12 rounded-xl bg-gradient-to-b from-neutral-850 to-neutral-950 border border-neutral-800 text-white font-black text-2xl flex items-center justify-center hover:border-red-600/30 hover:from-neutral-800 shadow-md">
+            <svg class="h-5 w-5 text-neutral-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
+          </button>
+        </div>
+        <div class="flex-1 max-w-[140px] h-14 bg-black rounded-lg border-2 border-neutral-800 flex flex-col justify-center px-4 relative overflow-hidden shadow-inner order-last">
+          <div class="absolute inset-0 bg-gradient-to-b from-transparent via-neutral-900/10 to-transparent pointer-events-none"></div>
+          <span class="text-[8px] text-neutral-500 font-bold uppercase tracking-widest leading-none">TOTAL BET</span>
+          <span id="betDisplayDesktop" class="text-lg font-heavy text-white leading-none mt-1">1.00</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // --- State ---
+    let balance = 949.00, currentBet = 1.00, isAuto = false, isTurbo = false;
+    let audioCtx = null;
+
+    function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); if (audioCtx.state === 'suspended') audioCtx.resume(); }
+    function playSlam() {
+      if (!audioCtx) return; const now = audioCtx.currentTime;
+      const sm = isTurbo ? 1.4 : 1.0;
+      const cO = audioCtx.createOscillator(), cG = audioCtx.createGain(), cF = audioCtx.createBiquadFilter();
+      cO.type = 'sawtooth'; cO.frequency.setValueAtTime(45 * sm, now); cO.frequency.exponentialRampToValueAtTime(140 * sm, now + (0.12 / sm));
+      cF.type = 'lowpass'; cF.frequency.setValueAtTime(120, now); cF.frequency.exponentialRampToValueAtTime(350, now + (0.12 / sm));
+      cG.gain.setValueAtTime(0, now); cG.gain.linearRampToValueAtTime(0.4, now + (0.08 / sm)); cG.gain.exponentialRampToValueAtTime(0.001, now + (0.12 / sm));
+      cO.connect(cF); cF.connect(cG); cG.connect(audioCtx.destination); cO.start(now); cO.stop(now + (0.13 / sm));
+      const sO = audioCtx.createOscillator(), sG = audioCtx.createGain(), sF = audioCtx.createBiquadFilter();
+      sO.type = 'sawtooth'; sO.frequency.setValueAtTime(180 * sm, now + (0.1 / sm)); sO.frequency.exponentialRampToValueAtTime(30 * sm, now + (0.35 / sm));
+      sF.type = 'lowpass'; sF.frequency.setValueAtTime(400, now + (0.1 / sm)); sF.frequency.exponentialRampToValueAtTime(60, now + (0.3 / sm));
+      sG.gain.setValueAtTime(0, now + (0.1 / sm)); sG.gain.linearRampToValueAtTime(0.85, now + (0.11 / sm)); sG.gain.exponentialRampToValueAtTime(0.001, now + (0.38 / sm));
+      sO.connect(sF); sF.connect(sG); sG.connect(audioCtx.destination); sO.start(now + (0.1 / sm)); sO.stop(now + (0.4 / sm));
+      const kO = audioCtx.createOscillator(), kG = audioCtx.createGain();
+      kO.type = 'sine'; kO.frequency.setValueAtTime(1600 * sm, now + (0.1 / sm)); kO.frequency.exponentialRampToValueAtTime(800 * sm, now + (0.16 / sm));
+      kG.gain.setValueAtTime(0, now + (0.1 / sm)); kG.gain.linearRampToValueAtTime(0.3, now + (0.11 / sm)); kG.gain.exponentialRampToValueAtTime(0.001, now + (0.18 / sm));
+      kO.connect(kG); kG.connect(audioCtx.destination); kO.start(now + (0.1 / sm)); kO.stop(now + (0.2 / sm));
+    }
+    function playClick() {
+      if (!audioCtx) return; const now = audioCtx.currentTime;
+      const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+      o.type = 'sine'; o.frequency.setValueAtTime(2200, now); o.frequency.exponentialRampToValueAtTime(400, now + 0.04);
+      g.gain.setValueAtTime(0.12, now); g.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+      o.connect(g); g.connect(audioCtx.destination); o.start(now); o.stop(now + 0.06);
+    }
+
+    // --- Helpers ---
+    function send(type, data) { parent.postMessage({ source: 'rfc-controls', type, data }, '*'); }
+    function $(id) { return document.getElementById(id); }
+    function setBet(v) { currentBet = v; $('betDisplay').innerText = v.toFixed(2); $('betDisplayDesktop').innerText = v.toFixed(2); }
+    function setBal(v) { balance = v; $('balanceDisplay').innerText = v.toFixed(2); $('balanceDisplayDesktop').innerText = v.toFixed(2); }
+
+    // --- Event wiring ---
+    function wire(id, event, handler) { const el = $(id); if (el) el.addEventListener(event, handler); }
+
+    // Spin buttons
+    ['spinBtn', 'spinBtnDesktop'].forEach(id => {
+      wire(id, 'click', () => { initAudio(); playSlam(); send('spin', { bet: currentBet }); });
+    });
+
+    // Bet minus
+    ['betMinus', 'betMinusDesktop'].forEach(id => {
+      wire(id, 'click', () => { playClick(); send('betDown', {}); });
+    });
+
+    // Bet plus
+    ['betPlus', 'betPlusDesktop'].forEach(id => {
+      wire(id, 'click', () => { playClick(); send('betUp', {}); });
+    });
+
+    // Buy bonus
+    ['buyBonusBtn', 'buyBonusBtnDesktop'].forEach(id => {
+      wire(id, 'click', () => { playClick(); send('buyBonus', {}); });
+    });
+
+    // Auto
+    ['autoBtn', 'autoBtnDesktop'].forEach(id => {
+      wire(id, 'click', () => { playClick(); isAuto = !isAuto; send('auto', { active: isAuto }); updateAutoUI(); });
+    });
+
+    // Turbo
+    ['turboBtn', 'turboBtnDesktop'].forEach(id => {
+      wire(id, 'click', () => { playClick(); isTurbo = !isTurbo; send('turbo', { active: isTurbo }); updateTurboUI(); });
+    });
+
+    function updateAutoUI() {
+      const on = isAuto ? 'bg-red-600 shadow-[0_0_8px_#ff0000]' : 'bg-neutral-800';
+      ['autoIndicator', 'autoIndicatorDesktop'].forEach(id => {
+        const el = $(id); if (el) el.className = `absolute top-1 lg:top-1 w-1.5 h-1.5 rounded-full ${on}`;
+      });
+    }
+    function updateTurboUI() {
+      const on = isTurbo ? 'bg-red-600 shadow-[0_0_8px_#ff0000]' : 'bg-neutral-800';
+      ['turboIndicator', 'turboIndicatorDesktop'].forEach(id => {
+        const el = $(id); if (el) el.className = `absolute top-1 lg:top-1 w-1.5 h-1.5 rounded-full ${on}`;
+      });
+      document.querySelectorAll('.laser-ring-container').forEach(r => {
+        r.className = isTurbo
+          ? 'laser-ring-container depth-neon-ring absolute inset-0 w-full h-full pointer-events-none neon-pulse-glow-turbo'
+          : 'laser-ring-container depth-neon-ring absolute inset-0 w-full h-full pointer-events-none neon-pulse-glow';
+      });
+    }
+
+    // --- Listen for parent messages ---
+    window.addEventListener('message', (e) => {
+      if (!e.data || e.data.source !== 'rfc-parent') return;
+      const d = e.data;
+      if (d.type === 'updateBalance') setBal(d.data.balance);
+      if (d.type === 'updateBet') setBet(d.data.bet);
+      if (d.type === 'spinning') {
+        const rings = document.querySelectorAll('.depth-neon-ring circle');
+        rings.forEach(r => r.setAttribute('stroke-width', '24'));
+        setTimeout(() => rings.forEach(r => r.setAttribute('stroke-width', '12')), d.data.turbo ? 200 : 400);
+      }
+    });
+
+    // Init
+    send('ready', {});
+  </script>
+</body>
+</html>

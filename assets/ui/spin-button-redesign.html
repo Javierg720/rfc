@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Redesigned Spin Button</title>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@900&family=Rajdhani:wght@700;900&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 60px;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a0808 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 60px;
+      min-height: 100vh;
+    }
+
+    .spin-btn {
+      --btn-size: 120px;
+      position: relative;
+      width: var(--btn-size);
+      height: var(--btn-size);
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 0;
+      transition: transform 0.15s cubic-bezier(0.34, 1.6, 0.64, 1);
+    }
+
+    .spin-btn:hover {
+      transform: scale(1.08);
+    }
+
+    .spin-btn:active {
+      transform: scale(0.92);
+    }
+
+    .spin-btn__outer-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: conic-gradient(
+        from 0deg,
+        #1a1a1a 0deg,
+        #2d0000 60deg,
+        #4d0000 120deg,
+        #2d0000 180deg,
+        #1a1a1a 240deg,
+        #2d0000 300deg,
+        #1a1a1a 360deg
+      );
+      box-shadow:
+        0 0 30px rgba(204, 26, 46, 0.4),
+        0 8px 32px rgba(0, 0, 0, 0.9),
+        inset 0 2px 4px rgba(255, 255, 255, 0.1);
+      z-index: 1;
+    }
+
+    .spin-btn__outer-ring::before {
+      content: '';
+      position: absolute;
+      inset: 2px;
+      border-radius: 50%;
+      background: linear-gradient(180deg, #0a0a0a 0%, #1a0505 100%);
+    }
+
+    .spin-btn__glow-ring {
+      position: absolute;
+      inset: 6px;
+      border-radius: 50%;
+      border: 3px solid transparent;
+      background: 
+        linear-gradient(135deg, #cc1a2e, #ff3a52, #cc1a2e) border-box,
+        linear-gradient(135deg, #1a0a0a, #0a0505) padding-box;
+      -webkit-mask: 
+        linear-gradient(#fff 0 0) padding-box, 
+        linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      z-index: 2;
+      box-shadow: 0 0 20px rgba(204, 26, 46, 0.6), inset 0 0 15px rgba(204, 26, 46, 0.3);
+    }
+
+    .spin-btn__inner-face {
+      position: absolute;
+      inset: 14px;
+      border-radius: 50%;
+      background: 
+        radial-gradient(circle at 35% 30%, #ff4a5e 0%, #cc1a2e 40%, #8b0e1c 80%, #5a080d 100%),
+        linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 40%);
+      box-shadow:
+        inset 0 4px 20px rgba(255, 100, 120, 0.5),
+        inset 0 -6px 20px rgba(0, 0, 0, 0.8),
+        0 4px 20px rgba(0, 0, 0, 0.5);
+      z-index: 3;
+    }
+
+    .spin-btn__inner-face::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: repeating-conic-gradient(
+        from 0deg,
+        rgba(0, 0, 0, 0.08) 0deg 10deg,
+        transparent 10deg 20deg
+      );
+    }
+
+    .spin-btn__bevel {
+      position: absolute;
+      inset: 22px;
+      border-radius: 50%;
+      border: 2px solid;
+      border-image: linear-gradient(135deg, #ff5566 0%, #cc1a2e 30%, #5a080d 70%, #cc1a2e 100%) 1;
+      z-index: 4;
+      box-shadow: inset 0 0 15px rgba(204, 26, 46, 0.4);
+    }
+
+    .spin-btn__center-gem {
+      position: absolute;
+      inset: 30px;
+      border-radius: 50%;
+      background: 
+        radial-gradient(circle at 40% 35%, #ff7788 0%, #cc1a2e 50%, #6b0f18 100%);
+      box-shadow:
+        inset 0 3px 8px rgba(255, 150, 160, 0.6),
+        inset 0 -3px 8px rgba(0, 0, 0, 0.6),
+        0 0 25px rgba(204, 26, 46, 0.8);
+      z-index: 5;
+    }
+
+    .spin-btn__center-gem::before {
+      content: '';
+      position: absolute;
+      top: 8%;
+      left: 15%;
+      width: 30%;
+      height: 25%;
+      background: linear-gradient(135deg, rgba(255,255,255,0.6), transparent);
+      border-radius: 50%;
+    }
+
+    .spin-btn__text {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 6;
+      pointer-events: none;
+    }
+
+    .spin-btn__label {
+      font-family: 'Oswald', sans-serif;
+      font-weight: 900;
+      font-size: 42px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      font-style: italic;
+      color: #fff;
+      text-shadow: 
+        0 0 20px rgba(255, 60, 80, 1),
+        0 0 40px rgba(255, 60, 80, 0.7),
+        0 2px 4px rgba(0, 0, 0, 0.9),
+        0 4px 8px rgba(0, 0, 0, 0.5);
+      transform: skewX(-5deg);
+      transition: all 0.2s ease;
+    }
+
+    .spin-btn:hover .spin-btn__label {
+      text-shadow: 
+        0 0 30px rgba(255, 80, 100, 1),
+        0 0 60px rgba(255, 80, 100, 0.9),
+        0 0 80px rgba(204, 26, 46, 0.6),
+        0 2px 4px rgba(0, 0, 0, 0.9),
+        0 4px 8px rgba(0, 0, 0, 0.5);
+    }
+
+    .spin-btn__corner-accent {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: radial-gradient(circle, #ff4a5e, #cc1a2e);
+      border-radius: 50%;
+      z-index: 7;
+      box-shadow: 0 0 10px rgba(204, 26, 46, 0.8);
+      animation: accent-pulse 2s ease-in-out infinite;
+    }
+
+    .spin-btn__corner-accent--tl { top: 8px; left: 8px; }
+    .spin-btn__corner-accent--tr { top: 8px; right: 8px; animation-delay: 0.5s; }
+    .spin-btn__corner-accent--bl { bottom: 8px; left: 8px; animation-delay: 1s; }
+    .spin-btn__corner-accent--br { bottom: 8px; right: 8px; animation-delay: 1.5s; }
+
+    @keyframes accent-pulse {
+      0%, 100% { 
+        transform: scale(1);
+        box-shadow: 0 0 10px rgba(204, 26, 46, 0.8);
+      }
+      50% { 
+        transform: scale(1.3);
+        box-shadow: 0 0 18px rgba(255, 60, 80, 1);
+      }
+    }
+
+    .spin-btn__halo {
+      position: absolute;
+      inset: -20px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(204, 26, 46, 0.4) 0%, transparent 60%);
+      filter: blur(15px);
+      z-index: 0;
+      animation: halo-glow 3s ease-in-out infinite;
+    }
+
+    @keyframes halo-glow {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.1); }
+    }
+
+    /* Spinning State */
+    .spin-btn.spinning .spin-btn__inner-face {
+      animation: btn-pulse 0.5s ease-in-out infinite;
+    }
+
+    @keyframes btn-pulse {
+      0%, 100% { 
+        box-shadow:
+          inset 0 4px 20px rgba(255, 100, 120, 0.5),
+          inset 0 -6px 20px rgba(0, 0, 0, 0.8),
+          0 4px 20px rgba(0, 0, 0, 0.5),
+          0 0 30px rgba(204, 26, 46, 0.4);
+      }
+      50% { 
+        box-shadow:
+          inset 0 4px 30px rgba(255, 120, 140, 0.8),
+          inset 0 -6px 20px rgba(0, 0, 0, 0.8),
+          0 4px 20px rgba(0, 0, 0, 0.5),
+          0 0 60px rgba(255, 60, 80, 0.9);
+      }
+    }
+
+    .spin-btn.spinning .spin-btn__glow-ring {
+      animation: ring-pulse 0.4s ease-in-out infinite;
+    }
+
+    @keyframes ring-pulse {
+      0%, 100% { box-shadow: 0 0 20px rgba(204, 26, 46, 0.6), inset 0 0 15px rgba(204, 26, 46, 0.3); }
+      50% { box-shadow: 0 0 40px rgba(255, 60, 80, 0.9), inset 0 0 25px rgba(255, 80, 100, 0.5); }
+    }
+
+    /* Disabled State */
+    .spin-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .spin-btn:disabled:hover {
+      transform: none;
+    }
+
+    .spin-btn:disabled .spin-btn__label {
+      color: #666;
+    }
+
+    /* Mobile Size */
+    .spin-btn--mobile {
+      --btn-size: 80px;
+    }
+
+    .spin-btn--mobile .spin-btn__label {
+      font-size: 28px;
+    }
+
+    /* Desktop Size */
+    .spin-btn--desktop {
+      --btn-size: 140px;
+    }
+
+    .spin-btn--desktop .spin-btn__label {
+      font-size: 52px;
+    }
+
+    /* State Labels */
+    .spin-btn[data-state="spinning"] .spin-btn__label {
+      content: 'SPINNING';
+      font-size: 18px;
+      letter-spacing: 2px;
+    }
+
+    /* Demo Controls */
+    .demo-controls {
+      display: flex;
+      gap: 20px;
+    }
+
+    .demo-controls button {
+      padding: 12px 24px;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      background: linear-gradient(180deg, #2a2a2a, #1a1a1a);
+      border: 1px solid #444;
+      color: #fff;
+      border-radius: 8px;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .demo-controls button:hover {
+      background: linear-gradient(180deg, #3a3a3a, #2a2a2a);
+      border-color: #cc1a2e;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Mobile Size -->
+  <div class="spin-btn spin-btn--mobile" onclick="triggerSpin(this)">
+    <div class="spin-btn__halo"></div>
+    <div class="spin-btn__outer-ring"></div>
+    <div class="spin-btn__glow-ring"></div>
+    <div class="spin-btn__inner-face"></div>
+    <div class="spin-btn__bevel"></div>
+    <div class="spin-btn__center-gem"></div>
+    <div class="spin-btn__text">
+      <span class="spin-btn__label">SPIN</span>
+    </div>
+    <div class="spin-btn__corner-accent spin-btn__corner-accent--tl"></div>
+    <div class="spin-btn__corner-accent spin-btn__corner-accent--tr"></div>
+    <div class="spin-btn__corner-accent spin-btn__corner-accent--bl"></div>
+    <div class="spin-btn__corner-accent spin-btn__corner-accent--br"></div>
+  </div>
+
+  <!-- Desktop Size -->
+  <div class="spin-btn spin-btn--desktop" onclick="triggerSpin(this)">
+    <div class="spin-btn__halo"></div>
+    <div class="spin-btn__outer-ring"></div>
+    <div class="spin-btn__glow-ring"></div>
+    <div class="spin-btn__inner-face"></div>
+    <div class="spin-btn__bevel"></div>
+    <div class="spin-btn__center-gem"></div>
+    <div class="spin-btn__text">
+      <span class="spin-btn__label">SPIN</span>
+    </div>
+    <div class="spin-btn__corner-accent spin-btn__corner-accent--tl"></div>
+    <div class="spin-btn__corner-accent spin-btn__corner-accent--tr"></div>
+    <div class="spin-btn__corner-accent spin-btn__corner-accent--bl"></div>
+    <div class="spin-btn__corner-accent spin-btn__corner-accent--br"></div>
+  </div>
+
+  <div class="demo-controls">
+    <button onclick="testState('spinning')">Test Spinning</button>
+    <button onclick="testState('disabled')">Test Disabled</button>
+    <button onclick="testState('reset')">Reset</button>
+  </div>
+
+  <script>
+    function triggerSpin(btn) {
+      if (btn.disabled) return;
+      btn.classList.add('spinning');
+      const label = btn.querySelector('.spin-btn__label');
+      label.textContent = 'SPINNING';
+      setTimeout(() => {
+        btn.classList.remove('spinning');
+        label.textContent = 'SPIN';
+      }, 800);
+      console.log('Spin triggered');
+    }
+
+    function testState(state) {
+      const btns = document.querySelectorAll('.spin-btn');
+      btns.forEach(btn => {
+        const label = btn.querySelector('.spin-btn__label');
+        if (state === 'spinning') {
+          btn.classList.add('spinning');
+          label.textContent = 'SPINNING';
+        } else if (state === 'disabled') {
+          btn.disabled = true;
+          label.textContent = 'WAIT';
+        } else {
+          btn.classList.remove('spinning');
+          btn.disabled = false;
+          label.textContent = 'SPIN';
+        }
+      });
+    }
+  </script>
+</body>
+</html>

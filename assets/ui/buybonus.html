@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buy Bonus</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        impact: ['Oswald', 'sans-serif'],
+                    },
+                    colors: {
+                        ufc: {
+                            red: '#ff002b',
+                            redGlow: 'rgba(255, 0, 43, 0.4)',
+                            blue: '#0066ff',
+                            blueGlow: 'rgba(0, 102, 255, 0.4)',
+                            gold: '#d4af37',
+                            goldLight: '#f9e29c',
+                            carbon: '#0a0a0d',
+                            steel: '#12131a'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #030305; color: #ffffff; min-height: 100vh; display: flex; align-items: center; justify-content: center; overflow-x: hidden; perspective: 1000px; }
+        .spotlight-1 { position: absolute; top: -10%; left: 5%; width: 40vw; height: 60vh; background: radial-gradient(circle, rgba(255, 0, 43, 0.08) 0%, transparent 70%); transform-origin: top left; animation: sweep-left 12s infinite alternate ease-in-out; pointer-events: none; }
+        .spotlight-2 { position: absolute; top: -10%; right: 5%; width: 40vw; height: 60vh; background: radial-gradient(circle, rgba(0, 102, 255, 0.08) 0%, transparent 70%); transform-origin: top right; animation: sweep-right 12s infinite alternate ease-in-out; pointer-events: none; }
+        @keyframes sweep-left { 0% { transform: rotate(-10deg) scale(1); } 100% { transform: rotate(15deg) scale(1.2); } }
+        @keyframes sweep-right { 0% { transform: rotate(10deg) scale(1); } 100% { transform: rotate(-15deg) scale(1.2); } }
+        .cage-mesh { position: fixed; inset: 0; background-size: 24px 42px; background-image: linear-gradient(30deg, rgba(255,255,255,0.012) 12%, transparent 12.5%, transparent 87%, rgba(255,255,255,0.012) 87.5%, rgba(255,255,255,0.012)), linear-gradient(150deg, rgba(255,255,255,0.012) 12%, transparent 12.5%, transparent 87%, rgba(255,255,255,0.012) 87.5%, rgba(255,255,255,0.012)), linear-gradient(30deg, rgba(255,255,255,0.012) 37%, transparent 37.5%, transparent 62%, rgba(255,255,255,0.012) 62.5%, rgba(255,255,255,0.012)), linear-gradient(150deg, rgba(255,255,255,0.012) 37%, transparent 37.5%, transparent 62%, rgba(255,255,255,0.012) 62.5%, rgba(255,255,255,0.012)); opacity: 0.8; z-index: -1; pointer-events: none; }
+        .carbon-pattern { background-color: #08080b; background-image: linear-gradient(45deg, #0e0e12 25%, transparent 25%), linear-gradient(-45deg, #0e0e12 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #0e0e12 75%), linear-gradient(-45deg, transparent 75%, #0e0e12 75%); background-size: 6px 6px; background-position: 0 0, 0 3px, 3px -3px, -3px 0px; }
+        .octagon-shadow-red { filter: drop-shadow(0 0 1px rgba(255, 0, 43, 0.2)); transition: filter 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .octagon-shadow-red:hover { filter: drop-shadow(0 15px 30px rgba(255, 0, 43, 0.25)) drop-shadow(0 0 10px rgba(255, 0, 43, 0.4)); transform: translateY(-8px) scale(1.02); }
+        .octagon-shadow-blue { filter: drop-shadow(0 0 1px rgba(0, 102, 255, 0.2)); transition: filter 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .octagon-shadow-blue:hover { filter: drop-shadow(0 15px 30px rgba(0, 102, 255, 0.2)) drop-shadow(0 0 10px rgba(0, 102, 255, 0.3)); transform: translateY(-8px) scale(1.02); }
+        .octagon-card { clip-path: polygon(32px 0%, calc(100% - 32px) 0%, 100% 32px, 100% calc(100% - 32px), calc(100% - 32px) 100%, 32px 100%, 0% calc(100% - 32px), 0% 32px); }
+        .octagon-tag { clip-path: polygon(10px 0%, calc(100% - 10px) 0%, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0% 50%); }
+        .gold-metallic-text { background: linear-gradient(to bottom, #fffdf0 0%, #f9e29c 40%, #d4af37 70%, #8a6f27 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); }
+        .gold-border { background: linear-gradient(135deg, #f9e29c, #d4af37, #8a6f27, #d4af37, #fffdf0); }
+        .shimmer { position: relative; overflow: hidden; }
+        .shimmer::before { content: ''; position: absolute; top: 0; left: -150%; width: 50%; height: 100%; background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.15) 50%, transparent); transform: skewX(-25deg); transition: 0.75s; }
+        .shimmer:hover::before { left: 150%; }
+        .ambient-flicker { animation: flicker 6s infinite alternate; }
+        @keyframes flicker { 0%, 100% { opacity: 0.8; } 45% { opacity: 0.9; } 50% { opacity: 0.6; } 55% { opacity: 0.85; } }
+    </style>
+</head>
+<body class="p-4 md:p-8 relative">
+    <div class="spotlight-1 ambient-flicker"></div>
+    <div class="spotlight-2 ambient-flicker"></div>
+    <div class="cage-mesh"></div>
+
+    <main class="w-full max-w-5xl mx-auto relative z-10 my-auto">
+        <header class="text-center mb-12 md:mb-16">
+            <div class="inline-flex items-center gap-4 mb-3">
+                <span class="w-3 h-3 bg-ufc-red rotate-45 shadow-[0_0_8px_#ff002b]"></span>
+                <span class="text-zinc-400 tracking-[0.4em] text-[10px] md:text-xs font-black uppercase font-impact flex items-center gap-1">CHAMPIONSHIP <span class="text-ufc-gold">MAIN CARD</span> FEATURE</span>
+                <span class="w-3 h-3 bg-ufc-blue rotate-45 shadow-[0_0_8px_#0066ff]"></span>
+            </div>
+            <h1 class="font-impact text-6xl md:text-8xl font-black tracking-tight text-white uppercase italic leading-none relative">CHOOSE <span class="gold-metallic-text">FEATURE</span></h1>
+            <p class="text-zinc-400 font-impact text-xs md:text-sm max-w-md mx-auto tracking-widest uppercase mt-4 font-semibold">LOCK IN THE BONUS ROUND AT YOUR CURRENT PLAY STAKE.</p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 max-w-4xl mx-auto relative">
+            <div class="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-20 h-20 bg-black border-4 border-zinc-800 rounded-full items-center justify-center shadow-[0_0_30px_rgba(0,0,0,0.9)]">
+                <div class="w-full h-full rounded-full border border-ufc-gold/40 flex items-center justify-center bg-zinc-950/90">
+                    <span class="font-impact font-black text-3xl italic tracking-tighter text-white">VS</span>
+                </div>
+            </div>
+
+            <!-- RED CORNER: FREE FIGHTS -->
+            <div class="octagon-shadow-red" id="cardFree">
+                <article class="octagon-card carbon-pattern relative p-[2px] bg-gradient-to-b from-ufc-red/50 to-zinc-800/80 cursor-pointer h-full">
+                    <div class="octagon-card bg-gradient-to-b from-[#0e0e13] to-[#060608] p-8 md:p-10 flex flex-col h-full relative z-10">
+                        <div class="flex justify-between items-center mb-10">
+                            <div class="bg-ufc-red text-white text-xs font-impact font-bold tracking-wider px-6 py-1.5 uppercase octagon-tag italic shadow-[0_4px_10px_rgba(255,0,43,0.3)]">Red Corner</div>
+                            <span class="text-xs font-impact font-bold tracking-widest text-ufc-red uppercase">HIGH VOLATILITY</span>
+                        </div>
+                        <div class="mb-10 flex-grow">
+                            <h2 class="font-impact text-4xl md:text-5xl font-black text-white italic tracking-tight uppercase leading-none mb-4">Free Fights</h2>
+                            <p class="text-zinc-400 text-sm leading-relaxed font-semibold mb-8 max-w-sm">Pick your contender. Unleash free spins inside the cage with high-yield multipliers locked in for consecutive championship rounds.</p>
+                            <div class="border-t border-zinc-800/80 pt-6 flex flex-col gap-3 font-impact text-sm tracking-wide">
+                                <div class="flex justify-between items-center text-zinc-500"><span class="uppercase">STYLE:</span><span class="text-white font-bold text-right uppercase tracking-wider">Volatile Multipliers</span></div>
+                                <div class="flex justify-between items-center text-zinc-500"><span class="uppercase">BOUT CAPACITY:</span><span class="text-white font-bold text-right uppercase tracking-wider">Variable Spins</span></div>
+                            </div>
+                        </div>
+                        <div class="shimmer w-full bg-[#1b1c22] border border-ufc-gold/30 rounded p-[2px] shadow-lg transition-all">
+                            <div class="bg-gradient-to-b from-zinc-900 to-black rounded px-5 py-4 flex justify-between items-center">
+                                <div class="flex flex-col"><span class="text-[9px] font-impact text-zinc-500 tracking-wider uppercase">Multiplier Power</span><span class="font-impact text-3xl font-black text-white italic tracking-wider leading-none">100X</span></div>
+                                <div class="w-[1px] h-8 bg-zinc-800"></div>
+                                <div class="flex flex-col text-right"><span class="text-[9px] font-impact text-zinc-500 tracking-wider uppercase">FIGHT COST</span><span id="costFree" class="font-impact text-3xl font-black text-ufc-gold italic tracking-wider leading-none">$100.00</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+
+            <!-- BLUE CORNER: VS BATTLE -->
+            <div class="octagon-shadow-blue" id="cardVs">
+                <article class="octagon-card carbon-pattern relative p-[2px] bg-gradient-to-b from-ufc-blue/50 to-zinc-800/80 cursor-pointer h-full">
+                    <div class="octagon-card bg-gradient-to-b from-[#0e0e13] to-[#060608] p-8 md:p-10 flex flex-col h-full relative z-10">
+                        <div class="flex justify-between items-center mb-10">
+                            <div class="bg-ufc-blue text-white text-xs font-impact font-bold tracking-wider px-6 py-1.5 uppercase octagon-tag italic shadow-[0_4px_10px_rgba(0,102,255,0.3)]">Blue Corner</div>
+                            <span class="text-xs font-impact font-bold tracking-widest text-ufc-blue uppercase">SUDDEN VERDICT</span>
+                        </div>
+                        <div class="mb-10 flex-grow">
+                            <h2 class="font-impact text-4xl md:text-5xl font-black text-white italic tracking-tight uppercase leading-none mb-4">VS Battle</h2>
+                            <p class="text-zinc-400 text-sm leading-relaxed font-semibold mb-8 max-w-sm">Choose your fighter alignment. A swift, sudden death single-strike exchange that resolves instantly for the full championship purse.</p>
+                            <div class="border-t border-zinc-800/80 pt-6 flex flex-col gap-3 font-impact text-sm tracking-wide">
+                                <div class="flex justify-between items-center text-zinc-500"><span class="uppercase">STYLE:</span><span class="text-white font-bold text-right uppercase tracking-wider">50 / 50 Instant Win</span></div>
+                                <div class="flex justify-between items-center text-zinc-500"><span class="uppercase">MAX BOUT PAY:</span><span class="text-white font-bold text-right uppercase tracking-wider">Up to 100x Bet</span></div>
+                            </div>
+                        </div>
+                        <div class="shimmer w-full bg-[#1b1c22] border border-ufc-gold/30 rounded p-[2px] shadow-lg transition-all">
+                            <div class="bg-gradient-to-b from-zinc-900 to-black rounded px-5 py-4 flex justify-between items-center">
+                                <div class="flex flex-col"><span class="text-[9px] font-impact text-zinc-500 tracking-wider uppercase">Multiplier Power</span><span class="font-impact text-3xl font-black text-white italic tracking-wider leading-none">50X</span></div>
+                                <div class="w-[1px] h-8 bg-zinc-800"></div>
+                                <div class="flex flex-col text-right"><span class="text-[9px] font-impact text-zinc-500 tracking-wider uppercase">FIGHT COST</span><span id="costVs" class="font-impact text-3xl font-black text-ufc-gold italic tracking-wider leading-none">$50.00</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </div>
+
+        <div class="text-center mt-10">
+            <button id="cancelBtn" class="px-8 py-3 bg-zinc-900 border border-zinc-700 hover:border-zinc-500 text-zinc-400 font-impact font-bold uppercase italic tracking-widest text-sm rounded transition-all duration-300">CANCEL</button>
+        </div>
+    </main>
+
+    <script>
+        function send(type, data) { parent.postMessage({ source: 'rfc-buybonus', type, data }, '*'); }
+        function $(id) { return document.getElementById(id); }
+
+        $('cardFree').addEventListener('click', () => send('select', { feature: 'free' }));
+        $('cardVs').addEventListener('click', () => send('select', { feature: 'vs' }));
+        $('cancelBtn').addEventListener('click', () => send('cancel', {}));
+
+        window.addEventListener('message', (e) => {
+            if (!e.data || e.data.source !== 'rfc-parent') return;
+            const d = e.data;
+            if (d.type === 'updateCosts') {
+                $('costFree').innerText = '$' + d.data.freeCost.toFixed(2);
+                $('costVs').innerText = '$' + d.data.vsCost.toFixed(2);
+            }
+        });
+
+        send('ready', {});
+    </script>
+</body>
+</html>

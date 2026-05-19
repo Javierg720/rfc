@@ -1,0 +1,45 @@
+{
+  "game": "RFC",
+  "version": "5.6.0",
+  "packageType": "frontend",
+  "entry": "index.html",
+  "rtpTarget": "97.0%",
+  "variance": "High",
+  "maxWinMultiplier": 5000,
+  "runtime": "Self-contained HTML5/CSS/JavaScript",
+  "assets": {
+    "policy": "Uses RFC background, bundled symbol art, bundled audio, exact supplied feature-menu and fighter-picker art, premium move-symbol artwork for Bonus 2, and CSS-built Cage Heat gauge artwork",
+    "background": "art/rfc_bg.png",
+    "symbolsDirectory": "symbols/",
+    "moveSymbolsDirectory": "symbols/moves/",
+    "uploadsDirectory": "uploads/"
+  },
+  "rgs": {
+    "usesRgsUrlQueryParam": true,
+    "authenticatesOnLaunch": true,
+    "playRequestOnSpinButton": true,
+    "activeRoundCostRestore": true,
+    "replaySupport": true
+  },
+  "mechanics": [
+    "5-Reel 243-Ways Main Game",
+    "Cage Scatter Free Fights",
+    "Fighter Pick Multiplier Bonus",
+    "Cage Heat Rival Callout",
+    "Final Bell Duel Bonus 2",
+    "Championship Multiplier reveal on title-belt wins",
+    "Continuous Auto Play Toggle",
+    "Cinematic Ceremony Layer",
+    "Exact-art feature menu and fighter picker presentation pass"
+  ],
+  "bonusFeatures": [
+    "Bonus 1: Free Fights with fighter selection",
+    "Bonus 2: Final Bell Duel five-spin 3x3 score duel"
+  ],
+  "reviewHelpers": [
+    "DEMO FEATURE",
+    "DEMO DUEL",
+    "RTP Probe",
+    "Build fingerprint: rfc-frontend-5.6.0-2026-05-13-three-star-polish-pass"
+  ]
+}

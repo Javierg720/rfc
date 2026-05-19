@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RFC Bonus - Pick Your Fighter</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        impact: ['Oswald', 'sans-serif'],
+                    },
+                    colors: {
+                        ufc: {
+                            red: '#ff1e39',
+                            redGlow: 'rgba(255, 30, 57, 0.4)',
+                            gold: '#dfba73',
+                            goldGlow: 'rgba(223, 186, 115, 0.4)',
+                            blue: '#0095ff',
+                            blueGlow: 'rgba(0, 149, 255, 0.4)',
+                            purple: '#b832fc',
+                            purpleGlow: 'rgba(184, 50, 252, 0.4)',
+                            carbon: '#090a0f',
+                            steel: '#181922'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #020204;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 30, 57, 0.06) 0%, transparent 45%),
+                radial-gradient(circle at 90% 20%, rgba(0, 149, 255, 0.06) 0%, transparent 45%),
+                radial-gradient(circle at 50% 50%, rgba(184, 50, 252, 0.03) 0%, transparent 60%);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            perspective: 1000px;
+        }
+
+        /* Animated Stage Spotlights */
+        .spotlight {
+            position: absolute;
+            top: -150px;
+            width: 350px;
+            height: 160%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.06) 0%, transparent 80%);
+            transform-origin: top center;
+            filter: blur(35px);
+            pointer-events: none;
+            z-index: 1;
+        }
+        .spotlight-left {
+            left: 10%;
+            transform: rotate(-14deg);
+            animation: sweep-beam-left 10s infinite alternate ease-in-out;
+        }
+        .spotlight-right {
+            right: 10%;
+            transform: rotate(14deg);
+            animation: sweep-beam-right 10s infinite alternate ease-in-out;
+        }
+
+        @keyframes sweep-beam-left {
+            0% { transform: rotate(-18deg) scaleX(0.7); }
+            100% { transform: rotate(-4deg) scaleX(1.3); }
+        }
+        @keyframes sweep-beam-right {
+            0% { transform: rotate(18deg) scaleX(0.7); }
+            100% { transform: rotate(4deg) scaleX(1.3); }
+        }
+
+        /* Chain Link Cage Texture */
+        .cage-mesh {
+            position: fixed;
+            inset: 0;
+            background-size: 24px 42px;
+            background-image: 
+                linear-gradient(30deg, rgba(255,255,255,0.012) 12%, transparent 12.5%, transparent 87%, rgba(255,255,255,0.012) 87.5%, rgba(255,255,255,0.012)),
+                linear-gradient(150deg, rgba(255,255,255,0.012) 12%, transparent 12.5%, transparent 87%, rgba(255,255,255,0.012) 87.5%, rgba(255,255,255,0.012)),
+                linear-gradient(30deg, rgba(255,255,255,0.012) 37%, transparent 37.5%, transparent 62%, rgba(255,255,255,0.012) 62.5%, rgba(255,255,255,0.012)),
+                linear-gradient(150deg, rgba(255,255,255,0.012) 37%, transparent 37.5%, transparent 62%, rgba(255,255,255,0.012) 62.5%, rgba(255,255,255,0.012));
+            opacity: 0.65;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Ambient sparks canvas background */
+        #sparks-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Carbon Fiber Pattern */
+        .carbon-pattern {
+            background-color: #060609;
+            background-image: 
+                linear-gradient(45deg, #0b0b0f 25%, transparent 25%), 
+                linear-gradient(-45deg, #0b0b0f 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #0b0b0f 75%), 
+                linear-gradient(-45deg, transparent 75%, #0b0b0f 75%);
+            background-size: 6px 6px;
+            background-position: 0 0, 0 3px, 3px -3px, -3px 0px;
+        }
+
+        /* Diagnostic Tech Grid for hologram spaces */
+        .tech-grid {
+            background-image: 
+                repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.01) 1px, transparent 1px, transparent 8px),
+                radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.02) 0%, transparent 85%);
+        }
+
+        /* Cyber Sweep Laser */
+        .scan-laser {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            animation: sweep-scan 4s infinite ease-in-out;
+            z-index: 20;
+        }
+        @keyframes sweep-scan {
+            0% { top: 0%; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+
+        /* Chamfered Octagons */
+        .octagon-border {
+            clip-path: polygon(
+                24px 0%, 
+                calc(100% - 24px) 0%, 
+                100% 24px, 
+                100% calc(100% - 24px), 
+                calc(100% - 24px) 100%, 
+                24px 100%, 
+                0% calc(100% - 24px), 
+                0% 24px
+            );
+        }
+
+        .octagon-badge {
+            clip-path: polygon(10px 0%, calc(100% - 10px) 0%, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0% 50%);
+        }
+
+        /* Metallic Textures for Headers */
+        .metallic-text-silver {
+            background: linear-gradient(to bottom, #ffffff 0%, #dcdcdf 40%, #7e7e85 70%, #ffffff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.7));
+        }
+
+        .metallic-text-red {
+            background: linear-gradient(to bottom, #ff7b85 0%, #ff1e39 50%, #750009 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.7));
+        }
+
+        .metallic-text-gold {
+            background: linear-gradient(to bottom, #fffef0 0%, #dfba73 45%, #9d7734 70%, #fffef0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.7));
+        }
+
+        /* Interactive Card Layout with Tilt Physics */
+        .fighter-card-wrapper {
+            transform-style: preserve-3d;
+            transition: transform 0.25s cubic-bezier(0.25, 1, 0.5, 1), filter 0.4s ease;
+        }
+
+        .fighter-card-wrapper.active-red {
+            filter: drop-shadow(0 0 30px rgba(255, 30, 57, 0.45));
+            border-color: #ff1e39;
+        }
+        .fighter-card-wrapper.active-gold {
+            filter: drop-shadow(0 0 30px rgba(223, 186, 115, 0.45));
+            border-color: #dfba73;
+        }
+        .fighter-card-wrapper.active-blue {
+            filter: drop-shadow(0 0 30px rgba(0, 149, 255, 0.45));
+            border-color: #0095ff;
+        }
+        .fighter-card-wrapper.active-purple {
+            filter: drop-shadow(0 0 30px rgba(184, 50, 252, 0.45));
+            border-color: #b832fc;
+        }
+
+        /* Panel split angles */
+        .split-panel-left {
+            clip-path: polygon(0 0, 95% 0, 100% 100%, 0 100%);
+        }
+        .split-panel-right {
+            clip-path: polygon(5% 0, 100% 0, 100% 100%, 0 100%);
+        }
+
+        /* Premium Shimmer Swiping animation */
+        .shimmer {
+            position: relative;
+            overflow: hidden;
+        }
+        .shimmer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 40%;
+            height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.25) 50%, transparent);
+            transform: skewX(-20deg);
+            transition: 0.8s;
+        }
+        .shimmer:hover::before {
+            left: 150%;
+        }
+
+        /* HUD tech lines decoration */
+        .hud-line {
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+        }
+
+        /* Rotating vectors inside HUD card slots */
+        @keyframes spin-clockwise {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        @keyframes spin-counter {
+            from { transform: rotate(360deg); }
+            to { transform: rotate(0deg); }
+        }
+        .rotating-vector-cw {
+            animation: spin-clockwise 25s infinite linear;
+        }
+        .rotating-vector-ccw {
+            animation: spin-counter 35s infinite linear;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-6 relative select-none">
+
+    <!-- Ambient rising particles canvas -->
+    <canvas id="sparks-canvas"></canvas>
+
+    <!-- Active Stage Spotlights -->
+    <div class="spotlight spotlight-left"></div>
+    <div class="spotlight spotlight-right"></div>
+    <div class="cage-mesh"></div>
+
+    <main class="w-full max-w-6xl mx-auto flex flex-col justify-between min-h-[92vh] relative z-10 my-auto">
+        
+        <!-- Header -->
+        <header class="text-center mt-2 mb-8 relative">
+            <div class="flex items-center justify-center gap-4 mb-2">
+                <span class="w-3 h-3 bg-ufc-red rotate-45 shadow-[0_0_12px_#ff1e39] animate-pulse"></span>
+                <h1 class="font-impact text-6xl md:text-8xl font-black tracking-tighter uppercase leading-none">
+                    <span class="metallic-text-red">RFC</span> <span class="metallic-text-silver">BONUS</span>
+                </h1>
+                <span class="w-3 h-3 bg-ufc-blue rotate-45 shadow-[0_0_12px_#0095ff] animate-pulse"></span>
+            </div>
+            
+            <p class="text-zinc-100 font-impact text-xl md:text-2xl tracking-[0.25em] uppercase font-bold drop-shadow">
+                PICK YOUR CONTENDER
+            </p>
+            <p class="text-ufc-gold font-impact text-xs md:text-sm tracking-widest uppercase mt-2 font-medium">
+                CHOOSE YOUR CHAMPION TO CLAIM LOCKED REWIND SPINS
+            </p>
+        </header>
+
+        <!-- Fighter Cards Area -->
+        <section class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 max-w-5xl mx-auto w-full mb-8">
+            
+            <!-- FIGHTER 1: RED -->
+            <div id="fighter-1" onclick="selectFighter(1, 8, 4)" 
+                 class="fighter-card-wrapper active-red octagon-border p-[3px] bg-gradient-to-b from-ufc-red/40 to-zinc-800/60 cursor-pointer border border-transparent">
+                <div class="octagon-border bg-gradient-to-b from-[#09090d] to-[#040406] flex flex-col h-full p-4 relative overflow-hidden">
+                    
+                    <!-- Scanner/Hologram Tech Placeholder Inside Slot -->
+                    <div class="aspect-square w-full rounded-lg bg-[#040406] border border-zinc-900 relative overflow-hidden flex items-center justify-center tech-grid">
+                        <div class="absolute inset-0 bg-gradient-to-b from-ufc-red/10 to-transparent"></div>
+                        
+                        <!-- Pulse Ring Laser Center -->
+                        <div class="absolute w-28 h-28 rounded-full border border-ufc-red/10 animate-ping opacity-25"></div>
+                        
+                        <!-- Tech HUD Circle graphics rotating -->
+                        <div class="absolute w-3/4 h-3/4 opacity-15 rotating-vector-cw pointer-events-none">
+                            <svg viewBox="0 0 100 100" class="w-full h-full text-ufc-red">
+                                <circle cx="50" cy="50" r="45" stroke="currentColor" stroke-width="1" fill="none" stroke-dasharray="8 6" />
+                            </svg>
+                        </div>
+                        <div class="absolute w-5/6 h-5/6 opacity-10 rotating-vector-ccw pointer-events-none">
+                            <svg viewBox="0 0 100 100" class="w-full h-full text-ufc-red">
+                                <circle cx="50" cy="50" r="48" stroke="currentColor" stroke-width="1.5" fill="none" stroke-dasharray="40 5" />
+                            </svg>
+                        </div>
+                        
+                        <!-- Animated sweeping tech-scanner line -->
+                        <div class="scan-laser bg-gradient-to-r from-transparent via-ufc-red to-transparent shadow-[0_0_8px_#ff1e39]"></div>
+                        
+                        <!-- Profile Silhouette Outline -->
+                        <svg class="w-20 h-20 text-ufc-red/25 z-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+                            <path d="M18 21a6 6 0 0 0-12 0"/>
+                            <circle cx="12" cy="10" r="4"/>
+                            <path stroke-dasharray="2 2" d="M12 2v2M12 18v2M2 12h2M20 12h2"/>
+                        </svg>
+                        
+                        <!-- HUD Crosshairs at corners -->
+                        <div class="absolute top-2 left-2 w-3 h-3 border-t-2 border-l-2 border-ufc-red/30"></div>
+                        <div class="absolute top-2 right-2 w-3 h-3 border-t-2 border-r-2 border-ufc-red/30"></div>
+                        <div class="absolute bottom-2 left-2 w-3 h-3 border-b-2 border-l-2 border-ufc-red/30"></div>
+                        <div class="absolute bottom-2 right-2 w-3 h-3 border-b-2 border-r-2 border-ufc-red/30"></div>
+                        
+                        <span class="absolute bottom-3 font-impact text-[9px] tracking-widest text-ufc-red/60 uppercase font-bold">RED CORNER</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FIGHTER 2: GOLD -->
+            <div id="fighter-2" onclick="selectFighter(2, 12, 3)" 
+                 class="fighter-card-wrapper octagon-border p-[3px] bg-gradient-to-b from-zinc-800/40 to-zinc-800/60 cursor-pointer border border-transparent">
+                <div class="octagon-border bg-gradient-to-b from-[#09090d] to-[#040406] flex flex-col h-full p-4 relative overflow-hidden">
+                    
+                    <div class="aspect-square w-full rounded-lg bg-[#040406] border border-zinc-900 relative overflow-hidden flex items-center justify-center tech-grid">
+                        <div class="absolute inset-0 bg-gradient-to-b from-ufc-gold/10 to-transparent"></div>
+                        <div class="absolute w-28 h-28 rounded-full border border-ufc-gold/10 animate-ping opacity-25"></div>
+                        
+                        <div class="absolute w-3/4 h-3/4 opacity-15 rotating-vector-cw pointer-events-none">
+                            <svg viewBox="0 0 100 100" class="w-full h-full text-ufc-gold">
+                                <circle cx="50" cy="50" r="45" stroke="currentColor" stroke-width="1" fill="none" stroke-dasharray="8 6" />
+                            </svg>
+                        </div>
+                        <div class="absolute w-5/6 h-5/6 opacity-10 rotating-vector-ccw pointer-events-none">
+                            <svg viewBox="0 0 100 100" class="w-full h-full text-ufc-gold">
+                                <circle cx="50" cy="50" r="48" stroke="currentColor" stroke-width="1.5" fill="none" stroke-dasharray="40 5" />
+                            </svg>
+                        </div>
+
+                        <div class="scan-laser bg-gradient-to-r from-transparent via-ufc-gold to-transparent shadow-[0_0_8px_#dfba73]"></div>
+                        
+                        <svg class="w-20 h-20 text-ufc-gold/25 z-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+                            <path d="M18 21a6 6 0 0 0-12 0"/>
+                            <circle cx="12" cy="10" r="4"/>
+                            <path stroke-dasharray="2 2" d="M12 2v2M12 18v2M2 12h2M20 12h2"/>
+                        </svg>
+
+                        <!-- HUD Corners -->
+                        <div class="absolute top-2 left-2 w-3 h-3 border-t-2 border-l-2 border-ufc-gold/30"></div>
+                        <div class="absolute top-2 right-2 w-3 h-3 border-t-2 border-r-2 border-ufc-gold/30"></div>
+                        <div class="absolute bottom-2 left-2 w-3 h-3 border-b-2 border-l-2 border-ufc-gold/30"></div>
+                        <div class="absolute bottom-2 right-2 w-3 h-3 border-b-2 border-r-2 border-ufc-gold/30"></div>
+                        
+                        <span class="absolute bottom-3 font-impact text-[9px] tracking-widest text-ufc-gold/60 uppercase font-bold">CONTENDER</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FIGHTER 3: BLUE -->
+            <div id="fighter-3" onclick="selectFighter(3, 15, 2)" 
+                 class="fighter-card-wrapper octagon-border p-[3px] bg-gradient-to-b from-zinc-800/40 to-zinc-800/60 cursor-pointer border border-transparent">
+                <div class="octagon-border bg-gradient-to-b from-[#09090d] to-[#040406] flex flex-col h-full p-4 relative overflow-hidden">
+                    
+                    <div class="aspect-square w-full rounded-lg bg-[#040406] border border-zinc-900 relative overflow-hidden flex items-center justify-center tech-grid">
+                        <div class="absolute inset-0 bg-gradient-to-b from-ufc-blue/10 to-transparent"></div>
+                        <div class="absolute w-28 h-28 rounded-full border border-ufc-blue/10 animate-ping opacity-25"></div>
+                        
+                        <div class="absolute w-3/4 h-3/4 opacity-15 rotating-vector-cw pointer-events-none">
+                            <svg viewBox="0 0 100 100" class="w-full h-full text-ufc-blue">
+                                <circle cx="50" cy="50" r="45" stroke="currentColor" stroke-width="1" fill="none" stroke-dasharray="8 6" />
+                            </svg>
+                        </div>
+                        <div class="absolute w-5/6 h-5/6 opacity-10 rotating-vector-ccw pointer-events-none">
+                            <svg viewBox="0 0 100 100" class="w-full h-full text-ufc-blue">
+                                <circle cx="50" cy="50" r="48" stroke="currentColor" stroke-width="1.5" fill="none" stroke-dasharray="40 5" />
+                            </svg>
+                        </div>
+
+                        <div class="scan-laser bg-gradient-to-r from-transparent via-ufc-blue to-transparent shadow-[0_0_8px_#0095ff]"></div>
+                        
+                        <svg class="w-20 h-20 text-ufc-blue/25 z-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+                            <path d="M18 21a6 6 0 0 0-12 0"/>
+                            <circle cx="12" cy="10" r="4"/>
+                            <path stroke-dasharray="2 2" d="M12 2v2M12 18v2M2 12h2M20 12h2"/>
+                        </svg>
+
+                        <!-- HUD Corners -->
+                        <div class="absolute top-2 left-2 w-3 h-3 border-t-2 border-l-2 border-ufc-blue/30"></div>
+                        <div class="absolute top-2 right-2 w-3 h-3 border-t-2 border-r-2 border-ufc-blue/30"></div>
+                        <div class="absolute bottom-2 left-2 w-3 h-3 border-b-2 border-l-2 border-ufc-blue/30"></div>
+                        <div class="absolute bottom-2 right-2 w-3 h-3 border-b-2 border-r-2 border-ufc-blue/30"></div>
+                        
+                        <span class="absolute bottom-3 font-impact text-[9px] tracking-widest text-ufc-blue/60 uppercase font-bold">CONTENDER</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FIGHTER 4: PURPLE -->
+            <div id="fighter-4" onclick="selectFighter(4, 20, 1)" 
+                 class="fighter-card-wrapper octagon-border p-[3px] bg-gradient-to-b from-zinc-800/40 to-zinc-800/60 cursor-pointer border border-transparent">
+                <div class="octagon-border bg-gradient-to-b from-[#09090d] to-[#040406] flex flex-col h-full p-4 relative overflow-hidden">
+                    
+                    <div class="aspect-square w-full rounded-lg bg-[#040406] border border-zinc-900 relative overflow-hidden flex items-center justify-center tech-grid">
+                        <div class="absolute inset-0 bg-gradient-to-b from-ufc-purple/10 to-transparent"></div>
+                        <div class="absolute w-28 h-28 rounded-full border border-ufc-purple/10 animate-ping opacity-25"></div>
+                        
+                        <div class="absolute w-3/4 h-3/4 opacity-15 rotating-vector-cw pointer-events-none">
+                            <svg viewBox="0 0 100 100" class="w-full h-full text-ufc-purple">
+                                <circle cx="50" cy="50" r="45" stroke="currentColor" stroke-width="1" fill="none" stroke-dasharray="8 6" />
+                            </svg>
+                        </div>
+                        <div class="absolute w-5/6 h-5/6 opacity-10 rotating-vector-ccw pointer-events-none">
+                            <svg viewBox="0 0 100 100" class="w-full h-full text-ufc-purple">
+                                <circle cx="50" cy="50" r="48" stroke="currentColor" stroke-width="1.5" fill="none" stroke-dasharray="40 5" />
+                            </svg>
+                        </div>
+
+                        <div class="scan-laser bg-gradient-to-r from-transparent via-ufc-purple to-transparent shadow-[0_0_8px_#b832fc]"></div>
+                        
+                        <svg class="w-20 h-20 text-ufc-purple/25 z-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+                            <path d="M18 21a6 6 0 0 0-12 0"/>
+                            <circle cx="12" cy="10" r="4"/>
+                            <path stroke-dasharray="2 2" d="M12 2v2M12 18v2M2 12h2M20 12h2"/>
+                        </svg>
+
+                        <!-- HUD Corners -->
+                        <div class="absolute top-2 left-2 w-3 h-3 border-t-2 border-l-2 border-ufc-purple/30"></div>
+                        <div class="absolute top-2 right-2 w-3 h-3 border-t-2 border-r-2 border-ufc-purple/30"></div>
+                        <div class="absolute bottom-2 left-2 w-3 h-3 border-b-2 border-l-2 border-ufc-purple/30"></div>
+                        <div class="absolute bottom-2 right-2 w-3 h-3 border-b-2 border-r-2 border-ufc-purple/30"></div>
+                        
+                        <span class="absolute bottom-3 font-impact text-[9px] tracking-widest text-ufc-purple/60 uppercase font-bold">BLUE CORNER</span>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Stats/Volatilities Terminals -->
+        <section class="max-w-4xl mx-auto w-full grid grid-cols-1 md:grid-cols-[1fr_80px_1fr] items-center gap-3 mb-8 px-4">
+            
+            <!-- Left Panel: Free Spins Display -->
+            <div class="bg-gradient-to-r from-[#170c0e] to-[#0a0a0d] border border-zinc-800/60 h-24 rounded-l-xl md:split-panel-left flex flex-col justify-center pl-8 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-1.5 h-full bg-ufc-red shadow-[0_0_10px_#ff1e39]"></div>
+                <span class="text-ufc-red font-impact text-[11px] tracking-[0.25em] uppercase font-bold mb-1">Free Spins Allocated</span>
+                
+                <div class="flex items-center gap-6">
+                    <div id="spin-8" class="flex flex-col items-center transition-all duration-300 opacity-100 scale-110">
+                        <span class="font-impact text-3xl font-black text-white italic leading-none">8</span>
+                        <span class="text-[9px] text-zinc-500 uppercase font-bold tracking-wider">Spins</span>
+                    </div>
+                    <div id="spin-12" class="flex flex-col items-center transition-all duration-300 opacity-35">
+                        <span class="font-impact text-3xl font-black text-white italic leading-none">12</span>
+                        <span class="text-[9px] text-zinc-500 uppercase font-bold tracking-wider">Spins</span>
+                    </div>
+                    <div id="spin-15" class="flex flex-col items-center transition-all duration-300 opacity-35">
+                        <span class="font-impact text-3xl font-black text-white italic leading-none">15</span>
+                        <span class="text-[9px] text-zinc-500 uppercase font-bold tracking-wider">Spins</span>
+                    </div>
+                    <div id="spin-20" class="flex flex-col items-center transition-all duration-300 opacity-35">
+                        <span class="font-impact text-3xl font-black text-white italic leading-none">20</span>
+                        <span class="text-[9px] text-zinc-500 uppercase font-bold tracking-wider">Spins</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Central Split Medallion -->
+            <div class="flex justify-center z-10 my-4 md:my-0">
+                <div class="w-16 h-16 bg-black border-2 border-zinc-800 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(0,0,0,0.8)]">
+                    <div class="w-13 h-13 rounded-full border border-ufc-gold/30 bg-zinc-950 flex items-center justify-center">
+                        <span class="font-impact font-black text-lg italic text-ufc-gold animate-pulse">RFC</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Fighter Multiplier -->
+            <div class="bg-gradient-to-l from-[#0c121c] to-[#0a0a0d] border border-zinc-800/60 h-24 rounded-r-xl md:split-panel-right flex flex-col justify-center items-end pr-8 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-1.5 h-full bg-ufc-blue shadow-[0_0_10px_#0095ff]"></div>
+                <span class="text-ufc-blue font-impact text-[11px] tracking-[0.25em] uppercase font-bold mb-1">Guaranteed Multiplier</span>
+                
+                <div class="flex items-center gap-6">
+                    <div id="mult-4" class="flex flex-col items-center transition-all duration-300 opacity-100 scale-110">
+                        <span class="font-impact text-3xl font-black text-white italic leading-none">x4</span>
+                        <span class="text-[9px] text-zinc-500 uppercase font-bold tracking-wider">Multiplier</span>
+                    </div>
+                    <div id="mult-3" class="flex flex-col items-center transition-all duration-300 opacity-35">
+                        <span class="font-impact text-3xl font-black text-white italic leading-none">x3</span>
+                        <span class="text-[9px] text-zinc-500 uppercase font-bold tracking-wider">Multiplier</span>
+                    </div>
+                    <div id="mult-2" class="flex flex-col items-center transition-all duration-300 opacity-35">
+                        <span class="font-impact text-3xl font-black text-white italic leading-none">x2</span>
+                        <span class="text-[9px] text-zinc-500 uppercase font-bold tracking-wider">Multiplier</span>
+                    </div>
+                    <div id="mult-1" class="flex flex-col items-center transition-all duration-300 opacity-35">
+                        <span class="font-impact text-3xl font-black text-white italic leading-none">x1</span>
+                        <span class="text-[9px] text-zinc-500 uppercase font-bold tracking-wider">Multiplier</span>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Bottom Controls Footer Bar -->
+        <footer class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center max-w-5xl mx-auto w-full pb-6">
+            
+            <!-- Balance Panel -->
+            <div class="carbon-pattern border border-zinc-800/80 px-6 py-4 rounded-xl flex flex-col justify-center h-20 shadow-lg">
+                <span class="text-[10px] font-impact text-zinc-500 tracking-wider uppercase">AVAILABLE STAKE</span>
+                <span class="font-impact text-3xl font-black text-white tracking-wide italic">$1,000.00</span>
+            </div>
+
+            <!-- Start Bonus Button (Belt Medallion Vibe) -->
+            <button onclick="startGame()" onmouseenter="playSynthHover()" class="shimmer bg-zinc-900 border-2 border-ufc-gold/40 hover:border-ufc-gold rounded-xl p-1.5 shadow-[0_15px_35px_rgba(0,0,0,0.6)] transition-all h-20 flex">
+                <div class="bg-gradient-to-b from-[#1b1c22] to-black hover:from-ufc-gold hover:to-amber-500 w-full rounded-lg flex items-center justify-center gap-2 group transition-all duration-300">
+                    <span class="font-impact text-3xl font-black italic tracking-wider text-ufc-gold group-hover:text-black">START BONUS</span>
+                </div>
+            </button>
+
+            <!-- Total Win Panel -->
+            <div class="carbon-pattern border border-zinc-800/80 px-6 py-4 rounded-xl flex flex-col justify-center items-end h-20 shadow-lg">
+                <span class="text-[10px] font-impact text-zinc-500 tracking-wider uppercase">SESSION WINNINGS</span>
+                <span class="font-impact text-3xl font-black text-ufc-gold tracking-wide italic">$0.00</span>
+            </div>
+
+        </footer>
+
+    </main>
+
+    <!-- Interactive Match loading Cinematic screen overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-black/98 z-50 flex flex-col items-center justify-center p-6 opacity-0 pointer-events-none transition-all duration-500">
+        <div class="cage-mesh"></div>
+        <div class="absolute w-[600px] h-[600px] bg-ufc-gold/5 blur-[120px] rounded-full pointer-events-none animate-pulse"></div>
+
+        <div class="max-w-xl text-center relative z-10 flex flex-col items-center">
+            
+            <div id="cornerBadge" class="text-white text-xs font-impact font-bold tracking-wider px-8 py-2.5 uppercase octagon-badge italic mb-8 shadow-lg">
+                <!-- Dynamically populated -->
+            </div>
+
+            <span class="text-zinc-500 font-impact text-xs tracking-widest uppercase">MATCHPLAY STAGING UNIT</span>
+            <h2 id="selectedFeatureTitle" class="font-impact text-6xl md:text-8xl font-black tracking-tight text-white uppercase italic leading-none mb-4">
+                CHAMPION REVEALED
+            </h2>
+            
+            <div class="h-[2px] w-32 bg-gradient-to-r from-transparent via-ufc-gold to-transparent my-6"></div>
+
+            <div class="grid grid-cols-2 gap-12 w-full max-w-sm mb-12 font-impact text-center">
+                <div>
+                    <span class="block text-zinc-500 text-xs tracking-widest uppercase">FREE SPINS</span>
+                    <span id="multiplierValue" class="text-4xl font-black italic text-white"><!-- Spins --></span>
+                </div>
+                <div>
+                    <span class="block text-zinc-500 text-xs tracking-widest uppercase">MULTIPLIER CAP</span>
+                    <span id="priceValue" class="text-4xl font-black italic text-ufc-gold"><!-- Mult --></span>
+                </div>
+            </div>
+
+            <!-- Bout Status Indicator -->
+            <div class="flex items-center gap-3 mb-10">
+                <div class="w-2.5 h-2.5 rounded-full bg-[#ff1e39] animate-ping"></div>
+                <p class="text-zinc-400 font-sans text-xs uppercase tracking-[0.3em] font-bold">
+                    ENTERING THE CAGE... PREPARE TO SPIN
+                </p>
+            </div>
+
+            <button onclick="dismissSelection()" class="px-10 py-4 bg-zinc-950 border border-zinc-800 hover:border-ufc-red hover:text-ufc-red font-impact font-bold uppercase italic tracking-widest text-xs rounded-lg transition-all duration-300 shadow-md">
+                ABANDON BOUT
+            </button>
+        </div>
+    </div>
+
+    <!-- Web Audio API Sound Generator & Interactive Selection Scripts -->
+    <script>
+        // --- Web Audio API Synth Engine ---
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        // Futuristic soft synth beep for hovers
+        function playSynthHover() {
+            try {
+                initAudio();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(880, audioCtx.currentTime); // high tone
+                osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.15);
+                
+                gain.gain.setValueAtTime(0.02, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.15);
+            } catch(e) {}
+        }
+
+        // Heavy sci-fi mechanical chime for card clicks
+        function playSynthSelect() {
+            try {
+                initAudio();
+                const osc1 = audioCtx.createOscillator();
+                const osc2 = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                osc1.type = 'sawtooth';
+                osc1.frequency.setValueAtTime(330, audioCtx.currentTime); // low metallic tone
+                osc1.frequency.exponentialRampToValueAtTime(110, audioCtx.currentTime + 0.3);
+                
+                osc2.type = 'sine';
+                osc2.frequency.setValueAtTime(440, audioCtx.currentTime);
+                osc2.frequency.exponentialRampToValueAtTime(1760, audioCtx.currentTime + 0.15);
+                
+                gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+                
+                osc1.connect(gain);
+                osc2.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc1.start();
+                osc2.start();
+                osc1.stop(audioCtx.currentTime + 0.4);
+                osc2.stop(audioCtx.currentTime + 0.4);
+            } catch(e) {}
+        }
+
+        // Dramatic power-up riser for Match Start
+        function playSynthStart() {
+            try {
+                initAudio();
+                const osc = audioCtx.createOscillator();
+                const subOsc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(80, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 1.2);
+                
+                subOsc.type = 'triangle';
+                subOsc.frequency.setValueAtTime(60, audioCtx.currentTime);
+                subOsc.frequency.linearRampToValueAtTime(150, audioCtx.currentTime + 1.2);
+                
+                gain.gain.setValueAtTime(0.01, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.12, audioCtx.currentTime + 0.8);
+                gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 1.2);
+                
+                osc.connect(gain);
+                subOsc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.start();
+                subOsc.start();
+                osc.stop(audioCtx.currentTime + 1.2);
+                subOsc.stop(audioCtx.currentTime + 1.2);
+            } catch(e) {}
+        }
+
+        // --- Spark Particle Simulation ---
+        const canvas = document.getElementById('sparks-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height + Math.random() * 100;
+                this.size = Math.random() * 2 + 0.8;
+                this.speedY = -(Math.random() * 1.5 + 0.5);
+                this.speedX = (Math.random() - 0.5) * 0.6;
+                this.opacity = Math.random() * 0.5 + 0.3;
+                
+                // Randomly color match the red, blue, gold ambient lights
+                const colorRand = Math.random();
+                if (colorRand < 0.4) {
+                    this.color = `rgba(255, 30, 57, ${this.opacity})`; // Red
+                } else if (colorRand < 0.7) {
+                    this.color = `rgba(0, 149, 255, ${this.opacity})`; // Blue
+                } else {
+                    this.color = `rgba(223, 186, 115, ${this.opacity})`; // Gold
+                }
+            }
+
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX;
+                if (this.opacity > 0.01) this.opacity -= 0.0015;
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.opacity;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = this.color;
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        function initParticles() {
+            for (let i = 0; i < 40; i++) {
+                particles.push(new Particle());
+            }
+        }
+        initParticles();
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Periodically spawn new sparks
+            if (particles.length < 50 && Math.random() < 0.1) {
+                particles.push(new Particle());
+            }
+
+            for (let i = particles.length - 1; i >= 0; i--) {
+                particles[i].update();
+                particles[i].draw();
+                if (particles[i].y < 0 || particles[i].opacity <= 0.01) {
+                    particles.splice(i, 1);
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+
+        // --- Mouse Move 3D Tilt Interaction for Cards ---
+        const cards = document.querySelectorAll('.fighter-card-wrapper');
+
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                playSynthHover();
+            });
+
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left; // x position inside element
+                const y = e.clientY - rect.top;  // y position inside element
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                // Maximum tilt of 10 degrees
+                const rotateX = ((centerY - y) / centerY) * 10;
+                const rotateY = ((x - centerX) / centerX) * 10;
+                
+                card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px) scale(1.02)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'rotateX(0deg) rotateY(0deg) translateY(0) scale(1)';
+            });
+        });
+
+
+        // --- Game Choice Logic ---
+        let currentFighterId = 1;
+        let currentSpins = 8;
+        let currentMultiplier = 4;
+
+        const fighterColors = {
+            1: 'active-red',
+            2: 'active-gold',
+            3: 'active-blue',
+            4: 'active-purple'
+        };
+
+        const fighterMeta = {
+            1: { corner: 'Red Corner (Champ)', name: 'Contender Red', spins: 8, mult: 'x4' },
+            2: { corner: 'Contender Gold', name: 'Gold Warrior', spins: 12, mult: 'x3' },
+            3: { corner: 'Contender Blue', name: 'Blue Lightning', spins: 15, mult: 'x2' },
+            4: { corner: 'Blue Corner (Champ)', name: 'Shadow Purple', spins: 20, mult: 'x1' }
+        };
+
+        function selectFighter(id, spins, multiplier) {
+            currentFighterId = id;
+            currentSpins = spins;
+            currentMultiplier = multiplier;
+
+            // Trigger mechanical locking sound
+            playSynthSelect();
+
+            // Clear visual card states
+            for (let i = 1; i <= 4; i++) {
+                const card = document.getElementById(`fighter-${i}`);
+                card.classList.remove('active-red', 'active-gold', 'active-blue', 'active-purple');
+            }
+
+            // Assign active state
+            const card = document.getElementById(`fighter-${id}`);
+            card.classList.add(fighterColors[id]);
+
+            // Update associated spin indicators
+            const spinsList = [8, 12, 15, 20];
+            const multiplierList = [4, 3, 2, 1];
+
+            spinsList.forEach(s => {
+                const el = document.getElementById(`spin-${s}`);
+                if (s === spins) {
+                    el.classList.remove('opacity-35');
+                    el.classList.add('opacity-100', 'scale-110');
+                } else {
+                    el.classList.remove('opacity-100', 'scale-110');
+                    el.classList.add('opacity-35');
+                }
+            });
+
+            multiplierList.forEach(m => {
+                const el = document.getElementById(`mult-${m}`);
+                if (m === multiplier) {
+                    el.classList.remove('opacity-35');
+                    el.classList.add('opacity-100', 'scale-110');
+                } else {
+                    el.classList.remove('opacity-100', 'scale-110');
+                    el.classList.add('opacity-35');
+                }
+            });
+        }
+
+        function startGame() {
+            playSynthStart();
+
+            const overlay = document.getElementById('loadingOverlay');
+            const cornerBadge = document.getElementById('cornerBadge');
+            const selectedFeatureTitle = document.getElementById('selectedFeatureTitle');
+            const multField = document.getElementById('multiplierValue');
+            const priceField = document.getElementById('priceValue');
+
+            const activeMeta = fighterMeta[currentFighterId];
+
+            // Match setup styles matching corner selection
+            if (currentFighterId === 1) {
+                cornerBadge.className = "bg-ufc-red text-white text-xs font-impact font-bold tracking-wider px-8 py-2.5 uppercase octagon-badge italic mb-8 shadow-[0_0_20px_#ff1e39]";
+            } else if (currentFighterId === 2) {
+                cornerBadge.className = "bg-ufc-gold text-black text-xs font-impact font-bold tracking-wider px-8 py-2.5 uppercase octagon-badge italic mb-8 shadow-[0_0_20px_#dfba73]";
+            } else if (currentFighterId === 3) {
+                cornerBadge.className = "bg-ufc-blue text-white text-xs font-impact font-bold tracking-wider px-8 py-2.5 uppercase octagon-badge italic mb-8 shadow-[0_0_20px_#0095ff]";
+            } else {
+                cornerBadge.className = "bg-ufc-purple text-white text-xs font-impact font-bold tracking-wider px-8 py-2.5 uppercase octagon-badge italic mb-8 shadow-[0_0_20px_#b832fc]";
+            }
+
+            cornerBadge.innerText = activeMeta.corner;
+            selectedFeatureTitle.innerText = activeMeta.name;
+            multField.innerText = `${activeMeta.spins} ROUNDS`;
+            priceField.innerText = `${activeMeta.mult} BASE`;
+
+            overlay.classList.remove('opacity-0', 'pointer-events-none');
+            overlay.classList.add('opacity-100');
+        }
+
+        function dismissSelection() {
+            playSynthSelect();
+            const overlay = document.getElementById('loadingOverlay');
+            overlay.classList.remove('opacity-100');
+            overlay.classList.add('opacity-0', 'pointer-events-none');
+        }
+    </script>
+
+</body>
+</html>
