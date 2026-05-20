@@ -63,7 +63,7 @@
     position: relative;
     flex-shrink: 0;
     width: 1920px; height: 1080px;
-    background: url('art/rfc_bg.png') center 15% / cover no-repeat;
+    background: transparent;
     transform-origin: center center;
     overflow: hidden;
   }
@@ -6113,15 +6113,38 @@
   window.__rfcApplyStageScale = applyStageScale;
 
   function fitStage() {
-    const sx = window.innerWidth / STAGE_W;
-    const sy = window.innerHeight / STAGE_H;
-    const s = Math.min(sx, sy);
+    // Account for inline controls height so stage fits in the available space
+    const bar = document.getElementById('inlineControls');
+    const barH = bar ? bar.getBoundingClientRect().height : 0;
+    const availW = window.innerWidth;
+    const availH = window.innerHeight - barH;
+    const sx = availW / STAGE_W;
+    const sy = availH / STAGE_H;
+    const viewportRatio = availW / availH;
+    const stageRatio = STAGE_W / STAGE_H; // 1920/1080 = 1.777...
+    // COVER MODE: fill the available space (no black bars)
+    // When viewport is wider than 16:9, scale by width (crop top/bottom)
+    // When viewport is taller than 16:9, scale by height (crop left/right)
+    // But never crop more than 15% of the stage to keep reels visible
+    let s;
+    if (viewportRatio >= stageRatio) {
+      // Viewport is wider (or same) — scale by width to fill horizontally
+      s = sx;
+    } else {
+      // Viewport is taller — scale by height to fill vertically
+      s = sy;
+    }
+    // Safety clamp: never scale more than 15% beyond the "contain" scale
+    // This prevents excessive cropping on extreme aspect ratios
+    const containScale = Math.min(sx, sy);
+    const maxScale = containScale * 1.15;
+    s = Math.min(s, maxScale);
     applyStageScale(s);
   }
   window.addEventListener('resize', fitStage);
 
   // Ensure wrapper fills viewport and stage is always visible
-  function ensureViewportFit() {
+  window.ensureViewportFit = function ensureViewportFit() {
     const wrapper = document.getElementById('wrapper');
     const stage = document.getElementById('stage');
     if (!wrapper || !stage) return;
