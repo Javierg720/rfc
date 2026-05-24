@@ -12,9 +12,17 @@
 <title>RFC — Ruthless Fighting Championship</title>
 <meta property="og:title" content="RFC — Ruthless Fighting Championship">
 <meta property="og:description" content="High-volatility, fighting-themed 243-ways slot game. Enter the cage and fight for massive wins!">
-<meta property="og:image" content="./thumbnail.jpg">
+<meta property="og:image" content="./assets/images/thumbnail-BCDW3BS3.jpg">
 <meta property="og:type" content="website">
 <link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="preload" href="./assets/images/champ-BiOkFbwx.webp" as="image">
+<link rel="preload" href="./assets/images/rage-DhUJwnWo.webp" as="image">
+<link rel="preload" href="./assets/images/chief-DsDlmqig.webp" as="image">
+<link rel="preload" href="./assets/images/mcwhiskey-Dcr9pN-r.webp" as="image">
+<link rel="stylesheet" href="./dev-layout-tweaks.css">
 <style>
   :root {
     --orange:   #cc1a2e;
@@ -32,9 +40,9 @@
 
     --cell:     180px;
     --gap:      0px;
-    --ui-reel-frame: url("assets/ui/reel-frame.webp");
-    --ui-bottom-hud: url("assets/ui/bottom-hud-shell.webp");
-    --ui-spin-medallion: url("assets/ui/spin-medallion.webp");
+    --ui-reel-frame: url("./assets/images/reel-frame-BtPHoJk2.webp");
+    --ui-bottom-hud: url("./assets/images/bottom-hud-shell-DZVuexWl.webp");
+    --ui-spin-medallion: url("./assets/images/spin-medallion-BY-10DFn.webp");
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -44,16 +52,15 @@
     margin: 0; padding: 0;
     overflow: hidden;
     background: #000;
-    font-family: 'Rajdhani', 'Oswald', 'Trebuchet MS', 'Segoe UI', sans-serif;
+    font-family: var(--ui-font);
     user-select: none;
     color: #fff;
   }
 
   .wrapper {
-    width: 100%; height: 100vh;
+    width: 100vw; height: 100vh;
     display: flex;
-    align-items: flex-start;
-    padding-top: 12px;
+    align-items: center;
     justify-content: center;
     background: #000;
     overflow: hidden;
@@ -66,6 +73,7 @@
     background: transparent;
     transform-origin: center center;
     overflow: hidden;
+    z-index: 1;
   }
 
   .startup-intro {
@@ -110,7 +118,7 @@
     right: 32px;
     bottom: 28px;
     color: rgba(255,255,255,0.72);
-    font: 700 13px/1 Rajdhani, sans-serif;
+    font: 700 13px/1 var(--ui-font);
     letter-spacing: 3px;
     text-shadow: 0 2px 8px rgba(0,0,0,0.8);
   }
@@ -119,7 +127,7 @@
     position: absolute; inset: 0;
     width: 100%; height: 100%;
     object-fit: cover;
-    object-position: center 15%;
+    object-position: center 30%;
     pointer-events: none;
   }
   .bg { opacity: 1; filter: brightness(0.45) saturate(1.05); transition: opacity 0.6s, filter 0.6s; }
@@ -131,6 +139,35 @@
     transition: opacity 0.5s;
   }
   .stage.bonus .overlay { opacity: 0.6; animation: bonusPulse 3s ease-in-out infinite; }
+
+  /* Viewport background - fills screen behind stage on mobile */
+  .viewport-bg {
+    display: none;
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    object-position: center 30%;
+    pointer-events: none;
+    z-index: 0;
+    filter: brightness(0.45) saturate(1.05);
+  }
+  @media (max-width: 480px) {
+    .viewport-bg { display: none !important; }
+    .stage .bg {
+      display: block !important;
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      object-position: center 30%;
+      z-index: -1;
+    }
+    /* Allow bg to extend beyond stage bounds */
+    .stage { overflow: visible !important; background: transparent !important; }
+  }
   @keyframes bonusPulse {
     0%, 100% { opacity: 0.5; }
     50% { opacity: 0.75; }
@@ -400,7 +437,7 @@
     font-weight: 700;
   }
   .mult-value {
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--ui-font);
     font-size: 48px;
     font-weight: 700;
     color: #fff;
@@ -429,9 +466,9 @@
     transform: scale(1);
   }
   .vs-battle-kicker {
-    font-family: 'Rajdhani', 'Oswald', 'Arial Black', 'Helvetica Neue', sans-serif;
-    font-size: 22px; letter-spacing: 10px; color: var(--orange);
-    font-weight: 700; margin-bottom: 30px;
+    font-family: var(--display-font);
+    font-size: 28px; letter-spacing: 10px; color: var(--orange);
+     margin-bottom: 30px;
     text-shadow: 0 0 30px rgba(204,26,46,0.7);
   }
   .vs-battle-fighters {
@@ -461,14 +498,21 @@
     border-radius: 12px;
     overflow: hidden;
     position: relative;
-  }
-  .vs-fighter-portrait img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    object-position: top center;
+    background: linear-gradient(180deg, #1a1a2e, #0f0f1a);
+    background-size: cover;
+    background-position: top center;
     transition: all 0.5s ease;
   }
-  .vs-fighter-card:hover .vs-fighter-portrait img {
+  .vs-fighter-portrait video.vs-fighter-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    z-index: 1;
+  }
+  .vs-fighter-card:hover .vs-fighter-portrait {
     transform: scale(1.08);
   }
   .vs-fighter-card.vs-picked {
@@ -486,7 +530,7 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.5);
   }
   .vs-fighter-name {
-    font-family: 'Rajdhani', 'Oswald', 'Arial Black', 'Helvetica Neue', sans-serif; font-size: 22px;
+    font-family: var(--display-font); font-size: 30px;
     letter-spacing: 6px; color: #fff; margin-top: 16px;
     text-shadow: 0 2px 12px rgba(0,0,0,0.8);
   }
@@ -505,8 +549,8 @@
     100% { transform: scale(1.4); color: #ffcc22; text-shadow: 0 0 40px rgba(255,204,34,0.7); }
   }
   .vs-vs-text {
-    font-family: 'Rajdhani', 'Oswald', 'Arial Black', 'Helvetica Neue', sans-serif; font-size: 64px;
-    font-weight: 700; color: #fff;
+    font-family: var(--display-font); font-size: 64px;
+     color: #fff;
     text-shadow: 0 0 40px rgba(255,255,255,0.4);
     animation: vsPulse 1.2s ease-in-out infinite alternate;
   }
@@ -515,9 +559,9 @@
     to { transform: scale(1.2); text-shadow: 0 0 60px rgba(255,255,255,0.7); }
   }
   .vs-battle-status {
-    font-family: 'Rajdhani', 'Oswald', 'Arial Black', 'Helvetica Neue', sans-serif;
-    font-size: 24px; letter-spacing: 8px; color: #fff;
-    font-weight: 700; min-height: 40px;
+    font-family: var(--display-font);
+    font-size: 28px; letter-spacing: 8px; color: #fff;
+     min-height: 40px;
     text-shadow: 0 0 20px rgba(255,255,255,0.4);
     transition: all 0.3s ease;
   }
@@ -532,7 +576,7 @@
   .vs-loser {
     transform: scale(0.92);
   }
-  .vs-loser .vs-fighter-portrait img {
+  .vs-loser .vs-fighter-portrait {
     filter: grayscale(0.7) brightness(0.4);
     opacity: 0.5;
   }
@@ -543,10 +587,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Oswald', sans-serif;
-    font-size: 64px;
-    font-weight: 900;
-    font-style: italic;
+    font-family: var(--display-font);
+    font-size: 80px;
     color: #ff1e39;
     text-shadow: 0 0 30px rgba(255,30,57,0.9), 0 0 60px rgba(255,30,57,0.5), 0 4px 12px rgba(0,0,0,0.9);
     letter-spacing: 4px;
@@ -603,7 +645,7 @@
     100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
   }
   .vs-championship-total .vs-champ-label {
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--ui-font);
     font-size: 18px;
     font-weight: 700;
     letter-spacing: 6px;
@@ -612,7 +654,7 @@
     margin-bottom: 12px;
   }
   .vs-championship-total .vs-champ-amount {
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--ui-font);
     font-size: 72px;
     font-weight: 900;
     font-style: italic;
@@ -632,7 +674,7 @@
     text-shadow: 0 0 30px rgba(212,175,55,0.6), 0 4px 12px rgba(0,0,0,0.8);
   }
   .vs-championship-total .vs-champ-click {
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--ui-font);
     font-size: 14px;
     font-weight: 700;
     letter-spacing: 4px;
@@ -661,7 +703,8 @@
   .vs-fighter-attack-on-card.show {
     opacity: 1;
   }
-  .vs-fighter-attack-on-card img {
+  .vs-fighter-attack-on-card img,
+  .vs-fighter-attack-on-card video {
     width: 100%; height: 100%;
     object-fit: cover;
     object-position: top center;
@@ -673,7 +716,7 @@
   }
   .vs-attack-fx-on-card {
     position: absolute; top: 8%; z-index: 11;
-    font-family: 'Oswald', sans-serif; font-size: 32px;
+    font-family: var(--ui-font); font-size: 32px;
     font-weight: 900; color: #ffcc22; letter-spacing: 3px;
     text-shadow: 0 0 20px rgba(255,204,34,0.9), 0 2px 6px rgba(0,0,0,0.9);
     animation: vsAttackFxPop 0.4s ease forwards;
@@ -684,7 +727,7 @@
   }
   .vs-attack-mult-on-card {
     position: absolute; bottom: 8%; z-index: 11;
-    font-family: 'Oswald', sans-serif; font-size: 52px;
+    font-family: var(--ui-font); font-size: 52px;
     font-weight: 900; color: #fff;
     text-shadow: 0 0 30px rgba(255,60,60,1), 0 2px 6px rgba(0,0,0,0.9);
     letter-spacing: 2px;
@@ -768,64 +811,36 @@
     box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.8), 0 0 60px rgba(200, 26, 46, 0.5);
   }
 
-  /* ---- Host Character (right of reels, overlapping cabinet) ---- */
-  .host-character {
+  /* ---- Max Character (bottom-right, legs cut off at page bottom) ---- */
+  .max-character {
     position: absolute;
-    right: 80px;
-    top: 96px;
-    width: 380px;
-    height: 720px;
+    right: 0;
+    bottom: 0;
+    width: 334px;
+    height: 538px;
     z-index: 18;
     pointer-events: none;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
+    overflow: hidden;
   }
-  /* Keep host character from drifting left on narrow/mobile viewports */
-  @media (max-width: 1100px) {
-    .host-character {
-      right: -40px;
-    }
-    .host-platform {
-      right: -310px;
-    }
-  }
-  @media (max-width: 820px) and (orientation: portrait) {
-    .host-character {
-      right: -80px;
-    }
-    .host-platform {
-      right: -350px;
-    }
-  }
-  .host-sprite {
-    width: 100%;
-    height: 100%;
-    background-repeat: no-repeat;
-    background-position: 0 0;
-    image-rendering: auto;
-    transition: opacity 0.25s;
-  }
-
-  /* Floating Platform under character feet */
-  .host-platform {
+  .max-character img {
     position: absolute;
-    right: -190px;
-    top: calc(96px + 720px - 115px);
-    width: 855px;
-    height: 270px;
-    z-index: 17;
-    pointer-events: none;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-  }
-
-  .host-platform svg {
+    bottom: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    object-fit: contain;
-    object-position: center bottom;
+    object-fit: cover;
+    object-position: bottom center;
+  }
+  /* Hide Max on mid-range viewports, show repositioned on mobile */
+  @media (min-width: 481px) and (max-width: 1100px) {
+    .max-character { display: none; }
+  }
+  @media (max-width: 480px) {
+    .max-character {
+      display: block;
+      right: 0; /* Position to the bottom right */
+      bottom: 0; /* Position to the bottom right */
+    }
   }
 
   /* ---- each reel is a viewport ---- */
@@ -1062,14 +1077,14 @@
   }
   .win-display.show { opacity: 1; }
   .win-label {
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--ui-font);
     font-size: 20px;
     letter-spacing: 8px;
     color: var(--orange);
     font-weight: 700;
   }
   .win-amount {
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--ui-font);
     font-size: 100px;
     font-weight: 700;
     color: var(--orange);
@@ -1089,7 +1104,7 @@
     border: 2px solid var(--orange-3);
     border-radius: 8px;
     padding: 14px 36px;
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--ui-font);
     font-size: 18px;
     font-weight: 700;
     letter-spacing: 4px;
@@ -1136,7 +1151,7 @@
     100% { transform: translateX(-50%) scale(1)    rotate(0deg);  opacity: 1; }
   }
   .bigwin-label {
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--ui-font);
     font-size: 64px;
     font-weight: 900;
     letter-spacing: 8px;
@@ -1158,7 +1173,7 @@
     100% { text-shadow: 0 0 70px var(--orange), 0 0 140px rgba(200,26,46,0.7), 0 6px 0 var(--orange-2); }
   }
   .bigwin-amount {
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--ui-font);
     font-size: 88px;
     font-weight: 700;
     color: var(--orange);
@@ -1303,7 +1318,7 @@
   .stage.bonus .fs-counter { display: flex; }
   .stage.bonus .feature-entry-btn { display: none; }
   .fs-label {
-    font-family: 'Rajdhani', 'Oswald', 'Arial Black', 'Helvetica Neue', sans-serif;
+    font-family: var(--display-font);
     font-size: 11px;
     letter-spacing: 2px;
     color: var(--orange);
@@ -1312,7 +1327,7 @@
     line-height: 1.2;
   }
   .fs-count {
-    font-family: 'Rajdhani', 'Oswald', 'Arial Black', 'Helvetica Neue', sans-serif;
+    font-family: var(--display-font);
     font-size: 28px;
     font-weight: 700;
     color: #fff;
@@ -1326,6 +1341,36 @@
     0%   { transform: scale(1); color: #fff; }
     40%  { transform: scale(1.6); color: var(--orange); text-shadow: 0 0 30px var(--orange); }
     100% { transform: scale(1); color: #fff; }
+  }
+  .fs-cancel {
+    position: absolute;
+    top: -18px;
+    right: -10px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(180deg, #ff3a3a, #cc0000);
+    border: 2px solid #fff;
+    color: #fff;
+    font-family: var(--ui-font);
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 81;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    transition: transform 0.15s, box-shadow 0.15s;
+    padding: 0;
+    line-height: 1;
+  }
+  .fs-cancel:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(255, 58, 58, 0.6);
+  }
+  .fs-cancel:active {
+    transform: scale(0.95);
   }
 
   /* ------- BET PANEL ------- */
@@ -1343,6 +1388,11 @@
     border-radius: 0;
     box-shadow: none;
     z-index: 20;
+  }
+  @media (min-width: 1024px) {
+    .bet-panel {
+      display: none; /* Hide bet-panel on desktop to avoid double controls */
+    }
   }
   .balance, .bet-display {
     position: absolute;
@@ -1371,7 +1421,7 @@
   }
   .balance-amount {
     display: block;
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--ui-font);
     font-size: 32px;
     font-weight: 700;
     color: #f4f4f4;
@@ -1380,7 +1430,7 @@
   }
   .bet-amount {
     display: block;
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--ui-font);
     font-size: 30px;
     font-weight: 700;
     color: #fff;
@@ -1440,7 +1490,7 @@
       linear-gradient(180deg, rgba(210,216,224,0.32), rgba(28,31,36,0.9) 48%, rgba(5,6,8,0.96)),
       repeating-linear-gradient(135deg, rgba(255,255,255,0.09) 0 2px, transparent 2px 9px);
     color: #d9dde4;
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--ui-font);
     font-size: 24px;
     font-weight: 900;
     letter-spacing: 3px;
@@ -1518,7 +1568,7 @@
     border-radius: 50%;
     box-shadow: none;
     transition: all 0.15s;
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--ui-font);
     text-shadow: none;
     text-indent: -9999px;
     overflow: hidden;
@@ -1714,7 +1764,7 @@
     50%      { box-shadow: 0 0 35px rgba(255, 0, 60, 0.85), inset 0 12px 15px rgba(255, 255, 255, 0.45); }
   }
   .premium-spin-container .btn-text {
-    font-family: 'Rajdhani', 'Oswald', 'Arial Black', 'Helvetica Neue', sans-serif;
+    font-family: var(--display-font);
     font-size: 18px;
     font-weight: 900;
     color: transparent;
@@ -1731,7 +1781,7 @@
     letter-spacing: 0.25em;
     color: rgba(255, 150, 170, 0.8);
     margin-top: 2px;
-    font-family: 'Rajdhani', 'Oswald', 'Arial Black', 'Helvetica Neue', sans-serif;
+    font-family: var(--display-font);
   }
   .premium-spin-container .btn-stars {
     display: flex;
@@ -1774,7 +1824,7 @@
     overflow: hidden;
   }
   .auto-confirm-inner h2 {
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--ui-font);
     color: var(--orange);
     font-size: 56px;
     letter-spacing: 8px;
@@ -1806,7 +1856,7 @@
     letter-spacing: 4px;
     cursor: pointer;
     box-shadow: 0 4px 20px rgba(200, 26, 46, 0.5);
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--ui-font);
   }
   .auto-confirm-buttons button:hover { transform: translateY(-2px); }
   .auto-confirm-buttons button.cancel {
@@ -1858,7 +1908,7 @@
     to   { transform: scale(1);   opacity: 1; }
   }
   .modal h2 {
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--ui-font);
     color: var(--orange);
     font-size: 56px;
     letter-spacing: 8px;
@@ -1875,7 +1925,7 @@
   }
   .modal .big-number {
     display: block;
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--ui-font);
     font-size: 110px;
     color: var(--orange);
     font-weight: 700;
@@ -1903,7 +1953,7 @@
     font-weight: 700;
   }
   .modal .stat-cell .v {
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--ui-font);
     font-size: 30px;
     font-weight: 700;
     color: #fff;
@@ -1921,7 +1971,7 @@
     cursor: pointer;
     margin-top: 10px;
     box-shadow: 0 4px 20px rgba(200, 26, 46, 0.5);
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--ui-font);
   }
   .modal button:hover { transform: translateY(-2px); }
 
@@ -1941,7 +1991,7 @@
     z-index: 30;
     pointer-events: none;
     box-shadow: 0 0 30px var(--orange);
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--ui-font);
   }
   .toast.show { animation: toastAnim 2.2s ease-out forwards; }
   @keyframes toastAnim {
@@ -1980,7 +2030,7 @@
     border: 1px solid rgba(204,26,46,0.8);
     background: rgba(0,0,0,0.45);
     color: #fff;
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--ui-font);
     font-size: 18px;
     cursor: pointer;
   }
@@ -2163,7 +2213,7 @@
   }
 
   .bi-incoming {
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--ui-font);
     font-size: 42px;
     color: var(--red);
     font-weight: 700;
@@ -2188,7 +2238,7 @@
   }
 
   .bi-title {
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--ui-font);
     font-size: 140px;
     font-weight: 700;
     letter-spacing: 20px;
@@ -2226,7 +2276,7 @@
 
   .bi-num {
     display: inline-block;
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--ui-font);
     font-size: 180px;
     font-weight: 700;
     color: #fff;
@@ -2281,7 +2331,7 @@
     box-shadow: 0 0 40px var(--orange), 0 6px 0 var(--orange-2), 0 10px 30px rgba(0,0,0,0.8);
     opacity: 0;
     transform: translateY(30px);
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--ui-font);
     position: relative;
   }
   .bonus-intro.show .bi-deploy {
@@ -2310,7 +2360,7 @@
     display: none;
     background:
       radial-gradient(ellipse at center, rgba(40,8,12,0.92) 0%, rgba(0,0,0,0.98) 75%),
-      url("art/rfc_bg.png") center/cover no-repeat;
+      url("./assets/images/rfc_bg-CeQ-9Wej.png") center/cover no-repeat;
     overflow: hidden;
   }
   .pick-screen.show { display: block; opacity: 1; animation: pickFadeIn 0.18s ease-out both; }
@@ -2332,7 +2382,7 @@
     text-align: center;
   }
   .pick-title {
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--ui-font);
     font-size: 110px;
     font-weight: 700;
     letter-spacing: 12px;
@@ -2349,7 +2399,7 @@
     line-height: 1;
   }
   .pick-subtitle {
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--ui-font);
     font-size: 36px;
     letter-spacing: 14px;
     color: #fff;
@@ -2358,7 +2408,7 @@
     text-shadow: 0 0 20px rgba(255,255,255,0.4), 0 4px 12px rgba(0,0,0,0.9);
   }
   .pick-instruction {
-    font-family: 'Rajdhani', sans-serif;
+    font-family: var(--ui-font);
     font-size: 22px;
     letter-spacing: 6px;
     color: #ffd966;
@@ -2530,7 +2580,7 @@
   .stat-panel.left  { border-color: #ff3a52; box-shadow: 0 0 30px rgba(255,58,82,0.4); }
   .stat-panel.right { border-color: #44dd66; box-shadow: 0 0 30px rgba(68,221,102,0.4); }
   .stat-panel-title {
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--ui-font);
     font-size: 24px;
     letter-spacing: 8px;
     font-weight: 700;
@@ -2550,7 +2600,7 @@
     transition: transform 0.3s, opacity 0.3s;
   }
   .stat-pill .num {
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--ui-font);
     font-size: 50px;
     font-weight: 700;
     line-height: 1;
@@ -2564,7 +2614,7 @@
     text-shadow: 0 0 18px rgba(68,221,102,0.8), 0 4px 0 #003d12, 0 6px 8px rgba(0,0,0,0.9);
   }
   .stat-pill .lbl {
-    font-family: 'Rajdhani', sans-serif;
+    font-family: var(--ui-font);
     font-size: 11px;
     letter-spacing: 4px;
     color: #aaa;
@@ -2604,7 +2654,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--ui-font);
     font-size: 36px;
     letter-spacing: 2px;
     font-weight: 700;
@@ -2641,7 +2691,7 @@
     font-weight: 700;
   }
   .pick-foot-cell .v {
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--ui-font);
     font-size: 28px;
     color: #ffd966;
     font-weight: 700;
@@ -2649,7 +2699,7 @@
   }
   .pick-foot-cell.win .v { color: #88ff88; }
   .start-bonus-btn {
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--ui-font);
     font-size: 50px;
     letter-spacing: 10px;
     font-weight: 900;
@@ -2784,7 +2834,7 @@
       linear-gradient(180deg, rgba(225,231,239,0.18), rgba(21,23,29,0.92) 42%, rgba(4,5,8,0.98)),
       repeating-linear-gradient(135deg, rgba(255,255,255,0.075) 0 2px, transparent 2px 10px);
     color: #f3f5f8;
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--ui-font);
     font-size: 18px;
     line-height: 0.95;
     font-weight: 900;
@@ -2831,7 +2881,7 @@
     box-shadow: 0 0 0 8px rgba(0,0,0,0.5), 0 0 54px rgba(255,58,82,0.25), inset 0 0 48px rgba(0,0,0,0.7);
   }
   .feature-menu-title {
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--ui-font);
     font-size: 38px;
     letter-spacing: 6px;
     color: #f7d99a;
@@ -2858,7 +2908,7 @@
     color: #fff;
     cursor: pointer;
     text-align: left;
-    font-family: 'Rajdhani', sans-serif;
+    font-family: var(--ui-font);
     background:
       linear-gradient(135deg, rgba(255,58,82,0.28), rgba(5,6,8,0.94) 44%),
       repeating-linear-gradient(135deg, rgba(255,255,255,0.05) 0 2px, transparent 2px 12px);
@@ -2871,7 +2921,7 @@
   }
   .feature-choice strong {
     display: block;
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--ui-font);
     font-size: 28px;
     letter-spacing: 3px;
     text-shadow: 0 3px 0 #000;
@@ -2889,7 +2939,7 @@
     display: block;
     margin-top: 16px;
     color: #ffcf76;
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--ui-font);
     font-style: normal;
     font-size: 22px;
     letter-spacing: 2px;
@@ -2900,7 +2950,7 @@
     border: 1px solid rgba(255,255,255,0.32);
     background: rgba(0,0,0,0.5);
     color: rgba(255,255,255,0.78);
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--ui-font);
     font-size: 15px;
     letter-spacing: 3px;
     cursor: pointer;
@@ -2919,7 +2969,7 @@
     border: 1px solid var(--orange-2);
     color: var(--orange-3);
     border-radius: 6px;
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--ui-font);
     font-size: 18px;
     font-weight: 700;
     letter-spacing: 1px;
@@ -2939,13 +2989,13 @@
     padding: 20px;
     z-index: 60;
     display: none;
-    font-family: 'Rajdhani', sans-serif;
+    font-family: var(--ui-font);
     color: #fff;
     box-shadow: 0 10px 40px rgba(0,0,0,0.8);
   }
   .rtp-panel.show { display: block; }
   .rtp-panel h3 {
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--ui-font);
     font-size: 18px;
     letter-spacing: 4px;
     color: var(--orange-3);
@@ -2977,7 +3027,7 @@
     border: 1px solid var(--orange-2);
     color: #fff;
     padding: 8px 10px;
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--ui-font);
     font-size: 12px;
     letter-spacing: 1.5px;
     cursor: pointer;
@@ -3110,7 +3160,7 @@
     border-radius: 10px;
     background: linear-gradient(180deg, rgba(92,38,16,0.92), rgba(20,5,3,0.94));
     color: #ffe3a0;
-    font-family: 'Oswald', sans-serif;
+    font-family: var(--ui-font);
     font-size: 18px;
     letter-spacing: 3px;
     text-shadow: 0 3px 0 #000, 0 0 14px rgba(255,202,92,0.75);
@@ -3499,8 +3549,9 @@
      arena lighting, stronger state transitions, and physical reward impact.
   ===================================================================== */
   :root {
-    --display-font: Impact, Haettenschweiler, "Arial Black", "Oswald", "Rajdhani", sans-serif;
-    --ui-font: "Trebuchet MS", "Segoe UI", Arial, sans-serif;
+    --display-font: "Black Ops One", Impact, "Arial Black", sans-serif;
+    --ui-font: "Barlow Condensed", "Trebuchet MS", sans-serif;
+    --body-font: "Barlow", "Trebuchet MS", sans-serif;
   }
   .stage {
     font-family: var(--ui-font);
@@ -3931,7 +3982,7 @@
       radial-gradient(circle at 18% 46%, rgba(255,41,56,0.54), transparent 25%),
       radial-gradient(circle at 82% 46%, rgba(58,145,255,0.56), transparent 25%),
       linear-gradient(90deg, rgba(98,0,10,0.82), rgba(4,5,9,0.94) 38%, rgba(4,5,9,0.94) 62%, rgba(0,34,100,0.84)),
-      url("art/rfc_bg.png") center/cover no-repeat !important;
+      url("./assets/images/rfc_bg-CeQ-9Wej.png") center/cover no-repeat !important;
     backdrop-filter: blur(2px) saturate(1.22) contrast(1.08);
     perspective: 1400px;
   }
@@ -4495,7 +4546,7 @@
 
   /* Exact fighter-pick artwork with transparent hit zones and fighter overlays only. */
   .pick-screen {
-    background: url("assets/ui/fighter-picker-exact.png") center/cover no-repeat !important;
+    background: url("./assets/images/fighter-picker-exact-nWBN6V3u.png") center/cover no-repeat !important;
   }
   .pick-screen::before {
     content: '';
@@ -4671,9 +4722,12 @@
   }
 
   .stage.portrait-phone .feature-menu-inner {
-    width: 760px !important;
-    height: 532px !important;
-    min-height: 532px !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: auto !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    background-size: contain !important; /* Ensure background image scales */
   }
   .stage.portrait-phone .feature-choice em {
     font-size: 24px !important;
@@ -4687,22 +4741,28 @@
     background-color: #000 !important;
   }
   .stage.portrait-phone .fighter-card {
-    top: 11.7% !important;
-    width: 7.9% !important;
-    height: 20.1% !important;
+    position: relative !important; /* Allow grid to manage positioning */
+    width: auto !important; /* Allow grid to manage width */
+    height: auto !important; /* Allow grid to manage height */
+    top: auto !important;
+    left: auto !important;
   }
-  .stage.portrait-phone .fighter-card:nth-child(1) { left: 32.7% !important; }
-  .stage.portrait-phone .fighter-card:nth-child(2) { left: 41.4% !important; }
-  .stage.portrait-phone .fighter-card:nth-child(3) { left: 50.2% !important; }
-  .stage.portrait-phone .fighter-card:nth-child(4) { left: 58.9% !important; }
+  .stage.portrait-phone .fighter-card:nth-child(1),
+  .stage.portrait-phone .fighter-card:nth-child(2),
+  .stage.portrait-phone .fighter-card:nth-child(3),
+  .stage.portrait-phone .fighter-card:nth-child(4) {
+    left: auto !important;
+  }
   .stage.portrait-phone .fighter-card.picked {
     transform: translateY(-5px) scale(1.05) !important;
   }
   .stage.portrait-phone .start-bonus-btn {
-    left: 42.7% !important;
-    top: 38.2% !important;
-    width: 16.4% !important;
-    height: 5.8% !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    top: auto !important;
+    bottom: 5% !important;
+    width: 80% !important;
+    height: 10% !important;
   }
 
   /* ---- Championship Multiplier (Redesigned) ---- */
@@ -4816,7 +4876,7 @@
   .champ-clamp-bl { bottom: -12px; left: 30px; transform: skewX(25deg); }
   .champ-clamp-br { bottom: -12px; right: 30px; transform: skewX(-25deg); }
   .champ-kicker {
-    font-family: 'Rajdhani', 'Oswald', 'Arial Black', 'Helvetica Neue', sans-serif;
+    font-family: var(--display-font);
     font-size: 10px;
     font-weight: 700;
     letter-spacing: 0.8em;
@@ -4848,7 +4908,7 @@
   }
   .champ-value {
     margin-top: 8px;
-    font-family: 'Exo 2', Impact, sans-serif;
+    font-family: var(--display-font);
     font-size: 58px;
     font-weight: 900;
     line-height: 1;
@@ -4949,7 +5009,7 @@
 <meta http-equiv="x-ua-compatible" content="IE=edge">
 <meta name="format-detection" content="telephone=no">
 <!-- Content Security Policy for production security -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self'; connect-src 'self' https:; font-src 'self';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob:; media-src 'self'; connect-src 'self' https:; font-src 'self' https://fonts.gstatic.com;">
 </head>
 <body>
 
@@ -4978,13 +5038,31 @@
   <svg viewBox="0 0 24 24"><path d="M3 3h6v2H5v4H3zm12 0h6v6h-2V5h-4zm-9 14H3v-6h2v4h4v2zm12 0v2h-6v-2h4v-4h2z"/></svg>
 </button>
 <main class="wrapper" id="wrapper">
+  <!-- Mobile Header Overlay -->
+  <div class="mobile-header" id="mobileHeader">
+    <div class="mobile-brand-badge">B</div>
+    <div class="mobile-logo-container">
+      <div class="mobile-logo-title">RFC</div>
+      <div class="mobile-logo-subtitle">ENTER THE CAGE</div>
+    </div>
+    <div class="mobile-header-right">
+      <button class="mobile-sound-toggle-btn" id="mobileSoundToggle" aria-label="Toggle sound">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px;">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          <path class="sound-wave-high" d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+        </svg>
+      </button>
+      <div class="mobile-clock" id="mobileClock">--:--</div>
+    </div>
+  </div>
+  <img class="viewport-bg" id="viewportBg" src="./art/rfc_bg.png" alt="" loading="eager" fetchpriority="high">
   <div class="stage" id="stage" style="font-weight: 400" role="region" aria-label="Game board">
     <div class="startup-intro" id="startupIntro" role="dialog" aria-label="Intro animation. Click to skip.">
-      <video id="startupIntroVideo" src="assets/intro_desktop.mp4" muted playsinline preload="auto"></video>
+      <video id="startupIntroVideo" src="./assets/media/intro_desktop-DvqU7Lkg.mp4" muted playsinline preload="auto"></video>
     </div>
-    <img class="bg" id="bgImg" src="art/rfc_bg.png" alt="" loading="eager" fetchpriority="high">
-    <audio id="bonusMusic" src="assets/background_loop.mp3" loop preload="auto"></audio>
-    <audio id="crownStinger" src="assets/King_Crowned.mp3" preload="auto"></audio>
+    <img class="bg" id="bgImg" src="./art/rfc_bg.png" alt="" loading="eager" fetchpriority="high">
+    <audio id="bonusMusic" src="./assets/media/background_loop-CrHTu3B_.mp3" loop preload="auto"></audio>
+    <audio id="crownStinger" src="./assets/media/King_Crowned-CbCPh11F.mp3" preload="auto"></audio>
     <div class="overlay"></div>
     <div class="bg-fires"><span class="fire f1"></span><span class="fire f2"></span><span class="fire f3"></span></div>
     <div class="embers" id="embers"></div>
@@ -5021,10 +5099,9 @@
         <div class="vs-battle-kicker" id="vsBattleKicker">BELT SHOWDOWN</div>
         <div class="vs-battle-fighters">
           <div class="vs-fighter-card" id="vsFighterACard">
-            <div class="vs-fighter-portrait">
-              <img id="vsFighterAImg" src="" alt="" loading="lazy">
+            <div class="vs-fighter-portrait" id="vsFighterAPortrait">
               <div class="vs-fighter-attack-on-card" id="vsAttackA">
-                <img id="vsAttackAImg" src="" alt="" loading="lazy">
+                <video id="vsAttackAVid" src="" muted playsinline loop autoplay style="width:100%;height:100%;object-fit:cover;object-position:top center;animation:vsAttackOnCardPose 0.5s ease-in-out infinite alternate;"></video>
                 <div class="vs-attack-fx-on-card" id="vsAttackAFx">KNOCKOUT!</div>
                 <div class="vs-attack-mult-on-card" id="vsAttackAMult">×5</div>
               </div>
@@ -5034,10 +5111,9 @@
           </div>
           <div class="vs-vs-text">VS</div>
           <div class="vs-fighter-card" id="vsFighterBCard">
-            <div class="vs-fighter-portrait">
-              <img id="vsFighterBImg" src="" alt="" loading="lazy">
+            <div class="vs-fighter-portrait" id="vsFighterBPortrait">
               <div class="vs-fighter-attack-on-card" id="vsAttackB">
-                <img id="vsAttackBImg" src="" alt="" loading="lazy">
+                <video id="vsAttackBVid" src="" muted playsinline loop autoplay style="width:100%;height:100%;object-fit:cover;object-position:top center;animation:vsAttackOnCardPose 0.5s ease-in-out infinite alternate;"></video>
                 <div class="vs-attack-fx-on-card" id="vsAttackBFx">KNOCKOUT!</div>
                 <div class="vs-attack-mult-on-card" id="vsAttackBMult">×5</div>
               </div>
@@ -5077,77 +5153,9 @@
       </div>
     </div>
 
-    <!-- Host Character -->
-    <div class="host-character" id="hostCharacter" aria-hidden="true">
-      <div class="host-sprite" id="hostSprite"></div>
-    </div>
-
-    <!-- Floating Platform under character -->
-    <div class="host-platform" id="hostPlatform">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 400" preserveAspectRatio="xMidYMid meet">
-        <defs>
-          <linearGradient id="metalTop" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#4a0f0f" />
-            <stop offset="50%" stop-color="#141414" />
-            <stop offset="100%" stop-color="#050505" />
-          </linearGradient>
-          <linearGradient id="metalSide" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#6e1414" />
-            <stop offset="100%" stop-color="#020000" />
-          </linearGradient>
-          <linearGradient id="metalRim" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stop-color="#9d2222" />
-            <stop offset="50%" stop-color="#ff5555" />
-            <stop offset="100%" stop-color="#691212" />
-          </linearGradient>
-          <linearGradient id="redGlow" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stop-color="#ff003c" />
-            <stop offset="50%" stop-color="#ff2e56" />
-            <stop offset="100%" stop-color="#b30022" />
-          </linearGradient>
-          <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#ffffff" />
-            <stop offset="30%" stop-color="#ffbb00" />
-            <stop offset="100%" stop-color="#ff2200" />
-          </linearGradient>
-          <filter id="glowRed" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="5" result="blur1" />
-            <feGaussianBlur stdDeviation="12" result="blur2" />
-            <feMerge>
-              <feMergeNode in="blur2" />
-              <feMergeNode in="blur1" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-        </defs>
-
-        <!-- Ambient Halo -->
-        <circle cx="500" cy="150" r="250" fill="#ff001c" opacity="0.08" />
-
-        <!-- Main Platform Base Slab (round) -->
-        <g id="main-slab">
-          <ellipse cx="500" cy="160" rx="290" ry="70" fill="url(#metalTop)" stroke="url(#metalRim)" stroke-width="3.5" />
-          <ellipse cx="500" cy="170" rx="290" ry="70" fill="url(#metalSide)" />
-          <ellipse cx="500" cy="160" rx="275" ry="60" fill="none" stroke="url(#metalRim)" stroke-width="1.5" opacity="0.5" />
-        </g>
-
-        <!-- Platform Surface Details -->
-        <g id="surface-details">
-          <ellipse cx="500" cy="160" rx="200" ry="55" fill="#0d0404" stroke="#4a0f0f" stroke-width="2" />
-          <ellipse cx="500" cy="160" rx="140" ry="40" fill="#0a0101" stroke="#4a0f0f" stroke-width="5" />
-          <ellipse cx="500" cy="160" rx="110" ry="32" fill="none" stroke="#4a0f0f" stroke-width="1.5" stroke-dasharray="150 40 100 70" opacity="0.85" />
-
-          <!-- Core Power Cell removed -->
-        </g>
-
-        <!-- Outrigger Heavy Pylons -->
-        <g transform="translate(252, 155)">
-          <polygon points="-12,5 12,-5 18,-30 -8,-18" fill="#2d0a0a" stroke="#5e1414" stroke-width="1.5" />
-        </g>
-        <g transform="translate(732, 155)">
-          <polygon points="-12,-5 12,5 8,-18 -18,-30" fill="#2d0a0a" stroke="#5e1414" stroke-width="1.5" />
-        </g>
-      </svg>
+    <!-- Max Character (bottom-right, legs cut off at page bottom) -->
+    <div class="max-character" id="maxCharacter" aria-hidden="true">
+      <img class="max-sprite" id="maxSprite" src="./assets/fighter-max/frame_021.png" alt="">
     </div>
 
     <div class="win-display" id="winDisplay">
@@ -5187,6 +5195,7 @@
     </div>
 
     <div class="fs-counter">
+      <button class="fs-cancel" id="fsCancel" title="End Free Fights">×</button>
       <div class="fs-label">FREE FIGHTS LEFT</div>
       <div class="fs-count" id="fsCount">0</div>
     </div>
@@ -5199,7 +5208,7 @@
         position: fixed;
         bottom: 0; left: 0; right: 0;
         z-index: 50;
-        font-family: 'Inter', 'Rajdhani', sans-serif;
+        font-family: var(--ui-font);
         color: #f1f5f9;
         user-select: none;
         overflow: visible;
@@ -5210,7 +5219,7 @@
       }
       #inlineControls > * { pointer-events: auto; }
       #inlineControls .font-heavy {
-        font-family: 'Montserrat', 'Rajdhani', sans-serif;
+        font-family: var(--ui-font);
         font-weight: 900;
       }
       #inlineControls .medallion-wrapper {
@@ -5345,7 +5354,7 @@
         display: flex; align-items: center; justify-content: space-between;
         padding: 8px 24px calc(8px + env(safe-area-inset-bottom, 0px));
         position: relative;
-        max-width: 1100px;
+        max-width: 1210px;
         margin: 0 auto;
       }
       #inlineControls .ic-desktop-bar::before,
@@ -5414,6 +5423,298 @@
         #inlineControls .ic-mobile { display: none; }
         #inlineControls .ic-desktop { display: flex; }
       }
+      /* Mobile controls — viewport pixel sizes (inlineControls is outside scaled stage) */
+      #inlineControls { flex-direction: column; align-items: center; }
+      #inlineControls .ic-mobile {
+        max-width: 100%; width: 100%;
+        padding: 0;
+        gap: 0; border-radius: 0; overflow: visible;
+        display: flex; flex-direction: column;
+        border: none; background: transparent; box-shadow: none;
+      }
+      #inlineControls .mobile-hud-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        padding: 6px 20px;
+        background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.6) 80%, rgba(0,0,0,0) 100%);
+        border-top: 1px solid rgba(255,255,255,0.06);
+        pointer-events: auto;
+        margin-bottom: 6px;
+      }
+      #inlineControls .mobile-hud-box {
+        display: flex;
+        flex-direction: column;
+      }
+      #inlineControls .mobile-hud-box.text-left { align-items: flex-start; }
+      #inlineControls .mobile-hud-box.text-right { align-items: flex-end; }
+      #inlineControls .hud-label {
+        font-size: 10px;
+        color: #8e8e93;
+        text-transform: uppercase;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        line-height: 1;
+      }
+      #inlineControls .hud-value {
+        font-size: 15px;
+        color: #ffffff;
+        font-weight: 900;
+        margin-top: 4px;
+        line-height: 1;
+      }
+      #inlineControls .mobile-buttons-row {
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        width: 100%;
+        padding: 0 12px calc(8px + env(safe-area-inset-bottom, 0px));
+        pointer-events: auto;
+        gap: 8px;
+      }
+      #inlineControls .mobile-circle-btn {
+        width: 44px; height: 44px;
+        border-radius: 50%;
+        background: linear-gradient(to bottom, #242428, #121214);
+        border: 1.5px solid rgba(255,255,255,0.12);
+        color: #e4e4e7;
+        display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+        cursor: pointer;
+        transition: transform 0.1s, background 0.1s;
+        -webkit-tap-highlight-color: transparent;
+        position: relative;
+        padding: 0;
+      }
+      #inlineControls .mobile-circle-btn:active {
+        transform: scale(0.92);
+        background: linear-gradient(to bottom, #18181b, #09090b);
+      }
+      #inlineControls .mobile-circle-btn svg {
+        width: 20px; height: 20px;
+        display: block;
+      }
+      #inlineControls #icSpinBtn {
+        width: 68px !important; height: 68px !important;
+        flex-shrink: 0;
+        border-radius: 50%;
+        cursor: pointer;
+        padding: 0;
+        background: transparent;
+        border: none;
+        box-shadow: 0 6px 14px rgba(0,0,0,0.6);
+        transition: transform 0.1s;
+        -webkit-tap-highlight-color: transparent;
+      }
+      #inlineControls #icSpinBtn:active {
+        transform: scale(0.94);
+      }
+      #inlineControls #icSpinBtn svg {
+        width: 68px !important; height: 68px !important;
+        display: block;
+      }
+      #inlineControls .ic-bonus-float {
+        background: linear-gradient(180deg, #008060 0%, #004d3a 100%);
+        border: 2px solid #e1b353;
+        color: #ffffff;
+        font-family: var(--ui-font), sans-serif;
+        font-weight: 900;
+        font-size: 14px;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        padding: 10px 32px;
+        border-radius: 24px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(0, 128, 96, 0.4), 0 0 10px rgba(225, 179, 83, 0.3);
+        margin-bottom: 12px;
+        pointer-events: auto;
+        transition: transform 0.1s, filter 0.2s;
+        -webkit-tap-highlight-color: transparent;
+      }
+      #inlineControls .ic-bonus-float:active {
+        transform: scale(0.95);
+        filter: brightness(1.1);
+      }
+      #inlineControls #icAutoIndMob {
+        position: absolute;
+        top: 4px; right: 4px;
+        width: 8px; height: 8px;
+        border-radius: 50%;
+        background: #262626;
+        border: 1px solid #111;
+        transition: all 0.2s;
+      }
+      #inlineControls .mobile-circle-btn.active #icAutoIndMob {
+        background: #dc2626;
+        box-shadow: 0 0 8px #ff0000;
+      }
+
+      /* Mobile top header (Clash of Gods style) */
+      .mobile-header {
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        height: 50px;
+        z-index: 60;
+        display: none; /* Only flex on mobile portrait */
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 16px;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 60%, transparent 100%);
+        color: #fff;
+        font-family: var(--ui-font), sans-serif;
+      }
+      .mobile-brand-badge {
+        width: 24px; height: 24px;
+        background: #f3ba2f; /* Yellow */
+        color: #000;
+        font-weight: 900;
+        font-size: 14px;
+        border-radius: 4px;
+        display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+      }
+      .mobile-logo-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      .mobile-logo-title {
+        font-family: 'Bebas Neue', Impact, sans-serif;
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        line-height: 1;
+        background: linear-gradient(to bottom, #fffef0 0%, #dfba73 45%, #9d7734 70%, #fffef0 100%);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));
+      }
+      .mobile-logo-subtitle {
+        font-size: 7px;
+        letter-spacing: 0.15em;
+        color: #a1a1aa;
+        margin-top: 2px;
+        font-weight: 700;
+      }
+      .mobile-header-right {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .mobile-sound-toggle-btn {
+        background: none; border: none; color: #fff;
+        cursor: pointer; display: flex; align-items: center;
+        padding: 4px; -webkit-tap-highlight-color: transparent;
+      }
+      .mobile-sound-toggle-btn.off .sound-wave-high {
+        display: none;
+      }
+      .mobile-clock {
+        font-size: 12px;
+        color: #e4e4e7;
+        font-weight: 700;
+      }
+
+      /* Mobile Bet Selection Modal */
+      .mobile-bet-modal {
+        position: fixed;
+        inset: 0;
+        z-index: 150;
+        display: none;
+        background: rgba(0,0,0,0.85);
+        backdrop-filter: blur(8px);
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-family: var(--ui-font), sans-serif;
+        padding: 16px;
+      }
+      .mobile-bet-modal.show {
+        display: flex;
+      }
+      .mobile-bet-modal-inner {
+        width: 100%;
+        max-width: 320px;
+        background: linear-gradient(to bottom, #18181b, #09090b);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        display: flex;
+        flex-direction: column;
+        max-height: 80vh;
+      }
+      .mobile-bet-modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        padding-bottom: 10px;
+      }
+      .mobile-bet-modal-title {
+        font-family: 'Bebas Neue', Impact, sans-serif;
+        font-size: 24px;
+        letter-spacing: 0.08em;
+        background: linear-gradient(to bottom, #ffffff 0%, #a1a1aa 100%);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        margin: 0;
+      }
+      .mobile-bet-modal-close {
+        background: none; border: none; color: #a1a1aa;
+        font-size: 24px; cursor: pointer; padding: 0 4px;
+        line-height: 1; -webkit-tap-highlight-color: transparent;
+      }
+      .mobile-bet-modal-close:hover { color: #fff; }
+      .mobile-bet-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        overflow-y: auto;
+        padding-right: 4px;
+      }
+      .mobile-bet-grid::-webkit-scrollbar {
+        width: 4px;
+      }
+      .mobile-bet-grid::-webkit-scrollbar-thumb {
+        background: rgba(255,255,255,0.15);
+        border-radius: 2px;
+      }
+      .bet-grid-btn {
+        background: #1e1e21;
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 8px;
+        color: #fff;
+        padding: 10px 4px;
+        font-size: 13px;
+        font-weight: 700;
+        text-align: center;
+        cursor: pointer;
+        transition: border-color 0.2s, background 0.2s;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .bet-grid-btn:active {
+        background: #27272a;
+      }
+      .bet-grid-btn.active {
+        border-color: #dc2626;
+        background: rgba(220,38,38,0.15);
+        box-shadow: 0 0 10px rgba(220,38,38,0.3);
+      }
+
+      /* Landscape and portrait specifics */
+      @media (max-width: 820px) and (orientation: portrait) {
+        .mobile-header {
+          display: flex;
+        }
+        .sound-btn, .info-btn {
+          display: none !important;
+        }
+        .max-character {
+          display: none !important;
+        }
+      }
     </style>
     <div id="inlineControls">
       <svg style="display:block;width:0;height:0;position:absolute;">
@@ -5456,29 +5757,57 @@
         </defs>
       </svg>
       <div class="ic-mobile">
-        <div class="ic-left-bar"></div>
-        <div class="ic-display-box"><span class="ic-label">BALANCE</span><span class="ic-value font-heavy" id="icBalanceMob">949.00</span></div>
-        <button class="console-btn ic-action-btn ic-buy-btn" id="icBuyBonusMob"><span style="font-size:7px;color:#fca5a5;font-weight:800;letter-spacing:0.15em;margin-bottom:2px;">FEATURE</span><span style="font-size:9px;color:#fff;font-weight:900;letter-spacing:0.1em;">BONUS</span></button>
-        <button class="console-btn ic-desk-toggle-btn" id="icAutoMob" style="height:40px;padding:0 10px;font-size:9px;"><span class="ic-indicator" id="icAutoIndMob"></span><span style="margin-top:4px;">AUTO</span></button>
-        <button class="console-btn ic-bet-btn" id="icBetMinus" aria-label="Decrease bet">
-          <svg style="width:16px;height:16px;" viewBox="0 0 24 24" fill="none" stroke="#a3a3a3" stroke-width="3.5" stroke-linecap="round"><path d="M20 12H4"/></svg>
-        </button>
-        <button class="console-btn spin-arrow-btn" id="icSpinBtn" aria-label="Spin" style="width:48px;height:48px;border:none;background:transparent;cursor:pointer;padding:0;overflow:hidden;border-radius:50%;filter:drop-shadow(0 4px 8px rgba(0,0,0,0.5));flex-shrink:0;">
-          <svg style="width:48px;height:48px;display:block;" viewBox="0 0 64 64">
-            <circle cx="32" cy="32" r="33" fill="#991b1b"/>
-            <circle cx="32" cy="32" r="33" fill="url(#glossMob)"/>
-            <circle cx="32" cy="32" r="31" fill="none" stroke="url(#rimMob)" stroke-width="1.5"/>
-            <g transform="translate(16,16) scale(1.33)" fill="none" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/>
-              <path d="M16 8h5V3"/>
-            </g>
-          </svg>
-        </button>
-        <button class="console-btn ic-bet-btn" id="icBetPlus" aria-label="Increase bet">
-          <svg style="width:16px;height:16px;" viewBox="0 0 24 24" fill="none" stroke="#a3a3a3" stroke-width="3.5" stroke-linecap="round"><path d="M12 4v16m8-8H4"/></svg>
-        </button>
-        <div class="ic-display-box"><span class="ic-label">TOTAL BET</span><span class="ic-value font-heavy" id="icBetMob">1.00</span></div>
-      </div>
+        <div class="mobile-hud-row">
+          <div class="mobile-hud-box text-left">
+            <span class="hud-label">Balance</span>
+            <span class="hud-value font-heavy"><span id="icBalanceMob">949.00</span> USD</span>
+          </div>
+          <div class="mobile-hud-box text-right">
+            <span class="hud-label">Total bet</span>
+            <span class="hud-value font-heavy"><span id="icBetMob">1.00</span> USD</span>
+          </div>
+        </div>
+        <div class="mobile-buttons-row">
+          <button class="console-btn mobile-circle-btn" id="mobileMenuBtn" aria-label="Menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+              <line x1="4" y1="12" x2="20" y2="12"></line>
+              <line x1="4" y1="6" x2="20" y2="6"></line>
+              <line x1="4" y1="18" x2="20" y2="18"></line>
+            </svg>
+          </button>
+          <button class="console-btn mobile-circle-btn" id="icAutoMob" aria-label="Auto play">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+              <text x="12" y="15.5" font-family="var(--ui-font), sans-serif" font-weight="900" font-size="8" text-anchor="middle" fill="currentColor" stroke="none">A</text>
+            </svg>
+            <span class="ic-indicator" id="icAutoIndMob"></span>
+          </button>
+          <button class="console-btn spin-arrow-btn" id="icSpinBtn" aria-label="Spin">
+            <svg viewBox="0 0 64 64">
+              <circle cx="32" cy="32" r="30" fill="none" stroke="#ffffff" stroke-width="3"/>
+              <circle cx="32" cy="32" r="27.5" fill="#000000"/>
+              <g transform="translate(16,16) scale(1.33)" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/>
+                <path d="M16 8h5V3"/>
+              </g>
+            </svg>
+          </button>
+          <button class="console-btn mobile-circle-btn" id="mobileCoinBtn" aria-label="Bet Settings">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <ellipse cx="12" cy="5" rx="9" ry="3" stroke="currentColor" stroke-width="2.5"></ellipse>
+              <path d="M3 5v6c0 1.66 4 3 9 3s9-1.34 9-3V5" stroke="currentColor" stroke-width="2.5"></path>
+              <path d="M3 11v6c0 1.66 4 3 9 3s9-1.34 9-3v-6" stroke="currentColor" stroke-width="2.5"></path>
+            </svg>
+          </button>
+          <button class="console-btn mobile-circle-btn" id="mobileInfoBtn" aria-label="Info">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" fill="none"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+          </button>
+        </div>
+        <button class="console-btn ic-action-btn ic-buy-btn" id="icBuyBonusMob" style="display:none;"></button>
       <div class="ic-desktop">
         <div class="ic-desktop-bar">
           <div class="ic-desk-display"><span class="ic-label">BALANCE</span><span class="ic-value font-heavy" id="icBalanceDesk">949.00</span></div>
@@ -5532,7 +5861,7 @@
         z-index: 80;
         display: none;
         background: #020204;
-        font-family: 'Oswald', 'Rajdhani', sans-serif;
+        font-family: var(--ui-font);
         color: #fff;
         overflow: hidden;
         align-items: center;
@@ -5627,89 +5956,89 @@
       <div class="ipf-cage-mesh"></div>
       <div style="width:100%;max-width:1100px;margin:auto;position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;height:100vh;max-height:100vh;overflow:hidden;padding-top:12px;">
         <div style="text-align:center;margin-bottom:8px;flex-shrink:0;">
-          <h1 style="font-family:'Syncopate',sans-serif;font-size:clamp(32px,5vw,56px);font-weight:700;letter-spacing:0.08em;text-transform:uppercase;line-height:1;margin:0;"><span class="ipf-metallic-red">RFC</span> <span class="ipf-metallic-silver">BONUS</span></h1>
-          <p style="color:#f4f4f5;font-family:'Syncopate',sans-serif;font-size:clamp(14px,2.5vw,20px);letter-spacing:0.25em;text-transform:uppercase;font-weight:700;margin:6px 0 0;">PICK YOUR CONTENDER</p>
+          <h1 style="font-family:'Bebas Neue',Impact,sans-serif;font-size:clamp(32px,5vw,56px);font-weight:700;letter-spacing:0.08em;text-transform:uppercase;line-height:1;margin:0;"><span class="ipf-metallic-red">RFC</span> <span class="ipf-metallic-silver">BONUS</span></h1>
+          <p style="color:#f4f4f5;font-family:'Bebas Neue',Impact,sans-serif;font-size:clamp(14px,2.5vw,20px);letter-spacing:0.25em;text-transform:uppercase;font-weight:700;margin:6px 0 0;">PICK YOUR CONTENDER</p>
         </div>
         <div class="ipf-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:1100px;margin:0 auto 12px;width:100%;flex-shrink:0;">
           <div id="ipfFighter0" onclick="ipfSelectFighter(0)" class="ipf-fighter-card ipf-octagon-border active-red" style="padding:2px;background:linear-gradient(to bottom, rgba(255,30,57,0.4), rgba(39,39,42,0.6));">
             <div class="ipf-octagon-border" style="background:linear-gradient(to bottom, #09090d, #040406);display:flex;flex-direction:column;height:100%;padding:8px;position:relative;overflow:hidden;">
               <div style="aspect-ratio:3/4;width:100%;border-radius:6px;background:#040406;border:1px solid #18181b;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;" class="ipf-tech-grid">
                 <div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(255,30,57,0.1), transparent);z-index:2;"></div>
-                <img id="ipfImg0" src="assets/fighter-select/champ.png" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;z-index:1;" alt="CHAMP">
+                <img id="ipfImg0" src="./assets/images/champ-BiOkFbwx.webp" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;z-index:1;" alt="CHAMP">
               </div>
-              <div style="margin-top:10px;text-align:center;"><span style="font-family:'Syncopate',sans-serif;font-size:22px;font-weight:700;color:#fff;letter-spacing:0.1em;">CHAMP</span><div style="font-family:'Syncopate',sans-serif;font-size:13px;color:#71717a;text-transform:uppercase;letter-spacing:0.12em;font-weight:700;margin-top:4px;">8 SPINS x4</div></div>
+              <div style="margin-top:10px;text-align:center;"><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:22px;font-weight:700;color:#fff;letter-spacing:0.1em;">CHAMP</span><div style="font-family:'Bebas Neue',Impact,sans-serif;font-size:13px;color:#71717a;text-transform:uppercase;letter-spacing:0.12em;font-weight:700;margin-top:4px;">8 SPINS x4</div></div>
             </div>
           </div>
           <div id="ipfFighter1" onclick="ipfSelectFighter(1)" class="ipf-fighter-card ipf-octagon-border" style="padding:2px;background:linear-gradient(to bottom, rgba(39,39,42,0.4), rgba(39,39,42,0.6));">
             <div class="ipf-octagon-border" style="background:linear-gradient(to bottom, #09090d, #040406);display:flex;flex-direction:column;height:100%;padding:8px;position:relative;overflow:hidden;">
               <div style="aspect-ratio:3/4;width:100%;border-radius:6px;background:#040406;border:1px solid #18181b;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;" class="ipf-tech-grid">
                 <div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(223,186,115,0.1), transparent);z-index:2;"></div>
-                <img id="ipfImg1" src="assets/fighter-select/chief.png" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;z-index:1;" alt="CHIEF">
+                <img id="ipfImg1" src="./assets/images/chief-DsDlmqig.webp" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;z-index:1;" alt="CHIEF">
               </div>
-              <div style="margin-top:10px;text-align:center;"><span style="font-family:'Syncopate',sans-serif;font-size:22px;font-weight:700;color:#fff;letter-spacing:0.1em;">CHIEF</span><div style="font-family:'Syncopate',sans-serif;font-size:13px;color:#71717a;text-transform:uppercase;letter-spacing:0.12em;font-weight:700;margin-top:4px;">12 SPINS x3</div></div>
+              <div style="margin-top:10px;text-align:center;"><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:22px;font-weight:700;color:#fff;letter-spacing:0.1em;">CHIEF</span><div style="font-family:'Bebas Neue',Impact,sans-serif;font-size:13px;color:#71717a;text-transform:uppercase;letter-spacing:0.12em;font-weight:700;margin-top:4px;">12 SPINS x3</div></div>
             </div>
           </div>
           <div id="ipfFighter2" onclick="ipfSelectFighter(2)" class="ipf-fighter-card ipf-octagon-border" style="padding:2px;background:linear-gradient(to bottom, rgba(39,39,42,0.4), rgba(39,39,42,0.6));">
             <div class="ipf-octagon-border" style="background:linear-gradient(to bottom, #09090d, #040406);display:flex;flex-direction:column;height:100%;padding:8px;position:relative;overflow:hidden;">
               <div style="aspect-ratio:3/4;width:100%;border-radius:6px;background:#040406;border:1px solid #18181b;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;" class="ipf-tech-grid">
                 <div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(0,149,255,0.1), transparent);z-index:2;"></div>
-                <img id="ipfImg2" src="assets/fighter-select/rage.png" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;z-index:1;" alt="RAGE">
+                <img id="ipfImg2" src="./assets/images/rage-DhUJwnWo.webp" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;z-index:1;" alt="RAGE">
               </div>
-              <div style="margin-top:10px;text-align:center;"><span style="font-family:'Syncopate',sans-serif;font-size:22px;font-weight:700;color:#fff;letter-spacing:0.1em;">RAGE</span><div style="font-family:'Syncopate',sans-serif;font-size:13px;color:#71717a;text-transform:uppercase;letter-spacing:0.12em;font-weight:700;margin-top:4px;">15 SPINS x2</div></div>
+              <div style="margin-top:10px;text-align:center;"><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:22px;font-weight:700;color:#fff;letter-spacing:0.1em;">RAGE</span><div style="font-family:'Bebas Neue',Impact,sans-serif;font-size:13px;color:#71717a;text-transform:uppercase;letter-spacing:0.12em;font-weight:700;margin-top:4px;">15 SPINS x2</div></div>
             </div>
           </div>
           <div id="ipfFighter3" onclick="ipfSelectFighter(3)" class="ipf-fighter-card ipf-octagon-border" style="padding:2px;background:linear-gradient(to bottom, rgba(39,39,42,0.4), rgba(39,39,42,0.6));">
             <div class="ipf-octagon-border" style="background:linear-gradient(to bottom, #09090d, #040406);display:flex;flex-direction:column;height:100%;padding:8px;position:relative;overflow:hidden;">
               <div style="aspect-ratio:3/4;width:100%;border-radius:6px;background:#040406;border:1px solid #18181b;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;" class="ipf-tech-grid">
                 <div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(184,50,252,0.1), transparent);z-index:2;"></div>
-                <img id="ipfImg3" src="assets/fighter-select/mcwhiskey.png" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;z-index:1;" alt="MCWHISKEY">
+                <img id="ipfImg3" src="./assets/images/mcwhiskey-Dcr9pN-r.webp" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;z-index:1;" alt="MCWHISKEY">
               </div>
-              <div style="margin-top:10px;text-align:center;"><span style="font-family:'Syncopate',sans-serif;font-size:22px;font-weight:700;color:#fff;letter-spacing:0.1em;">MCWHISKEY</span><div style="font-family:'Syncopate',sans-serif;font-size:13px;color:#71717a;text-transform:uppercase;letter-spacing:0.12em;font-weight:700;margin-top:4px;">20 SPINS x1</div></div>
+              <div style="margin-top:10px;text-align:center;"><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:22px;font-weight:700;color:#fff;letter-spacing:0.1em;">MCWHISKEY</span><div style="font-family:'Bebas Neue',Impact,sans-serif;font-size:13px;color:#71717a;text-transform:uppercase;letter-spacing:0.12em;font-weight:700;margin-top:4px;">20 SPINS x1</div></div>
             </div>
           </div>
         </div>
         <div style="max-width:900px;margin:0 auto 8px;width:100%;display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;flex-shrink:0;">
           <div style="background:linear-gradient(to right, #170c0e, #0a0a0d);border:1px solid rgba(39,39,42,0.6);height:56px;border-radius:8px 0 0 8px;display:flex;flex-direction:column;justify-content:center;padding-left:16px;position:relative;overflow:hidden;">
             <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:#ff1e39;box-shadow:0 0 10px #ff1e39;"></div>
-            <span style="color:#ff1e39;font-family:'Syncopate',sans-serif;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;font-weight:700;margin-bottom:4px;">FREE SPINS</span>
+            <span style="color:#ff1e39;font-family:'Bebas Neue',Impact,sans-serif;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;font-weight:700;margin-bottom:4px;">FREE SPINS</span>
             <div style="display:flex;align-items:center;gap:16px;">
-              <div id="ipfSpin4" style="display:flex;flex-direction:column;align-items:center;transition:all 0.3s;opacity:1;transform:scale(1.1);"><span style="font-family:'Syncopate',sans-serif;font-size:22px;font-weight:700;color:#fff;line-height:1;">4</span><span style="font-family:'Syncopate',sans-serif;font-size:10px;color:#71717a;text-transform:uppercase;font-weight:700;letter-spacing:0.1em;">SPINS</span></div>
-              <div id="ipfSpin6" style="display:flex;flex-direction:column;align-items:center;transition:all 0.3s;opacity:0.35;"><span style="font-family:'Syncopate',sans-serif;font-size:22px;font-weight:700;color:#fff;line-height:1;">6</span><span style="font-family:'Syncopate',sans-serif;font-size:10px;color:#71717a;text-transform:uppercase;font-weight:700;letter-spacing:0.1em;">SPINS</span></div>
-              <div id="ipfSpin8" style="display:flex;flex-direction:column;align-items:center;transition:all 0.3s;opacity:0.35;"><span style="font-family:'Syncopate',sans-serif;font-size:22px;font-weight:700;color:#fff;line-height:1;">8</span><span style="font-family:'Syncopate',sans-serif;font-size:10px;color:#71717a;text-transform:uppercase;font-weight:700;letter-spacing:0.1em;">SPINS</span></div>
-              <div id="ipfSpin16" style="display:flex;flex-direction:column;align-items:center;transition:all 0.3s;opacity:0.35;"><span style="font-family:'Syncopate',sans-serif;font-size:22px;font-weight:700;color:#fff;line-height:1;">16</span><span style="font-family:'Syncopate',sans-serif;font-size:10px;color:#71717a;text-transform:uppercase;font-weight:700;letter-spacing:0.1em;">SPINS</span></div>
+              <div id="ipfSpin4" style="display:flex;flex-direction:column;align-items:center;transition:all 0.3s;opacity:1;transform:scale(1.1);"><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:22px;font-weight:700;color:#fff;line-height:1;">4</span><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:10px;color:#71717a;text-transform:uppercase;font-weight:700;letter-spacing:0.1em;">SPINS</span></div>
+              <div id="ipfSpin6" style="display:flex;flex-direction:column;align-items:center;transition:all 0.3s;opacity:0.35;"><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:22px;font-weight:700;color:#fff;line-height:1;">6</span><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:10px;color:#71717a;text-transform:uppercase;font-weight:700;letter-spacing:0.1em;">SPINS</span></div>
+              <div id="ipfSpin8" style="display:flex;flex-direction:column;align-items:center;transition:all 0.3s;opacity:0.35;"><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:22px;font-weight:700;color:#fff;line-height:1;">8</span><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:10px;color:#71717a;text-transform:uppercase;font-weight:700;letter-spacing:0.1em;">SPINS</span></div>
+              <div id="ipfSpin16" style="display:flex;flex-direction:column;align-items:center;transition:all 0.3s;opacity:0.35;"><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:22px;font-weight:700;color:#fff;line-height:1;">16</span><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:10px;color:#71717a;text-transform:uppercase;font-weight:700;letter-spacing:0.1em;">SPINS</span></div>
             </div>
           </div>
           <div style="display:flex;justify-content:center;">
             <div style="width:40px;height:40px;background:#000;border:2px solid #27272a;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 15px rgba(0,0,0,0.8);">
               <div style="width:32px;height:32px;border-radius:50%;border:1px solid rgba(223,186,55,0.3);background:#09090b;display:flex;align-items:center;justify-content:center;">
-                <span style="font-family:'Oswald',sans-serif;font-weight:900;font-size:11px;font-style:italic;color:#dfba73;">RFC</span>
+                <span style="font-family:var(--ui-font);font-weight:900;font-size:11px;font-style:italic;color:#dfba73;">RFC</span>
               </div>
             </div>
           </div>
           <div style="background:linear-gradient(to left, #0c121c, #0a0a0d);border:1px solid rgba(39,39,42,0.6);height:56px;border-radius:0 8px 8px 0;display:flex;flex-direction:column;justify-content:center;align-items:flex-end;padding-right:16px;position:relative;overflow:hidden;">
             <div style="position:absolute;top:0;right:0;width:4px;height:100%;background:#0095ff;box-shadow:0 0 10px #0095ff;"></div>
-            <span style="color:#0095ff;font-family:'Syncopate',sans-serif;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;font-weight:700;margin-bottom:4px;">MULTIPLIER</span>
+            <span style="color:#0095ff;font-family:'Bebas Neue',Impact,sans-serif;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;font-weight:700;margin-bottom:4px;">MULTIPLIER</span>
             <div style="display:flex;align-items:center;gap:16px;">
-              <div id="ipfMult12" style="display:flex;flex-direction:column;align-items:center;transition:all 0.3s;opacity:1;transform:scale(1.1);"><span style="font-family:'Syncopate',sans-serif;font-size:22px;font-weight:700;color:#fff;line-height:1;">x12</span><span style="font-family:'Syncopate',sans-serif;font-size:10px;color:#71717a;text-transform:uppercase;font-weight:700;letter-spacing:0.1em;">MULT</span></div>
-              <div id="ipfMult8" style="display:flex;flex-direction:column;align-items:center;transition:all 0.3s;opacity:0.35;"><span style="font-family:'Syncopate',sans-serif;font-size:22px;font-weight:700;color:#fff;line-height:1;">x8</span><span style="font-family:'Syncopate',sans-serif;font-size:10px;color:#71717a;text-transform:uppercase;font-weight:700;letter-spacing:0.1em;">MULT</span></div>
-              <div id="ipfMult6" style="display:flex;flex-direction:column;align-items:center;transition:all 0.3s;opacity:0.35;"><span style="font-family:'Syncopate',sans-serif;font-size:22px;font-weight:700;color:#fff;line-height:1;">x6</span><span style="font-family:'Syncopate',sans-serif;font-size:10px;color:#71717a;text-transform:uppercase;font-weight:700;letter-spacing:0.1em;">MULT</span></div>
-              <div id="ipfMult3" style="display:flex;flex-direction:column;align-items:center;transition:all 0.3s;opacity:0.35;"><span style="font-family:'Syncopate',sans-serif;font-size:22px;font-weight:700;color:#fff;line-height:1;">x3</span><span style="font-family:'Syncopate',sans-serif;font-size:10px;color:#71717a;text-transform:uppercase;font-weight:700;letter-spacing:0.1em;">MULT</span></div>
+              <div id="ipfMult12" style="display:flex;flex-direction:column;align-items:center;transition:all 0.3s;opacity:1;transform:scale(1.1);"><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:22px;font-weight:700;color:#fff;line-height:1;">x12</span><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:10px;color:#71717a;text-transform:uppercase;font-weight:700;letter-spacing:0.1em;">MULT</span></div>
+              <div id="ipfMult8" style="display:flex;flex-direction:column;align-items:center;transition:all 0.3s;opacity:0.35;"><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:22px;font-weight:700;color:#fff;line-height:1;">x8</span><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:10px;color:#71717a;text-transform:uppercase;font-weight:700;letter-spacing:0.1em;">MULT</span></div>
+              <div id="ipfMult6" style="display:flex;flex-direction:column;align-items:center;transition:all 0.3s;opacity:0.35;"><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:22px;font-weight:700;color:#fff;line-height:1;">x6</span><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:10px;color:#71717a;text-transform:uppercase;font-weight:700;letter-spacing:0.1em;">MULT</span></div>
+              <div id="ipfMult3" style="display:flex;flex-direction:column;align-items:center;transition:all 0.3s;opacity:0.35;"><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:22px;font-weight:700;color:#fff;line-height:1;">x3</span><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:10px;color:#71717a;text-transform:uppercase;font-weight:700;letter-spacing:0.1em;">MULT</span></div>
             </div>
           </div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 2fr 1fr;gap:8px;align-items:center;max-width:900px;margin:0 auto;width:100%;flex-shrink:0;">
           <div class="ipf-carbon" style="border:1px solid rgba(39,39,42,0.8);padding:8px 12px;border-radius:8px;display:flex;flex-direction:column;justify-content:center;height:48px;box-shadow:0 5px 15px rgba(0,0,0,0.5);">
-            <span style="font-size:10px;font-family:'Syncopate',sans-serif;color:#71717a;letter-spacing:0.12em;text-transform:uppercase;font-weight:700;">PLAY AMOUNT</span>
-            <span id="ipfBalance" style="font-family:'Syncopate',sans-serif;font-size:18px;font-weight:700;color:#fff;letter-spacing:0.04em;">$1,000.00</span>
+            <span style="font-size:10px;font-family:'Bebas Neue',Impact,sans-serif;color:#71717a;letter-spacing:0.12em;text-transform:uppercase;font-weight:700;">PLAY AMOUNT</span>
+            <span id="ipfBalance" style="font-family:'Bebas Neue',Impact,sans-serif;font-size:18px;font-weight:700;color:#fff;letter-spacing:0.04em;">$1,000.00</span>
           </div>
           <button id="ipfStartBtn" onclick="ipfStartGame()" class="ipf-shimmer" style="background:#18181b;border:2px solid rgba(223,186,55,0.4);border-radius:8px;padding:4px;box-shadow:0 10px 25px rgba(0,0,0,0.6);transition:all 0.3s;cursor:pointer;height:48px;display:flex;" onmouseover="this.querySelector('div').style.background='linear-gradient(to bottom, #dfba73, #b45309)'" onmouseout="this.querySelector('div').style.background='linear-gradient(to bottom, #1b1c22, #000)'">
             <div style="background:linear-gradient(to bottom, #1b1c22, #000);width:100%;border-radius:6px;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.3s;">
-              <span style="font-family:'Syncopate',sans-serif;font-size:clamp(16px,2.5vw,22px);font-weight:700;letter-spacing:0.15em;color:#dfba73;">ENTER THE CAGE</span>
+              <span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:clamp(16px,2.5vw,22px);font-weight:700;letter-spacing:0.15em;color:#dfba73;">ENTER THE CAGE</span>
             </div>
           </button>
           <div class="ipf-carbon" style="border:1px solid rgba(39,39,42,0.8);padding:8px 12px;border-radius:8px;display:flex;flex-direction:column;justify-content:center;align-items:flex-end;height:48px;box-shadow:0 5px 15px rgba(0,0,0,0.5);">
-            <span style="font-size:10px;font-family:'Syncopate',sans-serif;color:#71717a;letter-spacing:0.12em;text-transform:uppercase;font-weight:700;">WINNINGS</span>
-            <span id="ipfWin" style="font-family:'Syncopate',sans-serif;font-size:18px;font-weight:700;color:#dfba73;letter-spacing:0.04em;">$0.00</span>
+            <span style="font-size:10px;font-family:'Bebas Neue',Impact,sans-serif;color:#71717a;letter-spacing:0.12em;text-transform:uppercase;font-weight:700;">WINNINGS</span>
+            <span id="ipfWin" style="font-family:'Bebas Neue',Impact,sans-serif;font-size:18px;font-weight:700;color:#dfba73;letter-spacing:0.04em;">$0.00</span>
           </div>
         </div>
       </div>
@@ -5756,7 +6085,7 @@
         z-index: 85;
         display: none;
         background: #030305;
-        font-family: 'Oswald', 'Rajdhani', sans-serif;
+        font-family: var(--ui-font);
         color: #fff;
         overflow: auto;
         align-items: center;
@@ -5841,38 +6170,38 @@
         <div style="text-align:center;margin-bottom:48px;">
           <div style="display:inline-flex;align-items:center;gap:16px;margin-bottom:12px;">
             <span style="width:12px;height:12px;background:#ff002b;transform:rotate(45deg);box-shadow:0 0 8px #ff002b;"></span>
-            <span style="color:#a1a1aa;letter-spacing:0.4em;font-size:10px;font-weight:900;text-transform:uppercase;font-family:'Oswald',sans-serif;display:flex;align-items:center;gap:4px;">CHAMPIONSHIP <span style="color:#d4af37;">MAIN CARD</span> FEATURE</span>
+            <span style="color:#a1a1aa;letter-spacing:0.4em;font-size:10px;font-weight:900;text-transform:uppercase;font-family:var(--ui-font);display:flex;align-items:center;gap:4px;">CHAMPIONSHIP <span style="color:#d4af37;">MAIN CARD</span> FEATURE</span>
             <span style="width:12px;height:12px;background:#0066ff;transform:rotate(45deg);box-shadow:0 0 8px #0066ff;"></span>
           </div>
-          <h1 style="font-family:'Oswald',sans-serif;font-size:clamp(48px,8vw,96px);font-weight:900;letter-spacing:-0.02em;color:#fff;text-transform:uppercase;font-style:italic;line-height:1;margin:0;">CHOOSE <span class="ibb-gold-text">FEATURE</span></h1>
-          <p style="color:#a1a1aa;font-family:'Oswald',sans-serif;font-size:clamp(10px,1.5vw,14px);max-width:500px;margin:16px auto 0;text-transform:uppercase;letter-spacing:0.15em;font-weight:600;">LOCK IN THE BONUS ROUND AT YOUR CURRENT PLAY AMOUNT.</p>
+          <h1 style="font-family:var(--ui-font);font-size:clamp(48px,8vw,96px);font-weight:900;letter-spacing:-0.02em;color:#fff;text-transform:uppercase;font-style:italic;line-height:1;margin:0;">CHOOSE <span class="ibb-gold-text">FEATURE</span></h1>
+          <p style="color:#a1a1aa;font-family:var(--ui-font);font-size:clamp(10px,1.5vw,14px);max-width:500px;margin:16px auto 0;text-transform:uppercase;letter-spacing:0.15em;font-weight:600;">LOCK IN THE BONUS ROUND AT YOUR CURRENT PLAY AMOUNT.</p>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;max-width:900px;margin:0 auto;position:relative;">
           <div style="display:none;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:20;width:80px;height:80px;background:#000;border:4px solid #27272a;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(0,0,0,0.9);" class="ibb-vs-badge">
             <div style="width:100%;height:100%;border-radius:50%;border:1px solid rgba(212,175,55,0.4);display:flex;align-items:center;justify-content:center;background:rgba(9,9,11,0.9);">
-              <span style="font-family:'Oswald',sans-serif;font-weight:900;font-size:28px;font-style:italic;letter-spacing:-0.05em;color:#fff;">VS</span>
+              <span style="font-family:var(--ui-font);font-weight:900;font-size:28px;font-style:italic;letter-spacing:-0.05em;color:#fff;">VS</span>
             </div>
           </div>
           <div class="ibb-card-red ibb-octagon-card" id="ibbCardFree" onclick="ibbSelectFeature('free')">
             <div class="ibb-octagon-card ibb-carbon" style="padding:2px;background:linear-gradient(to bottom, rgba(255,0,43,0.5), rgba(39,39,42,0.8));">
               <div class="ibb-octagon-card" style="background:linear-gradient(to bottom, #0e0e13, #060608);padding:32px;display:flex;flex-direction:column;height:100%;position:relative;z-index:10;">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:40px;">
-                  <div style="background:#ff002b;color:#fff;font-size:12px;font-family:'Oswald',sans-serif;font-weight:700;letter-spacing:0.05em;padding:6px 24px;text-transform:uppercase;font-style:italic;box-shadow:0 4px 10px rgba(255,0,43,0.3);" class="ibb-octagon-tag">Red Corner</div>
-                  <span style="font-size:12px;font-family:'Oswald',sans-serif;font-weight:700;letter-spacing:0.1em;color:#ff002b;text-transform:uppercase;">HIGH VOLATILITY</span>
+                  <div style="background:#ff002b;color:#fff;font-size:12px;font-family:var(--ui-font);font-weight:700;letter-spacing:0.05em;padding:6px 24px;text-transform:uppercase;font-style:italic;box-shadow:0 4px 10px rgba(255,0,43,0.3);" class="ibb-octagon-tag">Red Corner</div>
+                  <span style="font-size:12px;font-family:var(--ui-font);font-weight:700;letter-spacing:0.1em;color:#ff002b;text-transform:uppercase;">HIGH VOLATILITY</span>
                 </div>
                 <div style="margin-bottom:40px;flex-grow:1;">
-                  <h2 style="font-family:'Oswald',sans-serif;font-size:clamp(32px,5vw,48px);font-weight:900;color:#fff;font-style:italic;letter-spacing:-0.02em;text-transform:uppercase;line-height:1;margin:0 0 16px;">Free Fights</h2>
+                  <h2 style="font-family:var(--ui-font);font-size:clamp(32px,5vw,48px);font-weight:900;color:#fff;font-style:italic;letter-spacing:-0.02em;text-transform:uppercase;line-height:1;margin:0 0 16px;">Free Fights</h2>
                   <p style="color:#a1a1aa;font-size:14px;line-height:1.6;font-weight:600;margin-bottom:32px;max-width:400px;">Pick your contender. Unleash free spins inside the cage with high-yield multipliers locked in for consecutive championship rounds.</p>
-                  <div style="border-top:1px solid rgba(39,39,42,0.8);padding-top:24px;display:flex;flex-direction:column;gap:12px;font-family:'Oswald',sans-serif;font-size:14px;letter-spacing:0.05em;">
+                  <div style="border-top:1px solid rgba(39,39,42,0.8);padding-top:24px;display:flex;flex-direction:column;gap:12px;font-family:var(--ui-font);font-size:14px;letter-spacing:0.05em;">
                     <div style="display:flex;justify-content:space-between;align-items:center;color:#71717a;"><span style="text-transform:uppercase;">STYLE:</span><span style="color:#fff;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;text-align:right;">Volatile Multipliers</span></div>
                     <div style="display:flex;justify-content:space-between;align-items:center;color:#71717a;"><span style="text-transform:uppercase;">BOUT CAPACITY:</span><span style="color:#fff;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;text-align:right;">Variable Spins</span></div>
                   </div>
                 </div>
                 <div class="ibb-shimmer" style="width:100%;background:#1b1c22;border:1px solid rgba(212,175,55,0.3);border-radius:4px;padding:2px;box-shadow:0 10px 25px rgba(0,0,0,0.5);">
                   <div style="background:linear-gradient(to bottom, #18181b, #000);border-radius:4px;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;">
-                    <div style="display:flex;flex-direction:column;"><span style="font-size:9px;font-family:'Oswald',sans-serif;color:#71717a;letter-spacing:0.1em;text-transform:uppercase;">Multiplier Power</span><span style="font-family:'Oswald',sans-serif;font-size:28px;font-weight:900;color:#fff;font-style:italic;letter-spacing:0.05em;line-height:1;">2X–5X</span></div>
+                    <div style="display:flex;flex-direction:column;"><span style="font-size:9px;font-family:var(--ui-font);color:#71717a;letter-spacing:0.1em;text-transform:uppercase;">Multiplier Power</span><span style="font-family:var(--ui-font);font-size:28px;font-weight:900;color:#fff;font-style:italic;letter-spacing:0.05em;line-height:1;">2X–5X</span></div>
                     <div style="width:1px;height:32px;background:#27272a;"></div>
-                    <div style="display:flex;flex-direction:column;text-align:right;"><span style="font-size:9px;font-family:'Oswald',sans-serif;color:#71717a;letter-spacing:0.1em;text-transform:uppercase;">FIGHT COST</span><span id="ibbCostFree" style="font-family:'Oswald',sans-serif;font-size:28px;font-weight:900;color:#d4af37;font-style:italic;letter-spacing:0.05em;line-height:1;">$100.00</span></div>
+                    <div style="display:flex;flex-direction:column;text-align:right;"><span style="font-size:9px;font-family:var(--ui-font);color:#71717a;letter-spacing:0.1em;text-transform:uppercase;">FIGHT COST</span><span id="ibbCostFree" style="font-family:var(--ui-font);font-size:28px;font-weight:900;color:#d4af37;font-style:italic;letter-spacing:0.05em;line-height:1;">$100.00</span></div>
                   </div>
                 </div>
               </div>
@@ -5882,22 +6211,22 @@
             <div class="ibb-octagon-card ibb-carbon" style="padding:2px;background:linear-gradient(to bottom, rgba(0,102,255,0.5), rgba(39,39,42,0.8));">
               <div class="ibb-octagon-card" style="background:linear-gradient(to bottom, #0e0e13, #060608);padding:32px;display:flex;flex-direction:column;height:100%;position:relative;z-index:10;">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:40px;">
-                  <div style="background:#0066ff;color:#fff;font-size:12px;font-family:'Oswald',sans-serif;font-weight:700;letter-spacing:0.05em;padding:6px 24px;text-transform:uppercase;font-style:italic;box-shadow:0 4px 10px rgba(0,102,255,0.3);" class="ibb-octagon-tag">Championship</div>
-                  <span style="font-size:12px;font-family:'Oswald',sans-serif;font-weight:700;letter-spacing:0.1em;color:#0066ff;text-transform:uppercase;">5 ROUNDS</span>
+                  <div style="background:#0066ff;color:#fff;font-size:12px;font-family:var(--ui-font);font-weight:700;letter-spacing:0.05em;padding:6px 24px;text-transform:uppercase;font-style:italic;box-shadow:0 4px 10px rgba(0,102,255,0.3);" class="ibb-octagon-tag">Championship</div>
+                  <span style="font-size:12px;font-family:var(--ui-font);font-weight:700;letter-spacing:0.1em;color:#0066ff;text-transform:uppercase;">5 ROUNDS</span>
                 </div>
                 <div style="margin-bottom:40px;flex-grow:1;">
-                  <h2 style="font-family:'Oswald',sans-serif;font-size:clamp(32px,5vw,48px);font-weight:900;color:#fff;font-style:italic;letter-spacing:-0.02em;text-transform:uppercase;line-height:1;margin:0 0 16px;">Championship</h2>
+                  <h2 style="font-family:var(--ui-font);font-size:clamp(32px,5vw,48px);font-weight:900;color:#fff;font-style:italic;letter-spacing:-0.02em;text-transform:uppercase;line-height:1;margin:0 0 16px;">Championship</h2>
                   <p style="color:#a1a1aa;font-size:14px;line-height:1.6;font-weight:600;margin-bottom:32px;max-width:400px;">Enter the championship gauntlet. Five back-to-back title fights with escalating stakes. Pick your fighter each round — win big or go home.</p>
-                  <div style="border-top:1px solid rgba(39,39,42,0.8);padding-top:24px;display:flex;flex-direction:column;gap:12px;font-family:'Oswald',sans-serif;font-size:14px;letter-spacing:0.05em;">
+                  <div style="border-top:1px solid rgba(39,39,42,0.8);padding-top:24px;display:flex;flex-direction:column;gap:12px;font-family:var(--ui-font);font-size:14px;letter-spacing:0.05em;">
                     <div style="display:flex;justify-content:space-between;align-items:center;color:#71717a;"><span style="text-transform:uppercase;">STYLE:</span><span style="color:#fff;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;text-align:right;">5 Rounds Back-to-Back</span></div>
                     <div style="display:flex;justify-content:space-between;align-items:center;color:#71717a;"><span style="text-transform:uppercase;">MAX BOUT PAY:</span><span style="color:#fff;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;text-align:right;">Up to 5x Bet</span></div>
                   </div>
                 </div>
                 <div class="ibb-shimmer" style="width:100%;background:#1b1c22;border:1px solid rgba(212,175,55,0.3);border-radius:4px;padding:2px;box-shadow:0 10px 25px rgba(0,0,0,0.5);">
                   <div style="background:linear-gradient(to bottom, #18181b, #000);border-radius:4px;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;">
-                    <div style="display:flex;flex-direction:column;"><span style="font-size:9px;font-family:'Oswald',sans-serif;color:#71717a;letter-spacing:0.1em;text-transform:uppercase;">Rounds</span><span style="font-family:'Oswald',sans-serif;font-size:28px;font-weight:900;color:#fff;font-style:italic;letter-spacing:0.05em;line-height:1;">5</span></div>
+                    <div style="display:flex;flex-direction:column;"><span style="font-size:9px;font-family:var(--ui-font);color:#71717a;letter-spacing:0.1em;text-transform:uppercase;">Rounds</span><span style="font-family:var(--ui-font);font-size:28px;font-weight:900;color:#fff;font-style:italic;letter-spacing:0.05em;line-height:1;">5</span></div>
                     <div style="width:1px;height:32px;background:#27272a;"></div>
-                    <div style="display:flex;flex-direction:column;text-align:right;"><span style="font-size:9px;font-family:'Oswald',sans-serif;color:#71717a;letter-spacing:0.1em;text-transform:uppercase;">ENTRY COST</span><span id="ibbCostVs" style="font-family:'Oswald',sans-serif;font-size:28px;font-weight:900;color:#d4af37;font-style:italic;letter-spacing:0.05em;line-height:1;">$50.00</span></div>
+                    <div style="display:flex;flex-direction:column;text-align:right;"><span style="font-size:9px;font-family:var(--ui-font);color:#71717a;letter-spacing:0.1em;text-transform:uppercase;">ENTRY COST</span><span id="ibbCostVs" style="font-family:var(--ui-font);font-size:28px;font-weight:900;color:#d4af37;font-style:italic;letter-spacing:0.05em;line-height:1;">$50.00</span></div>
                   </div>
                 </div>
               </div>
@@ -5905,7 +6234,7 @@
           </div>
         </div>
         <div style="text-align:center;margin-top:40px;">
-          <button onclick="ibbCancel()" style="padding:12px 32px;background:#18181b;border:1px solid #3f3f46;color:#a1a1aa;font-family:'Oswald',sans-serif;font-weight:700;text-transform:uppercase;font-style:italic;letter-spacing:0.1em;font-size:14px;border-radius:4px;cursor:pointer;transition:all 0.3s;" onmouseover="this.style.borderColor='#71717a'" onmouseout="this.style.borderColor='#3f3f46'">CANCEL</button>
+          <button onclick="ibbCancel()" style="padding:12px 32px;background:#18181b;border:1px solid #3f3f46;color:#a1a1aa;font-family:var(--ui-font);font-weight:700;text-transform:uppercase;font-style:italic;letter-spacing:0.1em;font-size:14px;border-radius:4px;cursor:pointer;transition:all 0.3s;" onmouseover="this.style.borderColor='#71717a'" onmouseout="this.style.borderColor='#3f3f46'">CANCEL</button>
         </div>
       </div>
     </div>
@@ -5961,19 +6290,31 @@
         <div style="font-size:14px;letter-spacing:1.2px;color:var(--dust);margin-top:12px;text-align:left;line-height:1.45;">
           <p style="margin:0 0 8px;">243 ways to win. Wins = multiplier × ways × play amount. Left-to-right consecutive reels.</p>
           <p style="margin:0 0 8px;">Wild substitutes for all regular symbols except scatter. Title Belt lands can trigger the Championship Multiplier: a random 1×–10× boost to the current spin win where supported by the round result.</p>
-          <p style="margin:0 0 8px;">3 or more scatter symbols trigger Free Fights. Pick a fighter: fewer spins award a stronger fighter multiplier (2×–5×). When the picked fighter lands, that reel becomes a Fighter Takeover reel and expands the winning ways.</p>
+          <p style="margin:0 0 8px;">3 or more scatter symbols trigger Free Fights. Pick a fighter: fewer spins award a stronger fighter multiplier (3×–6×). When the picked fighter lands, that reel becomes a Fighter Takeover reel and expands the winning ways.</p>
           <p style="margin:0 0 8px;">VS Battle: When the Title Belt lands between two fighters, pick your contender for a 2×–5× bet multiplier prize. 50/50 odds — trust your gut.</p>
           <p style="margin:0 0 8px;">Championship Mode: Buy entry into a 5-round back-to-back title fight gauntlet for 100× your base play amount. Pick your fighter each round — winners pay 2×–5× multipliers with fighter takeovers. How many rounds can you survive?</p>
           <p style="margin:0 0 8px;">Configured RTP: ~96.5%. Maximum win: 5000× play amount. Volatility: high. Feature mode cost: 100× base play amount where enabled by the Remote Game Server.</p>
           <p style="margin:0;">All balances, plays, wins, feature availability, and final settlement are controlled by the Remote Game Server. Browser animations are illustrative only.</p>
         </div>
         <div style="margin-top:18px;text-align:left;border-top:1px solid rgba(255,255,255,0.14);padding-top:14px;">
-          <h3 style="font-family:Oswald,sans-serif;font-size:16px;letter-spacing:3px;color:var(--orange);margin-bottom:8px;">GENERAL GAME DISCLAIMER</h3>
+          <h3 style="font-family:var(--ui-font);font-size:16px;letter-spacing:3px;color:var(--orange);margin-bottom:8px;">GENERAL GAME DISCLAIMER</h3>
           <p style="font-size:13px;line-height:1.45;letter-spacing:0.8px;color:var(--dust);margin:0;">
             Malfunction voids all wins and plays. A consistent internet connection is required. In the event of a disconnection, reload the game to finish any uncompleted rounds. The expected return is calculated over many plays. The game display is not representative of any physical device and is for illustrative purposes only. Winnings are settled according to the amount received from the Remote Game Server and not from events within the web browser. TM and © 2026 SE Platform.
           </p>
         </div>
         <button id="paytableClose">CLOSE</button>
+      </div>
+    </div>
+  </div>
+  <!-- Mobile Bet Selection Modal -->
+  <div id="mobileBetModal" class="mobile-bet-modal" aria-hidden="true" role="dialog" aria-label="Bet Selection">
+    <div class="mobile-bet-modal-inner">
+      <div class="mobile-bet-modal-header">
+        <h2 class="mobile-bet-modal-title">SELECT BET</h2>
+        <button class="mobile-bet-modal-close" onclick="closeMobileBetModal()">&times;</button>
+      </div>
+      <div class="mobile-bet-grid" id="mobileBetGrid">
+        <!-- populated dynamically -->
       </div>
     </div>
   </div>
@@ -6097,78 +6438,79 @@
   const STAGE_W = CONFIG.STAGE_W;
   const STAGE_H = CONFIG.STAGE_H;
 
-  function applyStageScale(scale, options = {}) {
+  // ---------- RESPONSIVE STAGE SCALING (ported to match reference file) ----------
+  function applyStageScale(scale) {
     const stage = document.getElementById('stage');
     if (!stage) return;
-    const portraitPhone = !!options.portraitPhone;
-    const xMargin = (STAGE_W * (scale - 1)) / 2;
-    const yMargin = portraitPhone ? 0 : (STAGE_H * (scale - 1)) / 2;
-    const yMarginBottom = portraitPhone ? (STAGE_H * (scale - 1)) : yMargin;
-    stage.style.transformOrigin = portraitPhone ? 'top center' : 'center center';
+    stage.style.transformOrigin = 'center center';
     stage.style.transform = 'scale(' + scale + ')';
-    stage.style.margin = yMargin + 'px ' + xMargin + 'px ' + yMarginBottom + 'px ' + xMargin + 'px';
-    stage.classList.toggle('portrait-phone', portraitPhone);
-    stage.classList.toggle('compact-landscape', false);
+    stage.style.margin = '0';
   }
   window.__rfcApplyStageScale = applyStageScale;
 
   function fitStage() {
-    // Account for inline controls height so stage fits in the available space
-    const bar = document.getElementById('inlineControls');
-    const barH = bar ? bar.getBoundingClientRect().height : 0;
-    const availW = window.innerWidth;
-    const availH = window.innerHeight - barH;
-    const sx = availW / STAGE_W;
-    const sy = availH / STAGE_H;
-    const viewportRatio = availW / availH;
-    const stageRatio = STAGE_W / STAGE_H; // 1920/1080 = 1.777...
-    // COVER MODE: fill the available space (no black bars)
-    // When viewport is wider than 16:9, scale by width (crop top/bottom)
-    // When viewport is taller than 16:9, scale by height (crop left/right)
-    // But never crop more than 15% of the stage to keep reels visible
-    let s;
-    if (viewportRatio >= stageRatio) {
-      // Viewport is wider (or same) — scale by width to fill horizontally
-      s = sx;
-    } else {
-      // Viewport is taller — scale by height to fill vertically
-      s = sy;
+    const vv = window.visualViewport;
+    const vw = Math.max(1, Math.round((vv && vv.width) || window.innerWidth || document.documentElement.clientWidth || 1));
+    const vh = Math.max(1, Math.round((vv && vv.height) || window.innerHeight || document.documentElement.clientHeight || 1));
+    const portraitPhone = vw <= 820 && vh > vw;
+
+    const containScale = Math.min(vw / 1920, vh / 1080);
+    const playScale = Math.min(vw / 1020, vh / 1080);
+    const scale = portraitPhone ? Math.max(containScale, playScale) : containScale;
+
+    applyStageScale(scale);
+
+    // Sync viewport-bg scale to match stage for seamless alignment on mobile
+    if (portraitPhone) {
+      const viewportBg = document.getElementById('viewportBg');
+      if (viewportBg) {
+        viewportBg.style.transform = 'scale(' + scale + ')';
+        viewportBg.style.transformOrigin = 'center center';
+      }
     }
-    // Safety clamp: never scale more than 15% beyond the "contain" scale
-    // This prevents excessive cropping on extreme aspect ratios
-    const containScale = Math.min(sx, sy);
-    const maxScale = containScale * 1.15;
-    s = Math.min(s, maxScale);
-    applyStageScale(s);
   }
   window.addEventListener('resize', fitStage);
 
-  // Ensure wrapper fills viewport and stage is always visible
+  // Ensure wrapper fills viewport (matches reference behavior)
   window.ensureViewportFit = function ensureViewportFit() {
     const wrapper = document.getElementById('wrapper');
-    const stage = document.getElementById('stage');
-    if (!wrapper || !stage) return;
-    const bar = document.getElementById('inlineControls');
-    const barH = bar ? bar.getBoundingClientRect().height : 0;
-    wrapper.style.width = '100vw';
-    wrapper.style.height = `calc(100vh - ${barH}px)`;
-    wrapper.style.overflow = 'hidden';
-    stage.style.maxWidth = '100vw';
-    stage.style.maxHeight = `calc(100vh - ${barH}px)`;
+    if (wrapper) {
+      wrapper.style.width = '100vw';
+      wrapper.style.height = '100vh';
+      wrapper.style.overflow = 'hidden';
+    }
+    fitStage();
+  };
+
+  function adjustForControls() {
+    // Stub kept for compatibility; actual scaling is now reference-style
     fitStage();
   }
-  function adjustForControls() {
-    const bar = document.getElementById('inlineControls');
-    const wrapper = document.getElementById('wrapper');
-    if (!bar || !wrapper) return;
-    const h = bar.getBoundingClientRect().height;
-    wrapper.style.height = `calc(100vh - ${h}px)`;
-  }
+
   window.addEventListener('resize', ensureViewportFit);
-  window.addEventListener('resize', adjustForControls);
   window.addEventListener('orientationchange', () => { setTimeout(ensureViewportFit, 100); setTimeout(adjustForControls, 100); });
   ensureViewportFit();
   adjustForControls();
+
+  // Move #inlineControls outside #stage so position:fixed works in real viewport space
+  (function() {
+    const ic = document.getElementById('inlineControls');
+    const stage = document.getElementById('stage');
+    if (ic && stage && stage.parentNode) {
+      stage.parentNode.insertBefore(ic, stage.nextSibling);
+    }
+    // Hoist BUY BONUS out of flex row to float above controls bar
+    const bonusMob = document.getElementById('icBuyBonusMob');
+    const icMobile = ic && ic.querySelector('.ic-mobile');
+    if (bonusMob && icMobile) {
+      const floatBtn = document.createElement('button');
+      floatBtn.className = 'ic-bonus-float';
+      floatBtn.textContent = 'BUY BONUS';
+      floatBtn.onclick = () => bonusMob.click();
+      ic.insertBefore(floatBtn, icMobile);
+      bonusMob.style.display = 'none';
+    }
+  })();
 
   // ---------- SYMBOLS (Stake Engine math-sdk shape: H1–H5, L1–L4, W, S) ----------
   // Paytable values are MULTIPLIERS of base play amount (formula: win × ways × play amount).
@@ -6198,14 +6540,39 @@
   // VS Battle fighter symbols (for belt showdown feature)
   const VS_FIGHTER_SYMBOLS = ['H2', 'H3', 'H4', 'H5'];
   const VS_FIGHTER_META = {
-    H2: { name: 'CHAMP',     selectImg: 'assets/fighter-select/champ.png',     selectedImg: 'assets/fighter-select/champ_selected.gif',     color: '#ff3a52', animA: 'assets/fighter-animations/champ_b.gif', animB: 'assets/fighter-animations/champ_b.gif' },
-    H3: { name: 'RAGE',      selectImg: 'assets/fighter-select/rage.png',      selectedImg: 'assets/fighter-select/rage_selected.gif',      color: '#c44dff', animA: 'assets/fighter-animations/rage_a.gif',       animB: 'assets/fighter-animations/rage_b.gif' },
-    H4: { name: 'CHIEF',     selectImg: 'assets/fighter-select/chief.png',     selectedImg: 'assets/fighter-select/chief_selected.gif',     color: '#ffa530', animA: 'assets/fighter-animations/chief_a.gif',      animB: 'assets/fighter-animations/chief_b.gif' },
-    H5: { name: 'MCWHISKEY', selectImg: 'assets/fighter-select/mcwhiskey.png', selectedImg: 'assets/fighter-select/mcwhiskey_selected.gif', color: '#44dd66', animA: 'assets/fighter-animations/mcwhiskey_a.gif',  animB: 'assets/fighter-animations/mcwhiskey_b.gif' },
+    H2: { name: 'CHAMP',     selectImg: 'assets/fighter-select/champ.webp',     selectedImg: 'assets/fighter-select/champ_pick.gif',     color: '#ff3a52', animA: 'assets/fighter-animations/champ_a.webm', animB: 'assets/fighter-animations/champ_b.webm' },
+    H3: { name: 'RAGE',      selectImg: 'assets/fighter-select/rage.webp',      selectedImg: 'assets/fighter-select/rage_pick.gif',      color: '#c44dff', animA: 'assets/fighter-animations/rage_a.webm',       animB: 'assets/fighter-animations/rage_b.webm' },
+    H4: { name: 'CHIEF',     selectImg: 'assets/fighter-select/chief.webp',     selectedImg: 'assets/fighter-select/chief_pick.gif',     color: '#ffa530', animA: 'assets/fighter-animations/chief_a.webm',      animB: 'assets/fighter-animations/chief_b.webm' },
+    H5: { name: 'MCWHISKEY', selectImg: 'assets/fighter-select/mcwhiskey.webp', selectedImg: 'assets/fighter-select/mcwhiskey_pick.gif', color: '#44dd66', animA: 'assets/fighter-animations/mcwhiskey_a.webm',  animB: 'assets/fighter-animations/mcwhiskey_b.webm' },
   };
 
   // Default fallback animation for unknown fighters
-  const DEFAULT_FIGHTER_ANIM = 'assets/fighter-animations/champ_b.gif';
+  const DEFAULT_FIGHTER_ANIM = 'assets/fighter-animations/champ_b.webm';
+
+  // Preload all fighter images so VS Battle shows instantly
+  function preloadFighterImages() {
+    // selectImg (.webp portraits) are already preloaded via <link rel="preload"> in <head>
+    // Defer heavy animation videos until after page is interactive
+    const deferred = new Set();
+    Object.values(VS_FIGHTER_META).forEach(meta => {
+      deferred.add(meta.selectedImg);
+      deferred.add(meta.animA);
+      deferred.add(meta.animB);
+    });
+    requestIdleCallback(() => {
+      deferred.forEach(src => {
+        if (src.endsWith('.webm')) {
+          const video = document.createElement('video');
+          video.src = src;
+          video.preload = 'auto';
+          video.muted = true;
+          video.playsInline = true;
+        } else {
+          const img = new Image(); img.src = src;
+        }
+      });
+    }, { timeout: 3000 });
+  }
 
   function getFighterAnimation(fighterKey) {
     const meta = VS_FIGHTER_META[fighterKey];
@@ -6364,6 +6731,7 @@
     multBadge:   document.getElementById('multBadge'),
     multVal:     document.getElementById('multVal'),
     fsCount:     document.getElementById('fsCount'),
+    fsCancel:    document.getElementById('fsCancel'),
     toast:       document.getElementById('toast'),
     bonusIntro:  document.getElementById('bonusIntro'),
     biNum:       document.getElementById('biNum'),
@@ -6398,8 +6766,8 @@
     vsBattleScene:   document.getElementById('vsBattleScene'),
     vsFighterACard:  document.getElementById('vsFighterACard'),
     vsFighterBCard:  document.getElementById('vsFighterBCard'),
-    vsFighterAImg:   document.getElementById('vsFighterAImg'),
-    vsFighterBImg:   document.getElementById('vsFighterBImg'),
+    vsFighterAPortrait: document.getElementById('vsFighterAPortrait'),
+    vsFighterBPortrait: document.getElementById('vsFighterBPortrait'),
     vsFighterAName:  document.getElementById('vsFighterAName'),
     vsFighterBName:  document.getElementById('vsFighterBName'),
     vsFighterAMult:  document.getElementById('vsFighterAMult'),
@@ -6408,11 +6776,11 @@
     vsBattleKicker:  document.getElementById('vsBattleKicker'),
 
     vsAttackA:       document.getElementById('vsAttackA'),
-    vsAttackAImg:    document.getElementById('vsAttackAImg'),
+    vsAttackAVid:    document.getElementById('vsAttackAVid'),
     vsAttackAFx:     document.getElementById('vsAttackAFx'),
     vsAttackAMult:   document.getElementById('vsAttackAMult'),
     vsAttackB:       document.getElementById('vsAttackB'),
-    vsAttackBImg:    document.getElementById('vsAttackBImg'),
+    vsAttackBVid:    document.getElementById('vsAttackBVid'),
     vsAttackBFx:     document.getElementById('vsAttackBFx'),
     vsAttackBMult:   document.getElementById('vsAttackBMult'),
     rtpBtn:        document.getElementById('rtpBtn'),
@@ -6707,17 +7075,16 @@
     let vsWin = 0;
     let triggeredBonus = false;
 
-    // VS Battle simulation (H1 between two fighters on same row)
-    for (let col = 1; col <= 3; col++) {
-      for (let row = 0; row < 3; row++) {
-        if (baseGrid[col][row] === 'H1') {
-          const left = baseGrid[col - 1]?.[row];
-          const right = baseGrid[col + 1]?.[row];
-          if (fighterIds.includes(left) && fighterIds.includes(right)) {
-            // 50% player win chance, 2x-5x multiplier
-            if (CSPRNG.randomFloat() < 0.5) {
-              vsWin += bet * (2 + CSPRNG.randomInt(4));
-            }
+    // VS Battle simulation (H1 in center column between two fighters)
+    const vsCol = 2;
+    for (let row = 0; row < 3; row++) {
+      if (baseGrid[vsCol][row] === 'H1') {
+        const left = baseGrid[vsCol - 1]?.[row];
+        const right = baseGrid[vsCol + 1]?.[row];
+        if (fighterIds.includes(left) && fighterIds.includes(right)) {
+          // 50% player win chance, 2x-5x multiplier
+          if (CSPRNG.randomFloat() < 0.5) {
+            vsWin += bet * (2 + CSPRNG.randomInt(4));
           }
         }
       }
@@ -6934,6 +7301,30 @@
     return { count, cells };
   }
 
+  function applyCageHeatPips(scatterCount) {
+    // Only base game pips (Cage Heat). Exactly 2 visible scatters = +1 pip (capped at 5)
+    if (scatterCount !== 2 || state.mode !== 'base') return;
+    const before = state.pipsActive;
+    state.pipsActive = Math.min(5, state.pipsActive + 1);
+    updateHUD();
+    if (state.pipsActive > before) {
+      // Subtle heat feedback
+      const pipEls = els.pips ? Array.from(els.pips.children) : [];
+      if (pipEls[state.pipsActive - 1]) {
+        pipEls[state.pipsActive - 1].classList.add('fill-burst');
+        setTimeout(() => pipEls[state.pipsActive - 1] && pipEls[state.pipsActive - 1].classList.remove('fill-burst'), 520);
+      }
+      if (state.pipsActive >= 3) {
+        toast(state.pipsActive === 3 ? 'CAGE HEAT RISING' : 'OCTAGON PROTOCOL ACTIVE');
+      }
+      // Demo spotlight flavor: at 5 pips the next base spin forces a VS battle for flair
+      if (state.pipsActive === 5 && !state.replayActive) {
+        // Flag for next doSpin to inject a VS
+        state.pendingFeatureEntry = state.pendingFeatureEntry || 'heat';
+      }
+    }
+  }
+
   function countSymbolCells(grid, symbolId) {
     let count = 0;
     const cells = [];
@@ -6973,8 +7364,9 @@
   // Force a VS Battle by injecting belt + fighters into the grid center
   function forceVsBattleGrid(grid) {
     const newGrid = grid.map(col => col.slice());
-    // Place belt in center column (col 2), center row (row 1)
-    newGrid[2][1] = 'H1';
+    // Place belt in center column (col 2), center row (row 1) — demo/review only
+    const demoRow = 1;
+    newGrid[2][demoRow] = 'H1';
     // Pick 2 random distinct fighters
     const pool = VS_FIGHTER_SYMBOLS.slice();
     const idxA = CSPRNG.randomInt(pool.length);
@@ -6982,27 +7374,26 @@
     pool.splice(idxA, 1);
     const idxB = CSPRNG.randomInt(pool.length);
     const fighterB = pool[idxB];
-    // Place fighters on left and right of belt
-    newGrid[1][1] = fighterA;
-    newGrid[3][1] = fighterB;
+    // Place fighters on left and right of belt (same demo row)
+    newGrid[1][demoRow] = fighterA;
+    newGrid[3][demoRow] = fighterB;
     return newGrid;
   }
 
-  // Find all qualifying belt positions: belt on ANY row in middle columns with fighter on immediate left AND right
+  // Find qualifying belt position: belt in CENTER column (col 2) only, between two fighters
   function findVsBattleTriggers(grid) {
     if (state.mode !== 'base') return [];
     if (!grid) return [];
     const triggers = [];
     const fighterIds = ['H2', 'H3', 'H4', 'H5'];
-    // Check middle columns (1,2,3) on ALL rows (0,1,2)
-    for (let col = 1; col <= 3; col++) {
-      for (let row = 0; row < 3; row++) {
-        if (grid[col]?.[row] === 'H1') {
-          const leftFighter = grid[col - 1]?.[row];
-          const rightFighter = grid[col + 1]?.[row];
-          if (fighterIds.includes(leftFighter) && fighterIds.includes(rightFighter)) {
-            triggers.push({ beltCol: col, beltRow: row, leftFighter, rightFighter });
-          }
+    // Only check center column (col 2) on ALL rows (0,1,2)
+    const col = 2;
+    for (let row = 0; row < 3; row++) {
+      if (grid[col]?.[row] === 'H1') {
+        const leftFighter = grid[col - 1]?.[row];
+        const rightFighter = grid[col + 1]?.[row];
+        if (fighterIds.includes(leftFighter) && fighterIds.includes(rightFighter)) {
+          triggers.push({ beltCol: col, beltRow: row, leftFighter, rightFighter });
         }
       }
     }
@@ -7019,10 +7410,10 @@
     // Random multiplier 2x-5x for winner (balanced for ~96.5% total RTP)
     const winnerMult = 2 + CSPRNG.randomInt(4);
 
-    // Only transform the two cells adjacent to the belt (left and right)
+    // Only transform the two cells adjacent to the belt (left and right) on the actual trigger row
     const newGrid = grid.map(col => col.slice());
-    const leftCell = [trigger.beltCol - 1, 1];
-    const rightCell = [trigger.beltCol + 1, 1];
+    const leftCell = [trigger.beltCol - 1, trigger.beltRow];
+    const rightCell = [trigger.beltCol + 1, trigger.beltRow];
     // Cells stay as their fighter symbols (no wild transformation)
     const transformed = [leftCell, rightCell];
 
@@ -7042,12 +7433,26 @@
     const metaA = VS_FIGHTER_META[fighterA];
     const metaB = VS_FIGHTER_META[fighterB];
 
+    // Set names
+    els.vsFighterAName.textContent = metaA.name;
+    els.vsFighterBName.textContent = metaB.name;
+
+    // Set background images
+    console.log('Setting VS Battle images:', metaA.selectImg, metaB.selectImg);
+    if (els.vsFighterAPortrait) {
+      els.vsFighterAPortrait.style.backgroundImage = `url('${metaA.selectImg}')`;
+      console.log('Set fighter A portrait:', els.vsFighterAPortrait.style.backgroundImage);
+    } else {
+      console.error('vsFighterAPortrait element not found!');
+    }
+    if (els.vsFighterBPortrait) {
+      els.vsFighterBPortrait.style.backgroundImage = `url('${metaB.selectImg}')`;
+      console.log('Set fighter B portrait:', els.vsFighterBPortrait.style.backgroundImage);
+    } else {
+      console.error('vsFighterBPortrait element not found!');
+    }
+
     return new Promise((resolve) => {
-      // Show VS overlay - PICK YOUR FIGHTER phase
-      els.vsFighterAImg.src = metaA.selectImg;
-      els.vsFighterBImg.src = metaB.selectImg;
-      els.vsFighterAName.textContent = metaA.name;
-      els.vsFighterBName.textContent = metaB.name;
       // Hide multipliers until after win
       els.vsFighterAMult.textContent = '';
       els.vsFighterBMult.textContent = '';
@@ -7072,14 +7477,14 @@
       function pickA() {
         cleanup();
         els.vsFighterACard.classList.add('vs-picked');
-        els.vsFighterAImg.src = metaA.selectedImg;
+        if (els.vsFighterAPortrait) els.vsFighterAPortrait.style.backgroundImage = `url('${metaA.selectedImg}')`;
         state.vsPlayerPick = fighterA;
         resolve(fighterA);
       }
       function pickB() {
         cleanup();
         els.vsFighterBCard.classList.add('vs-picked');
-        els.vsFighterBImg.src = metaB.selectedImg;
+        if (els.vsFighterBPortrait) els.vsFighterBPortrait.style.backgroundImage = `url('${metaB.selectedImg}')`;
         state.vsPlayerPick = fighterB;
         resolve(fighterB);
       }
@@ -7154,13 +7559,32 @@
     (winnerIsA ? els.vsFighterACard : els.vsFighterBCard).classList.add('vs-winner');
     (winnerIsA ? els.vsFighterBCard : els.vsFighterACard).classList.add('vs-loser');
 
-    // Play winner's victory animation on their portrait (loops via GIF)
+    // Play winner's victory animation on their portrait (loops via video)
     const winnerAnim = CSPRNG.randomFloat() < 0.5 ? winnerMeta.animA : winnerMeta.animB;
-    const winnerImg = winnerIsA ? els.vsFighterAImg : els.vsFighterBImg;
-    const loserImg = winnerIsA ? els.vsFighterBImg : els.vsFighterAImg;
-    if (winnerImg) winnerImg.src = winnerAnim;
+    const winnerPortrait = winnerIsA ? els.vsFighterAPortrait : els.vsFighterBPortrait;
+    const loserPortrait = winnerIsA ? els.vsFighterBPortrait : els.vsFighterAPortrait;
+    if (winnerPortrait) {
+      winnerPortrait.style.backgroundImage = 'none';
+      let winVid = winnerPortrait.querySelector('video.vs-fighter-video');
+      if (!winVid) {
+        winVid = document.createElement('video');
+        winVid.className = 'vs-fighter-video';
+        winVid.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;z-index:1;';
+        winVid.loop = true;
+        winVid.muted = true;
+        winVid.playsInline = true;
+        winVid.autoplay = true;
+        winnerPortrait.appendChild(winVid);
+      }
+      winVid.src = winnerAnim;
+      winVid.play().catch(() => {});
+    }
     // Stop the loser's looping animation by freezing on their select image
-    if (loserImg) loserImg.src = winnerIsA ? metaB.selectImg : metaA.selectImg;
+    if (loserPortrait) {
+      const loseVid = loserPortrait.querySelector('video.vs-fighter-video');
+      if (loseVid) { loseVid.pause(); loseVid.remove(); }
+      loserPortrait.style.backgroundImage = `url('${winnerIsA ? metaB.selectImg : metaA.selectImg}')`;
+    }
 
     // Winner sound
     beep(523, 0.3, 0.09, 'triangle');
@@ -7226,11 +7650,12 @@
     // Play attack animation ON the winning fighter card
     const isA = winnerIsA;
     const attackEl = isA ? els.vsAttackA : els.vsAttackB;
-    const attackImg = isA ? els.vsAttackAImg : els.vsAttackBImg;
+    const attackVid = isA ? els.vsAttackAVid : els.vsAttackBVid;
     const attackFx = isA ? els.vsAttackAFx : els.vsAttackBFx;
     const attackMult = isA ? els.vsAttackAMult : els.vsAttackBMult;
 
-    attackImg.src = getFighterAnimation(winnerKey);
+    attackVid.src = getFighterAnimation(winnerKey);
+    attackVid.play().catch(() => {});
     attackMult.textContent = '×' + winnerMult;
 
     const fxTexts = ['KNOCKOUT!', 'DESTROYED!', 'FINISHED!', 'DOMINATED!', 'CRUSHED!'];
@@ -7257,9 +7682,17 @@
     state.vsPlayerPick = null;
     state.vsTransformedCells = [];
     state.vsTriggerBet = 0;
-    // Clear on-card attack overlays
-    if (els.vsAttackA) els.vsAttackA.classList.remove('show');
-    if (els.vsAttackB) els.vsAttackB.classList.remove('show');
+    // Clear on-card attack overlays and pause videos
+    if (els.vsAttackA) { els.vsAttackA.classList.remove('show'); if (els.vsAttackAVid) { els.vsAttackAVid.pause(); els.vsAttackAVid.src = ''; } }
+    if (els.vsAttackB) { els.vsAttackB.classList.remove('show'); if (els.vsAttackBVid) { els.vsAttackBVid.pause(); els.vsAttackBVid.src = ''; } }
+    // Clear portrait videos
+    [els.vsFighterAPortrait, els.vsFighterBPortrait].forEach(p => {
+      if (p) {
+        const vid = p.querySelector('video.vs-fighter-video');
+        if (vid) { vid.pause(); vid.remove(); }
+        p.style.backgroundImage = '';
+      }
+    });
     // CRITICAL: Clear any lingering onclick handlers on the overlay
     if (els.vsBattleOverlay) {
       els.vsBattleOverlay.onclick = null;
@@ -7371,7 +7804,7 @@
     roundsContainer.style.width = '100%';
     (state.championshipRoundWins || []).forEach(r => {
       const row = document.createElement('div');
-      row.style.cssText = "display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.08);font-family:'Oswald',sans-serif;font-size:14px;";
+      row.style.cssText = "display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.08);font-family:var(--ui-font);font-size:14px;";
       const label = document.createElement('span');
       label.style.color = '#71717a';
       label.textContent = 'ROUND ' + r.round;
@@ -7506,7 +7939,7 @@
     els.winAmount.textContent = formatMoney(amount, { withCurrency: false });
     els.winDisplay.classList.add('show');
     triggerStageImpact(amount >= getBet() * 5 ? 'big' : 'hit');
-    setHostByWin(amount, getBet());
+    setMaxByWin(amount, getBet());
   }
   function toast(msg) {
     els.toast.textContent = msg;
@@ -7576,7 +8009,7 @@
     else if (x >= 10) { label = 'BIG WIN'; }
     else if (x >= 5)  { label = 'NICE WIN'; }
     if (!label) return Promise.resolve();
-    setHostByWin(amount, play);
+    setMaxByWin(amount, play);
 
     return new Promise((resolve) => {
       if (state.mode === 'bonus') playCrownMusic(0.55, true);
@@ -8348,6 +8781,11 @@
     const events = getRoundEvents(round);
     let sawBonusReveal = false;
     let sawFeatureReveal = false;
+    // Set picked fighter from options if provided (Stake feature entry)
+    if (options.fighterId != null && pickedFighter == null) {
+      pickedFighter = options.fighterId;
+      buildBonusStripsForFighter(FIGHTERS[options.fighterId].symKey);
+    }
     if (options.featureEntry === 'free') {
       await showStakeFeatureEntryIntro('free');
     }
@@ -8369,6 +8807,13 @@
       const grid = rgsBoardToGrid(event.board);
       const revealWinInfo = findWinInfoForReveal(events, eventIndex);
       const { takeoverCols } = prepareFighterTakeoverForGrid(grid);
+
+      // Cage Heat pips also advance on live RGS reveals (visual only — server controls actual features)
+      if (state.mode === 'base') {
+        const sc = countScatterCells(grid).count;
+        applyCageHeatPips(sc);
+      }
+
       await new Promise(resolve => animateSpin(grid, resolve));
       await holdForStakeBonusReveal(revealMode === 'bonus' ? takeoverCols : [], revealWinInfo, play);
       const cells = winInfoToCells(revealWinInfo);
@@ -8415,7 +8860,7 @@
     clearWinVisuals();
     els.stage.classList.add('spin-ritual');
     updateHUD();
-    setHostAnimation('idle', { fps: 8, loop: true });
+    setMaxByWin(0, getBet()); // reset to idle
     if (els.spinBtn) {
       els.spinBtn.classList.add('stop');
       els.spinBtn.disabled = true;
@@ -8587,12 +9032,27 @@
 
     // ===== VS BATTLE CHECK (base game only) =====
     const vsTriggers = state.mode === 'base' ? findVsBattleTriggers(grid) : [];
+    console.log('VS Battle triggers found:', vsTriggers.length, 'Mode:', state.mode);
     const vsBattles = [];
     for (const trigger of vsTriggers) {
       vsBattles.push(setupVsBattle(grid, trigger));
     }
     const vsTriggered = vsBattles.length > 0;
+    console.log('VS Battles setup:', vsBattles.length, 'Triggered:', vsTriggered);
     let vsTotalWin = 0;
+
+    // Preload VS Battle images immediately so they're ready when overlay opens
+    if (vsTriggered && vsBattles.length > 0) {
+      const firstBattle = vsBattles[0];
+      const metaA = VS_FIGHTER_META[firstBattle.fighterA];
+      const metaB = VS_FIGHTER_META[firstBattle.fighterB];
+      if (metaA && els.vsFighterAPortrait) {
+        els.vsFighterAPortrait.style.backgroundImage = `url('${metaA.selectImg}')`;
+      }
+      if (metaB && els.vsFighterBPortrait) {
+        els.vsFighterBPortrait.style.backgroundImage = `url('${metaB.selectImg}')`;
+      }
+    }
 
     const result = vsTriggered ? null : evaluate(evalGrid, play);
 
@@ -8719,6 +9179,11 @@
         }
       }
       updateHUD();
+
+      // Cage Heat pips — exactly 2 scatters in base lights one pip (visual + demo spotlight flavor)
+      if (state.mode === 'base') {
+        applyCageHeatPips(result.scatterCount);
+      }
 
       // base-game scatter trigger
       if (state.mode === 'base' && result.scatterCount >= 3) {
@@ -8964,126 +9429,91 @@
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-  /* ============ HOST CHARACTER SPRITE ANIMATION ============ */
-  const HOST_ANIMATIONS = {
-    idle:   { url: 'assets/animation-pack/host-idle.png',   frameW: 470, frameH: 730, cols: 6, rows: 6, frames: 36 },
-    win:    { url: 'assets/animation-pack/host-win.png',    frameW: 470, frameH: 730, cols: 6, rows: 6, frames: 36 },
-    bigWin: { url: 'assets/animation-pack/host-bigwin.png', frameW: 470, frameH: 730, cols: 6, rows: 6, frames: 36 }
+  // ---- Max Character Animation System ----
+  // idle = slow loop (current), win animations = full speed, then return to idle
+  const MAX_ANIMATIONS = {
+    idle:       { folder: 'fighter-max',           fps: 4,  loop: true,  frameStart: 21 },
+    smallWin:   { folder: 'fighter-max-small-win',   fps: 12, loop: false, frameStart: 0 },
+    regularWin: { folder: 'fighter-max-regular-win', fps: 12, loop: false, frameStart: 0 },
+    bigWin:     { folder: 'fighter-max-big-win',     fps: 12, loop: false, frameStart: 0 },
+    biggerWin:  { folder: 'fighter-max-bigger-win',  fps: 12, loop: false, frameStart: 0 },
+    biggestWin: { folder: 'fighter-max-biggest-win', fps: 12, loop: false, frameStart: 0 }
   };
+  const MAX_FRAMES = 36;
+  let maxState = { raf: null, frame: 0, lastTime: 0, playing: false, current: 'idle' };
 
-  // Foot-center offset from frame center (in source pixels) per frame.
-  // Used to sync the platform position with the character's feet.
-  const HOST_FOOT_OFFSETS = {
-    idle:   [57.5,57.5,57.0,58.0,58.0,58.0,60.5,59.5,61.0,56.5,49.5,40.5,38.5,36.0,35.0,33.5,33.5,34.5,34.0,34.0,35.0,36.5,38.5,40.5,43.5,43.5,44.5,44.5,44.0,51.5,33.5,18.5,17.5,16.5,16.5,16.5],
-    win:    [58.0,58.0,56.5,56.5,55.5,57.0,57.5,56.0,56.0,56.0,56.0,55.5,55.5,55.5,56.0,55.5,56.0,38.0,16.5,15.5,16.5,17.5,19.0,24.5,24.5,24.0,22.5,20.5,18.0,15.5,15.0,15.5,15.5,15.5,15.0],
-    bigWin: [56.5,56.5,59.5,59.5,59.5,58.0,56.0,56.0,55.0,55.0,52.0,49.0,18.0,6.5,-18.5,-20.5,-11.5,-5.5,-3.0,2.0,4.5,7.0,4.5,3.5,3.5,3.0,2.0,-2.0,-4.5,-7.0,-4.5,-7.0,-0.5,0.0,0.0,-0.5]
-  };
-  let hostState = { anim: null, raf: null, frame: 0, lastTime: 0, fps: 12 };
-
-  async function loadHostSpriteData(key) {
-    const cfg = HOST_ANIMATIONS[key];
-    if (!cfg) return null;
-    // Preload image
-    if (!cfg._img) {
-      cfg._img = new Image();
-      cfg._img.src = cfg.url;
-      await new Promise((res, rej) => { cfg._img.onload = res; cfg._img.onerror = rej; });
-    }
-    return cfg;
-  }
-
-  function setHostAnimation(key, opts = {}) {
-    const el = document.getElementById('hostSprite');
-    if (!el) return;
-    const cfg = HOST_ANIMATIONS[key];
+  function startMaxAnimation(animKey) {
+    const img = document.getElementById('maxSprite');
+    if (!img) return;
+    const cfg = MAX_ANIMATIONS[animKey || 'idle'];
     if (!cfg) return;
     // Stop previous
-    if (hostState.raf) cancelAnimationFrame(hostState.raf);
-    hostState.anim = key;
-    hostState.frame = opts.startFrame || 0;
-    hostState.fps = opts.fps || 12;
-    hostState.lastTime = performance.now();
-    hostState.loop = opts.loop !== false;
-    hostState.el = el;
-    hostState.cfg = cfg;
-    el.style.backgroundImage = `url(${cfg.url})`;
-    // Scale to fill the 380x720 container while preserving aspect ratio
-    const containerW = 380;
-    const containerH = 720;
-    const scale = Math.min(containerW / cfg.frameW, containerH / cfg.frameH);
-    const scaledFrameW = cfg.frameW * scale;
-    const scaledFrameH = cfg.frameH * scale;
-    const sheetW = cfg.cols * cfg.frameW;
-    const sheetH = cfg.rows * cfg.frameH;
-    el.style.width = `${scaledFrameW}px`;
-    el.style.height = `${scaledFrameH}px`;
-    // background-size must match the scaled sprite sheet dimensions
-    el.style.backgroundSize = `${sheetW * scale}px ${sheetH * scale}px`;
-    updateHostFrame();
-    hostState.raf = requestAnimationFrame(hostTick);
+    if (maxState.raf) cancelAnimationFrame(maxState.raf);
+    maxState.current = animKey || 'idle';
+    maxState.frame = 0;
+    maxState.playing = true;
+    maxState.lastTime = performance.now();
+    maxState.cfg = cfg;
+    // Show first frame immediately
+    const frameNum = cfg.frameStart + maxState.frame;
+    img.src = 'assets/' + cfg.folder + '/frame_' + String(frameNum).padStart(3, '0') + '.png';
+    maxState.raf = requestAnimationFrame(maxTick);
   }
 
-  function updateHostFrame() {
-    const { el, cfg, frame, anim } = hostState;
-    if (!el || !cfg) return;
-    const col = frame % cfg.cols;
-    const row = Math.floor(frame / cfg.cols);
-    // backgroundPosition uses percentage for responsive scaling
-    const xPct = (col / (cfg.cols - 1)) * 100;
-    const yPct = (row / (cfg.rows - 1)) * 100;
-    el.style.backgroundPosition = `${xPct}% ${yPct}%`;
-
-    // Sync platform position to follow the character's feet
-    const platform = document.getElementById('hostPlatform');
-    if (platform && anim && HOST_FOOT_OFFSETS[anim]) {
-      const footOffsetSrc = HOST_FOOT_OFFSETS[anim][frame] || 0;
-      const scale = Math.min(380 / cfg.frameW, 720 / cfg.frameH);
-      const footOffsetPx = footOffsetSrc * scale * 0.5; // 50% speed
-      // Base right position from CSS is -190px; shift opposite to foot movement
-      const baseRight = -190;
-      platform.style.right = `${baseRight - footOffsetPx}px`;
-    }
-  }
-
-  function hostTick(now) {
-    const { cfg, lastTime, fps, loop } = hostState;
-    if (!cfg) return;
-    const frameDuration = 1000 / fps;
-    if (now - lastTime >= frameDuration) {
-      hostState.lastTime = now;
-      hostState.frame++;
-      if (hostState.frame >= cfg.frames) {
-        if (loop) {
-          hostState.frame = 0;
+  function maxTick(now) {
+    if (!maxState.playing) return;
+    const cfg = maxState.cfg || MAX_ANIMATIONS.idle;
+    const frameDuration = 1000 / cfg.fps;
+    if (now - maxState.lastTime >= frameDuration) {
+      maxState.lastTime = now;
+      maxState.frame++;
+      if (maxState.frame >= MAX_FRAMES) {
+        if (cfg.loop) {
+          maxState.frame = 0;
         } else {
-          hostState.frame = cfg.frames - 1;
-          hostState.raf = null;
-          return; // stop
+          // Non-looping animation finished — show last frame, then return to idle
+          maxState.frame = MAX_FRAMES - 1;
+          // Update image to last frame
+          const frameNum = cfg.frameStart + maxState.frame;
+          const img = document.getElementById('maxSprite');
+          if (img) img.src = 'assets/' + cfg.folder + '/frame_' + String(frameNum).padStart(3, '0') + '.png';
+          // Clean stop
+          maxState.playing = false;
+          maxState.raf = null;
+          // Switch back to idle after a brief pause
+          setTimeout(function() { startMaxAnimation('idle'); }, 200);
+          return;
         }
       }
-      updateHostFrame();
+      const frameNum = cfg.frameStart + maxState.frame;
+      const img = document.getElementById('maxSprite');
+      if (img) img.src = 'assets/' + cfg.folder + '/frame_' + String(frameNum).padStart(3, '0') + '.png';
     }
-    hostState.raf = requestAnimationFrame(hostTick);
+    maxState.raf = requestAnimationFrame(maxTick);
   }
 
-  function stopHostAnimation() {
-    if (hostState.raf) cancelAnimationFrame(hostState.raf);
-    hostState.raf = null;
-    hostState.anim = null;
+  function stopMaxAnimation() {
+    maxState.playing = false;
+    if (maxState.raf) cancelAnimationFrame(maxState.raf);
+    maxState.raf = null;
   }
 
-  function setHostByWin(amount, play) {
+  function setMaxByWin(amount, play) {
     if (!amount || amount <= 0) {
-      setHostAnimation('idle', { fps: 8, loop: true });
+      startMaxAnimation('idle');
       return;
     }
     const x = amount / play;
-    if (x >= 25) {
-      setHostAnimation('bigWin', { fps: 14, loop: true });
+    if (x >= 100) {
+      startMaxAnimation('biggestWin');
+    } else if (x >= 50) {
+      startMaxAnimation('biggerWin');
+    } else if (x >= 25) {
+      startMaxAnimation('bigWin');
     } else if (x >= 5) {
-      setHostAnimation('win', { fps: 12, loop: true });
+      startMaxAnimation('regularWin');
     } else {
-      setHostAnimation('idle', { fps: 8, loop: true });
+      startMaxAnimation('smallWin');
     }
   }
 
@@ -9093,9 +9523,9 @@
     const metaB = VS_FIGHTER_META[fighterB];
     // Only 2 cells: left and right of the belt. Add glow effect, no symbol change.
     for (const [col, row] of cells) {
-      const isLeft = col < 2; // belt is in col 1,2,3; left is col-1
+      const isLeft = col < 2; // left of center belt (col 2) is col 1
       const meta = isLeft ? metaA : metaB;
-      const cellData = reelStrips[col].cells[row];
+      const cellData = reelStrips[col] && reelStrips[col].cells[row];
       if (!cellData) continue;
 
       // Add pulse/glow animation to highlight the fighter cells
@@ -9141,13 +9571,14 @@
   }
 
   // ============= PICK YOUR FIGHTER =============
-  // fighter index → { spins, mult, color, name }
-  // All tiers have equal total value: spins × mult = 48x
+  // 4 fighter archetypes for Free Fights. Client pick biases reel strips (+6 of chosen fighter symbol)
+  // for frequent "takeover" moments and persistent multiplier across the awarded spins.
+  // Values chosen for premium feel, clear risk/reward, and balanced presentation EV.
   const FIGHTERS = [
-    { spins: 4,  mult: 4.85, color: 'red',    name: 'CHAMP',     sym: 'symbols/sym_champion.png', symKey: 'H2' },
-    { spins: 6,  mult: 3.85, color: 'orange', name: 'CHIEF',     sym: 'symbols/sym_chief.png',    symKey: 'H4' },
-    { spins: 8,  mult: 2.85, color: 'purple', name: 'RAGE',      sym: 'symbols/sym_shouter.png',  symKey: 'H5' },
-    { spins: 16, mult: 1.85, color: 'green',  name: 'MCWHISKEY', sym: 'symbols/sym_conor.png?v=2',symKey: 'H3' },
+    { spins: 5,  mult: 6.0,  color: 'red',    name: 'CHAMP',     sym: 'symbols/sym_champion.png', symKey: 'H2' },     // High-risk, explosive
+    { spins: 8,  mult: 4.0,  color: 'orange', name: 'CHIEF',     sym: 'symbols/sym_chief.png',    symKey: 'H4' },     // Classic power
+    { spins: 10, mult: 3.5,  color: 'purple', name: 'RAGE',      sym: 'symbols/sym_shouter.png',  symKey: 'H5' },     // Volume + steady
+    { spins: 12, mult: 3.0,  color: 'green',  name: 'MCWHISKEY', sym: 'symbols/sym_conor.png?v=2',symKey: 'H3' },     // Technical, long haul
   ];
 
   let pickedFighter = null;
@@ -9469,6 +9900,8 @@
     initErrorHandling();
     initStartupIntro();
     initReelsStatic();
+    // Preload fighter images for instant VS Battle display
+    preloadFighterImages();
     // Bonus buy buttons are visible by default in demo mode
     if (isReviewDemo()) {
       document.body.classList.add('demo-mode');
@@ -9486,10 +9919,8 @@
     updateHUD();
     fitStage();
     startEmbers();
-    // Start host character in idle animation
-    loadHostSpriteData('idle').then(() => {
-      setHostAnimation('idle', { fps: 8, loop: true });
-    }).catch(() => {});
+    // Start Max character animation
+    startMaxAnimation('idle');
 
     window.addEventListener('stake:replay', (e) => {
       const replayResp = e.detail || {};
@@ -9602,7 +10033,7 @@
       stopBalanceRefresh();
       stopEmbers();
       disposeAudioContext();
-      stopHostAnimation();
+      stopMaxAnimation();
     });
 
     if (els.spinBtn) els.spinBtn.addEventListener('click', doSpin);
@@ -9648,6 +10079,14 @@
     });
     if (els.featureFreeBtn) els.featureFreeBtn.addEventListener('click', () => chooseFeatureWithClick('free'));
     if (els.featureVsBtn) els.featureVsBtn.addEventListener('click', () => chooseFeatureWithClick('vs'));
+
+    // ----- Cancel Free Fights button -----
+    if (els.fsCancel) els.fsCancel.addEventListener('click', () => {
+      if (state.mode === 'bonus' && !state.spinning) {
+        state.freeSpinsLeft = 0;
+        endBonus();
+      }
+    });
 
     // ----- Buy Bonus Button opens feature menu -----
     if (els.bonusBuyBtn) els.bonusBuyBtn.addEventListener('click', openFeatureMenu);
@@ -9749,10 +10188,10 @@
     let ipfCurrentId = 0;
     const ipfColors = { 0: 'active-red', 1: 'active-gold', 2: 'active-blue', 3: 'active-purple' };
     const ipfMeta = [
-      { name: 'CHAMP', spins: 4, mult: 12, selectedImg: 'assets/fighter-select/champ_selected.gif' },
-      { name: 'CHIEF', spins: 6, mult: 8, selectedImg: 'assets/fighter-select/chief_selected.gif' },
-      { name: 'RAGE', spins: 8, mult: 6, selectedImg: 'assets/fighter-select/rage_selected.gif' },
-      { name: 'MCWHISKEY', spins: 16, mult: 3, selectedImg: 'assets/fighter-select/mcwhiskey_selected.gif' }
+      { name: 'CHAMP', spins: 4, mult: 12, selectedImg: 'assets/fighter-select/champ_pick.gif' },
+      { name: 'CHIEF', spins: 6, mult: 8, selectedImg: 'assets/fighter-select/chief_pick.gif' },
+      { name: 'RAGE', spins: 8, mult: 6, selectedImg: 'assets/fighter-select/rage_pick.gif' },
+      { name: 'MCWHISKEY', spins: 16, mult: 3, selectedImg: 'assets/fighter-select/mcwhiskey_pick.gif' }
     ];
     window.ipfSelectFighter = function(id) {
       ipfCurrentId = id;
@@ -9814,6 +10253,104 @@
         triggerBonus(false);
       }
     });
+
+    // === MOBILE PORTRAIT LAYOUT CUSTOM JS ===
+    // 1. Clock Sync
+    function updateMobileClock() {
+      const el = document.getElementById('mobileClock');
+      if (!el) return;
+      const now = new Date();
+      const hrs = String(now.getHours()).padStart(2, '0');
+      const mins = String(now.getMinutes()).padStart(2, '0');
+      el.textContent = `${hrs}:${mins}`;
+    }
+    setInterval(updateMobileClock, 1000);
+    updateMobileClock();
+
+    // 2. Sound Toggle Wiring
+    const mobSoundBtn = document.getElementById('mobileSoundToggle');
+    if (mobSoundBtn) {
+      // Sync initial state
+      mobSoundBtn.classList.toggle('off', !state.soundOn);
+      mobSoundBtn.addEventListener('click', () => {
+        if (els.soundBtn) {
+          els.soundBtn.click();
+          mobSoundBtn.classList.toggle('off', !state.soundOn);
+        }
+      });
+    }
+
+    // 3. Menu & Info Buttons Wiring
+    const mobMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobInfoBtn = document.getElementById('mobileInfoBtn');
+    [mobMenuBtn, mobInfoBtn].forEach(btn => {
+      if (btn) {
+        btn.addEventListener('click', () => {
+          if (els.infoBtn) els.infoBtn.click();
+        });
+      }
+    });
+
+    // 4. Bet Selector Modal Logic
+    window.openMobileBetModal = function() {
+      const modal = document.getElementById('mobileBetModal');
+      const grid = document.getElementById('mobileBetGrid');
+      if (!modal || !grid) return;
+      
+      // Clear grid
+      grid.innerHTML = '';
+      
+      // Populate grid with bet amounts
+      activeBetLevels.forEach((betVal, idx) => {
+        const btn = document.createElement('div');
+        btn.className = 'bet-grid-btn';
+        if (idx === state.betIdx) {
+          btn.classList.add('active');
+        }
+        btn.textContent = betVal.toFixed(2);
+        btn.addEventListener('click', () => {
+          window.selectMobileBet(idx);
+        });
+        grid.appendChild(btn);
+      });
+      
+      modal.classList.add('show');
+    };
+
+    window.closeMobileBetModal = function() {
+      const modal = document.getElementById('mobileBetModal');
+      if (modal) modal.classList.remove('show');
+    };
+
+    window.selectMobileBet = function(idx) {
+      if (state.mode !== 'base' || state.spinning) return;
+      state.betIdx = idx;
+      updateHUD();
+      window.closeMobileBetModal();
+    };
+
+    const mobCoinBtn = document.getElementById('mobileCoinBtn');
+    if (mobCoinBtn) {
+      mobCoinBtn.addEventListener('click', () => {
+        if (state.mode === 'base' && !state.spinning) {
+          window.openMobileBetModal();
+        }
+      });
+    }
+
+    // Hook sound state sync to updateHUD
+    const originalUpdateHUD = updateHUD;
+    updateHUD = function() {
+      originalUpdateHUD();
+      if (mobSoundBtn) {
+        mobSoundBtn.classList.toggle('off', !state.soundOn);
+      }
+      // Also update the class on Auto Play button in buttons row
+      const autoBtn = document.getElementById('icAutoMob');
+      if (autoBtn) {
+        autoBtn.classList.toggle('active', state.autoActive);
+      }
+    };
   }
 
   init();
@@ -9822,6 +10359,7 @@
 
 <script>
 (function(){
+  // Lightweight mirror of the main fitStage() logic so initial paint + very early resizes also stretch to top/bottom.
   function applyMobileStageScale(){
     var stage = document.getElementById('stage');
     if (!stage) return;
@@ -9830,24 +10368,826 @@
     var vh = Math.max(1, Math.round((vv && vv.height) || window.innerHeight || document.documentElement.clientHeight || 1));
     var portraitPhone = vw <= 820 && vh > vw;
     var containScale = Math.min(vw / 1920, vh / 1080);
-    var playScale = Math.min(1, vw / 720, vh / 960);
+    var playScale = Math.min(vw / 1020, vh / 1080);
     var scale = portraitPhone ? Math.max(containScale, playScale) : containScale;
-    var wrapper = stage.parentElement;
-    if (wrapper) wrapper.style.alignItems = portraitPhone ? 'flex-start' : 'center';
-    if (typeof window.__rfcApplyStageScale === 'function') {
-      window.__rfcApplyStageScale(scale, { portraitPhone: portraitPhone });
-    } else {
-      stage.style.transformOrigin = portraitPhone ? 'top center' : 'center center';
-      stage.style.transform = 'scale(' + scale + ')';
-    }
+    stage.style.transformOrigin = 'center center';
+    stage.style.transform = 'scale(' + scale + ')';
   }
   window.addEventListener('resize', applyMobileStageScale, { passive: true });
   window.addEventListener('orientationchange', function(){ setTimeout(applyMobileStageScale, 80); }, { passive: true });
   if (window.visualViewport) window.visualViewport.addEventListener('resize', applyMobileStageScale, { passive: true });
-  window.addEventListener('load', function(){ applyMobileStageScale(); setTimeout(applyMobileStageScale, 250); setTimeout(ensureViewportFit, 300); });
+  window.addEventListener('load', function(){ applyMobileStageScale(); setTimeout(applyMobileStageScale, 250); });
   applyMobileStageScale();
 })();
-
 </script>
+<!-- ==================== DEV LAYOUT TOOL ==================== -->
+<style id="dev-tool-styles">
+  #dev-layout-tool {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 999999;
+    background: rgba(20, 20, 24, 0.96);
+    border: 1px solid #3a3a42;
+    border-radius: 10px;
+    padding: 12px 14px;
+    width: 280px;
+    font-family: 'Barlow', system-ui, sans-serif;
+    font-size: 12px;
+    color: #ddd;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+  }
+  #dev-layout-tool.show { display: flex; }
+
+  #dev-layout-tool h3 {
+    margin: 0 0 4px;
+    font-size: 13px;
+    color: #ff7722;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  #dev-layout-tool .close {
+    margin-left: auto;
+    background: none;
+    border: none;
+    color: #888;
+    font-size: 16px;
+    cursor: pointer;
+    line-height: 1;
+  }
+
+  #dev-layout-tool select,
+  #dev-layout-tool input[type="text"] {
+    width: 100%;
+    background: #111;
+    border: 1px solid #333;
+    color: #fff;
+    padding: 5px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+  }
+
+  .dev-slider-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .dev-slider-row label {
+    width: 38px;
+    font-size: 10px;
+    color: #aaa;
+    flex-shrink: 0;
+  }
+  .dev-slider-row input[type="range"] {
+    flex: 1;
+  }
+  .dev-slider-row .val {
+    width: 42px;
+    text-align: right;
+    font-size: 10px;
+    color: #ff7722;
+    font-family: monospace;
+  }
+
+  #dev-layout-tool .buttons {
+    display: flex;
+    gap: 6px;
+    margin-top: 4px;
+  }
+  #dev-layout-tool button {
+    flex: 1;
+    background: #222;
+    border: 1px solid #444;
+    color: #ccc;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    cursor: pointer;
+  }
+  #dev-layout-tool button:hover {
+    background: #333;
+    border-color: #ff7722;
+  }
+  #dev-layout-tool .hint {
+    font-size: 9px;
+    color: #666;
+    margin-top: 2px;
+  }
+
+  /* Highlight for picked draggable element */
+  .dev-picked-for-drag {
+    outline: 3px solid #ff7722 !important;
+    outline-offset: 0px !important;
+    box-shadow: 0 0 0 8px rgba(255, 119, 34, 0.35) !important;
+    z-index: 99999 !important;
+  }
+</style>
+
+<div id="dev-layout-tool">
+  <h3>
+    DEV LAYOUT
+    <button class="close" onclick="document.getElementById('dev-layout-tool').classList.remove('show')">×</button>
+  </h3>
+
+  <select id="dev-target">
+    <option value="">-- Select element --</option>
+    <option value=".max-character">Max Character (side guy)</option>
+    <option value="#winDisplay">Win Display</option>
+    <option value="#inlineControls">Bottom HUD / Controls</option>
+    <option value="#reels">Reels Container</option>
+    <option value=".stage">Whole Stage</option>
+    <option value="#bgImg">Background Image (girl)</option>
+    <option value="#maxSprite">Max Sprite (inside character)</option>
+    <option value=".champ-mult">Championship Multiplier</option>
+    <option value="#winLayer">Win Layer (above reels)</option>
+    <option value="[class*='spin'],[id*='spin']">Spin Button (main)</option>
+  </select>
+
+  <input type="text" id="dev-custom-selector" placeholder="Or type any CSS selector (e.g. .my-class)">
+
+  <div class="dev-slider-row">
+    <label>X</label>
+    <input type="range" id="dev-x" min="-600" max="600" step="1" value="0">
+    <input type="number" id="dev-x-num" step="1" style="width:58px;background:#111;border:1px solid #333;color:#fff;padding:2px 4px;border-radius:3px;font-size:11px;">
+  </div>
+  <div class="dev-slider-row">
+    <label>Y</label>
+    <input type="range" id="dev-y" min="-400" max="400" step="1" value="0">
+    <input type="number" id="dev-y-num" step="1" style="width:58px;background:#111;border:1px solid #333;color:#fff;padding:2px 4px;border-radius:3px;font-size:11px;">
+  </div>
+  <div class="dev-slider-row">
+    <label>Scale</label>
+    <input type="range" id="dev-scale" min="0.2" max="3" step="0.01" value="1">
+    <input type="number" id="dev-scale-num" step="0.01" style="width:58px;background:#111;border:1px solid #333;color:#fff;padding:2px 4px;border-radius:3px;font-size:11px;">
+  </div>
+  <div class="dev-slider-row">
+    <label>Rot</label>
+    <input type="range" id="dev-rot" min="-90" max="90" step="1" value="0">
+    <input type="number" id="dev-rot-num" step="1" style="width:58px;background:#111;border:1px solid #333;color:#fff;padding:2px 4px;border-radius:3px;font-size:11px;">
+  </div>
+
+  <!-- Independent Width & Height -->
+  <div style="border-top:1px solid #333;margin:6px 0 2px;padding-top:6px;font-size:10px;color:#ff7722;">Independent Size</div>
+  <div class="dev-slider-row">
+    <label>W</label>
+    <input type="range" id="dev-w" min="0.2" max="4" step="0.01" value="1">
+    <input type="number" id="dev-w-num" step="0.01" style="width:58px;background:#111;border:1px solid #333;color:#fff;padding:2px 4px;border-radius:3px;font-size:11px;">
+  </div>
+  <div class="dev-slider-row">
+    <label>H</label>
+    <input type="range" id="dev-h" min="0.2" max="4" step="0.01" value="1">
+    <input type="number" id="dev-h-num" step="0.01" style="width:58px;background:#111;border:1px solid #333;color:#fff;padding:2px 4px;border-radius:3px;font-size:11px;">
+  </div>
+
+  <div class="buttons">
+    <button onclick="devApplyTransform()">Apply</button>
+    <button onclick="devResetCurrent()">Reset</button>
+    <button onclick="devLogCSS()">Log CSS</button>
+  </div>
+  <div class="buttons">
+    <button onclick="devClearAllTweaks()">Clear All Tweaks</button>
+  </div>
+
+  <!-- Selected Element Controls (appears when you Ctrl+Click something) -->
+  <div id="dev-selected-box" style="display:none; margin-top:8px; padding:8px; background:#2a1a00; border:2px solid #ff7722; border-radius:8px;">
+    <div style="font-size:11px; color:#ffaa22; font-weight:700; margin-bottom:6px;">
+      SELECTED: <span id="dev-selected-name" style="color:#fff;">—</span>
+    </div>
+
+    <!-- Dedicated X/Y sliders for the highlighted element -->
+    <div style="display:flex; flex-direction:column; gap:6px;">
+      <div style="display:flex; align-items:center; gap:6px;">
+        <span style="width:18px; font-size:10px; color:#ccc;">X</span>
+        <input type="range" id="dev-sel-x" min="-800" max="800" step="1" value="0" style="flex:1;">
+        <input type="number" id="dev-sel-x-num" style="width:60px; background:#111; border:1px solid #444; color:#fff; padding:2px 4px; font-size:11px;">
+      </div>
+      <div style="display:flex; align-items:center; gap:6px;">
+        <span style="width:18px; font-size:10px; color:#ccc;">Y</span>
+        <input type="range" id="dev-sel-y" min="-600" max="600" step="1" value="0" style="flex:1;">
+        <input type="number" id="dev-sel-y-num" style="width:60px; background:#111; border:1px solid #444; color:#fff; padding:2px 4px; font-size:11px;">
+      </div>
+    </div>
+
+    <div style="margin-top:8px; display:flex; gap:6px;">
+      <button id="dev-delete-btn" style="flex:1; background:#5c1a1a; border:1px solid #aa3333; color:#ffaaaa; font-size:10px; padding:4px;">
+        🗑️ Delete This Element
+      </button>
+      <button id="dev-restore-btn" style="flex:1; background:#1a3a1a; border:1px solid #33aa33; color:#aaffaa; font-size:10px; padding:4px;">
+        Restore Last Deleted
+      </button>
+    </div>
+  </div>
+
+
+
+  <div class="hint">Press <b>D</b> to toggle • Changes are live but temporary</div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  const tool = document.getElementById('dev-layout-tool');
+  const originalTransforms = new Map();
+
+  // === Helper: get the currently targeted element ===
+  function getTargetElement() {
+    const select = document.getElementById('dev-target');
+    const custom = document.getElementById('dev-custom-selector').value.trim();
+    const selector = custom || select.value;
+    if (!selector) return null;
+    try {
+      return document.querySelector(selector);
+    } catch (e) {
+      console.warn('Bad selector:', selector);
+      return null;
+    }
+  }
+
+  // === Parse current transform values (now includes scaleX / scaleY) ===
+  function parseTransform(el) {
+    const t = el.style.transform || '';
+
+    const xMatch   = t.match(/translateX\(([-\d.]+)px\)/);
+    const yMatch   = t.match(/translateY\(([-\d.]+)px\)/);
+    const sxMatch  = t.match(/scaleX\(([-\d.]+)\)/);
+    const syMatch  = t.match(/scaleY\(([-\d.]+)\)/);
+    const sMatch   = t.match(/(?<!scale[XY])\bscale\(([-\d.]+)\)/); // plain scale (not scaleX/Y)
+    const rMatch   = t.match(/rotate\(([-\d.]+)deg\)/);
+
+    // Prefer explicit scaleX/scaleY. Fall back to uniform scale if present.
+    let w = sxMatch ? parseFloat(sxMatch[1]) : (sMatch ? parseFloat(sMatch[1]) : 1);
+    let h = syMatch ? parseFloat(syMatch[1]) : (sMatch ? parseFloat(sMatch[1]) : 1);
+
+    return {
+      x: xMatch ? parseFloat(xMatch[1]) : 0,
+      y: yMatch ? parseFloat(yMatch[1]) : 0,
+      w: w,
+      h: h,
+      rot: rMatch ? parseFloat(rMatch[1]) : 0
+    };
+  }
+
+  // === Save original transform if we haven't yet ===
+  function ensureOriginalSaved(el) {
+    if (el && !originalTransforms.has(el)) {
+      originalTransforms.set(el, el.style.transform || '');
+    }
+  }
+
+  // === Build and apply the full transform string ===
+  function applyLiveTransform(el) {
+    if (!el) return;
+
+    const x   = document.getElementById('dev-x').value;
+    const y   = document.getElementById('dev-y').value;
+    const w   = document.getElementById('dev-w').value;
+    const h   = document.getElementById('dev-h').value;
+    const rot = document.getElementById('dev-rot').value;
+
+    let t = `translateX(${x}px) translateY(${y}px)`;
+
+    // Independent width/height via scaleX / scaleY
+    const wVal = parseFloat(w);
+    const hVal = parseFloat(h);
+    if (wVal !== 1 || hVal !== 1) {
+      t += ` scaleX(${wVal}) scaleY(${hVal})`;
+    }
+
+    if (parseFloat(rot) !== 0) t += ` rotate(${rot}deg)`;
+
+    el.style.transform = t;
+  }
+
+  // === Load current values of the selected element into ALL controls ===
+  function loadTargetIntoControls() {
+    const el = getTargetElement();
+    if (!el) return;
+
+    ensureOriginalSaved(el);
+
+    const vals = parseTransform(el);
+
+    // Update ranges
+    document.getElementById('dev-x').value     = vals.x;
+    document.getElementById('dev-y').value     = vals.y;
+    document.getElementById('dev-w').value     = vals.w;
+    document.getElementById('dev-h').value     = vals.h;
+    document.getElementById('dev-rot').value   = vals.rot;
+
+    // Update number inputs
+    document.getElementById('dev-x-num').value     = vals.x;
+    document.getElementById('dev-y-num').value     = vals.y;
+    document.getElementById('dev-w-num').value     = vals.w.toFixed(2);
+    document.getElementById('dev-h-num').value     = vals.h.toFixed(2);
+    document.getElementById('dev-rot-num').value   = vals.rot;
+  }
+
+  // === Sync a single control (range ↔ number) and apply live ===
+  function syncAndApply(changedId) {
+    const el = getTargetElement();
+    if (!el) return;
+
+    const isNum = changedId.includes('-num');
+    const base = changedId.replace('-num', '');
+
+    const range = document.getElementById(base);
+    const num   = document.getElementById(base + '-num');
+
+    if (!range || !num) return;
+
+    // Keep them in sync
+    if (isNum) {
+      range.value = num.value;
+    } else {
+      const isFloat = (base === 'dev-w' || base === 'dev-h' || base === 'dev-scale');
+      num.value = isFloat ? parseFloat(range.value).toFixed(2) : range.value;
+    }
+
+    applyLiveTransform(el);
+  }
+
+  // === RESET (now handles W/H too) ===
+  function devResetCurrent() {
+    const el = getTargetElement();
+    if (!el) {
+      alert('No element selected');
+      return;
+    }
+
+    const original = originalTransforms.get(el);
+    if (original !== undefined) {
+      el.style.transform = original;
+    } else {
+      el.style.transform = '';
+    }
+
+    loadTargetIntoControls();
+  }
+
+  function devLogCSS() {
+    const el = getTargetElement();
+    if (!el) return;
+
+    const sel = document.getElementById('dev-custom-selector').value.trim() ||
+                document.getElementById('dev-target').value ||
+                (el.id ? '#' + el.id : '.' + el.className.split(' ')[0]);
+
+    console.log(`\n/* === Dev tweak for ${sel} === */`);
+    console.log(`${sel} { transform: ${el.style.transform || 'none'}; }`);
+  }
+
+  function devClearAllTweaks() {
+    originalTransforms.forEach((orig, el) => {
+      el.style.transform = orig;
+    });
+    originalTransforms.clear();
+    loadTargetIntoControls();
+    console.log('%c[Dev] All tweaks cleared', 'color:#0f0');
+  }
+
+  // === Attach live listeners to all new + old controls ===
+  function attachControls() {
+    const ids = [
+      'dev-x', 'dev-y', 'dev-w', 'dev-h', 'dev-rot',
+      'dev-x-num', 'dev-y-num', 'dev-w-num', 'dev-h-num', 'dev-rot-num'
+    ];
+
+    ids.forEach(id => {
+      const input = document.getElementById(id);
+      if (!input) return;
+
+      input.addEventListener('input', () => syncAndApply(id));
+      input.addEventListener('change', () => syncAndApply(id));
+    });
+
+    // Reload controls when user picks a different target
+    document.getElementById('dev-target').addEventListener('change', loadTargetIntoControls);
+    document.getElementById('dev-custom-selector').addEventListener('input', loadTargetIntoControls);
+  }
+
+  function toggleDevTool() {
+    tool.classList.toggle('show');
+    if (tool.classList.contains('show')) {
+      setTimeout(loadTargetIntoControls, 40);
+    }
+  }
+
+  // Keyboard shortcuts
+  document.addEventListener('keydown', (e) => {
+    if (e.key.toLowerCase() === 'd' && !e.target.matches('input, textarea, select')) {
+      e.preventDefault();
+      toggleDevTool();
+    }
+    if (e.key === 'Escape') {
+      if (pickedDragElement) {
+        clearPickedElement();       // Clear picked draggable element
+      } else if (tool.classList.contains('show')) {
+        tool.classList.remove('show');
+      }
+    }
+  });
+
+  // === CTRL + CLICK DRAG PICKER ===
+  let pickedDragElement = null;
+  let dragStartMouseX = 0, dragStartMouseY = 0;
+  let dragStartX = 0, dragStartY = 0;
+  let isCurrentlyDragging = false;
+
+  function getStageScaleForDrag() {
+    const stage = document.querySelector('.stage');
+    if (!stage) return 1;
+    const t = stage.style.transform || '';
+    const m = t.match(/scale\(([-\d.]+)\)/);
+    return m ? parseFloat(m[1]) : 1;
+  }
+
+  function clearPickedHighlight() {
+    if (pickedDragElement) {
+      pickedDragElement.classList.remove('dev-picked-for-drag');
+    }
+  }
+
+  function setPickedElement(el) {
+    clearPickedHighlight();
+
+    pickedDragElement = el;
+
+    const box = document.getElementById('dev-selected-box');
+    const nameEl = document.getElementById('dev-selected-name');
+
+    if (el) {
+      el.classList.add('dev-picked-for-drag');
+
+      // Show the dedicated controls box
+      if (box) box.style.display = 'block';
+
+      // Show a friendly name
+      let name = el.id ? `#${el.id}` : '';
+      if (el.className) {
+        const cls = el.className.split(' ')[0];
+        name += name ? ` .${cls}` : `.${cls}`;
+      }
+      if (nameEl) nameEl.textContent = name || el.tagName.toLowerCase();
+
+      // Load current position into the dedicated X/Y sliders
+      loadSelectedPositionSliders();
+
+      console.log('[Dev Drag] Picked element:', el);
+    } else {
+      if (box) box.style.display = 'none';
+      if (nameEl) nameEl.textContent = '—';
+    }
+  }
+
+  function findGoodDraggableElement(target) {
+    if (!target) return null;
+    if (target.closest('#dev-layout-tool')) return null;
+
+    const stage = document.querySelector('.stage');
+    if (!stage || !stage.contains(target)) return null;
+
+    let current = target;
+
+    // Walk up from the exact clicked element.
+    while (current && current !== stage && stage.contains(current)) {
+
+      // === SPECIAL PRIORITY FOR IMPORTANT GAME ELEMENTS ===
+
+      // 1. The side character (fighter on the right) — always select the outer container
+      if (current.classList.contains('max-character') || current.id === 'maxCharacter') {
+        return current;
+      }
+      if (current.id === 'maxSprite' || current.classList.contains('max-sprite')) {
+        const parentChar = current.closest('.max-character') || current.closest('#maxCharacter');
+        if (parentChar) return parentChar;
+      }
+
+      // 2. Reels area — prefer the main reels container
+      if (current.id === 'reels') {
+        return current;
+      }
+      if (current.classList.contains('reels-wrap') || current.classList.contains('reels-container')) {
+        const reels = current.querySelector('#reels');
+        return reels || current;
+      }
+
+      // 3. Background girl (the ring girl baked into the right side of the bg image)
+      if (current.id === 'bgImg' || current.classList.contains('bg')) {
+        return current;
+      }
+
+      // 4. Main Spin Button (very common request)
+      const ccls = (current.className || '').toLowerCase();
+      if (ccls.includes('spin') || ccls.includes('medallion') || current.id === 'spinBtn' || current.id === 'spin-button') {
+        return current;
+      }
+
+      // === Balance / Bet boxes ===
+      const cls = (current.className || '').toLowerCase();
+      const isValueText = ['SPAN', 'DIV', 'P'].includes(current.tagName) &&
+                          (cls.includes('value') || cls.includes('amount') || cls.includes('balance') ||
+                           cls.includes('bet') || cls.includes('text') || cls.includes('number'));
+
+      if (isValueText) {
+        const parent = current.parentElement;
+        if (parent && stage.contains(parent)) {
+          const pCls = (parent.className || '').toLowerCase();
+          if (pCls.includes('box') || pCls.includes('container') || pCls.includes('hud') ||
+              pCls.includes('balance') || pCls.includes('bet') || pCls.includes('info') ||
+              pCls.includes('display') || pCls.includes('panel')) {
+            return parent;
+          }
+        }
+      }
+
+      // === Normal priority rules ===
+
+      // If we clicked directly on a button / svg / img / input → use it
+      if (current === target) {
+        const tag = current.tagName;
+        if (['BUTTON', 'SVG', 'IMG', 'INPUT', 'SELECT'].includes(tag)) {
+          return current;
+        }
+        if (current.children.length === 0 && current.textContent && current.textContent.trim().length > 0) {
+          return current;
+        }
+      }
+
+      // Has its own ID → very good
+      if (current.id) {
+        return current;
+      }
+
+      // Already has our dev transform
+      if (current.style && current.style.transform && current.style.transform.includes('translateX')) {
+        return current;
+      }
+
+      // Has a useful class
+      if (current.className && typeof current.className === 'string' && current.className.trim().length > 2) {
+        if (['BUTTON', 'SVG', 'IMG', 'SPAN'].includes(current.tagName)) {
+          return current;
+        }
+      }
+
+      // Never let the big control bar swallow a button or spin element
+      if (current.id === 'inlineControls') {
+        // Look for a better child (button or spin) from the original click
+        const better = target.closest('button, [class*="spin"], [id*="spin"]');
+        if (better) return better;
+        return current; // only if nothing better
+      }
+
+      current = current.parentElement;
+    }
+
+    // Last resort
+    return target;
+  }
+
+  // Simple direct Ctrl + Click picker (reverted to cleaner behavior)
+  function onPotentialCtrlDragStart(e) {
+    if (!e.ctrlKey) return;
+
+    const hit = document.elementFromPoint(e.clientX, e.clientY);
+    const target = findGoodDraggableElement(hit);
+
+    if (!target) {
+      console.log('[Dev Drag] Ctrl+Click: No suitable element found');
+      return;
+    }
+
+    // Select it
+    setPickedElement(target);
+
+    // Load into the main selector for visibility
+    const custom = document.getElementById('dev-custom-selector');
+    if (target.id) {
+      custom.value = '#' + target.id;
+    } else if (target.className) {
+      custom.value = '.' + target.className.split(' ')[0];
+    } else {
+      custom.value = '';
+    }
+
+    loadTargetIntoControls();
+
+    // Immediately start drag session
+    const vals = parseTransform(target);
+    dragStartX = vals.x;
+    dragStartY = vals.y;
+    dragStartMouseX = e.clientX;
+    dragStartMouseY = e.clientY;
+    isCurrentlyDragging = true;
+
+    document.body.style.cursor = 'grabbing';
+    e.preventDefault();
+    e.stopImmediatePropagation();
+  }
+
+  function onDragMove(e) {
+    if (!isCurrentlyDragging || !pickedDragElement) return;
+
+    const scale = getStageScaleForDrag();
+    const dx = (e.clientX - dragStartMouseX) / scale;
+    const dy = (e.clientY - dragStartMouseY) / scale;
+
+    const newX = dragStartX + dx;
+    const newY = dragStartY + dy;
+
+    // Update sliders live (main panel + selected box)
+    document.getElementById('dev-x').value = newX;
+    document.getElementById('dev-y').value = newY;
+    document.getElementById('dev-x-num').value = Math.round(newX);
+    document.getElementById('dev-y-num').value = Math.round(newY);
+
+    const sx = document.getElementById('dev-sel-x');
+    const sy = document.getElementById('dev-sel-y');
+    const sxn = document.getElementById('dev-sel-x-num');
+    const syn = document.getElementById('dev-sel-y-num');
+    if (sx) sx.value = newX;
+    if (sy) sy.value = newY;
+    if (sxn) sxn.value = Math.round(newX);
+    if (syn) syn.value = Math.round(newY);
+
+    // Apply transform
+    const w = document.getElementById('dev-w').value;
+    const h = document.getElementById('dev-h').value;
+    const rot = document.getElementById('dev-rot').value;
+
+    let t = `translateX(${newX}px) translateY(${newY}px)`;
+    if (parseFloat(w) !== 1 || parseFloat(h) !== 1) t += ` scaleX(${w}) scaleY(${h})`;
+    if (parseFloat(rot) !== 0) t += ` rotate(${rot}deg)`;
+
+    pickedDragElement.style.transform = t;
+  }
+
+  function onDragEnd() {
+    if (isCurrentlyDragging) {
+      isCurrentlyDragging = false;
+      document.body.style.cursor = pickedDragElement ? 'default' : '';
+
+      if (pickedDragElement) {
+        loadTargetIntoControls();
+        loadSelectedPositionSliders();
+        console.log('[Dev Drag] Finished dragging', pickedDragElement);
+      }
+    }
+  }
+
+  // Deselect with Escape
+  function clearPickedElement() {
+    clearPickedHighlight();
+    pickedDragElement = null;
+    isCurrentlyDragging = false;
+    document.body.style.cursor = '';
+
+    const box = document.getElementById('dev-selected-box');
+    if (box) box.style.display = 'none';
+
+    console.log('[Dev Drag] Cleared picked element');
+  }
+
+  // Dedicated X/Y sliders for the currently highlighted element
+  let deletedElements = []; // stack for restore
+
+  function loadSelectedPositionSliders() {
+    if (!pickedDragElement) return;
+
+    const vals = parseTransform(pickedDragElement);
+
+    const xRange = document.getElementById('dev-sel-x');
+    const yRange = document.getElementById('dev-sel-y');
+    const xNum   = document.getElementById('dev-sel-x-num');
+    const yNum   = document.getElementById('dev-sel-y-num');
+
+    if (xRange) xRange.value = vals.x;
+    if (yRange) yRange.value = vals.y;
+    if (xNum)   xNum.value = Math.round(vals.x);
+    if (yNum)   yNum.value = Math.round(vals.y);
+  }
+
+  function applySelectedPosition() {
+    if (!pickedDragElement) return;
+
+    const x = document.getElementById('dev-sel-x').value;
+    const y = document.getElementById('dev-sel-y').value;
+
+    const vals = parseTransform(pickedDragElement);
+    const w = vals.w;
+    const h = vals.h;
+    const rot = vals.rot;
+
+    let t = `translateX(${x}px) translateY(${y}px)`;
+    if (w !== 1 || h !== 1) t += ` scaleX(${w}) scaleY(${h})`;
+    if (rot !== 0) t += ` rotate(${rot}deg)`;
+
+    pickedDragElement.style.transform = t;
+
+    // Also sync the main panel sliders
+    document.getElementById('dev-x').value = x;
+    document.getElementById('dev-y').value = y;
+    document.getElementById('dev-x-num').value = x;
+    document.getElementById('dev-y-num').value = y;
+  }
+
+  function deletePickedElement() {
+    if (!pickedDragElement) return;
+
+    const el = pickedDragElement;
+
+    // Save for restore
+    deletedElements.push({
+      element: el,
+      display: el.style.display || '',
+      visibility: el.style.visibility || ''
+    });
+
+    el.style.display = 'none';
+
+    console.log('[Dev] Deleted element:', el);
+
+    // Deselect after delete
+    clearPickedElement();
+  }
+
+  function restoreLastDeleted() {
+    if (deletedElements.length === 0) {
+      alert('No deleted elements to restore');
+      return;
+    }
+
+    const last = deletedElements.pop();
+    if (last.element) {
+      last.element.style.display = last.display || '';
+      last.element.style.visibility = last.visibility || '';
+
+      // Re-pick it so user can adjust
+      setPickedElement(last.element);
+      console.log('[Dev] Restored element:', last.element);
+    }
+  }
+
+  // Global helpers
+  window.devLayout = {
+    show: () => { tool.classList.add('show'); loadTargetIntoControls(); },
+    hide: () => tool.classList.remove('show'),
+    clear: devClearAllTweaks,
+    reset: devResetCurrent,
+    clearPicked: clearPickedElement
+  };
+
+  // Boot
+  attachControls();
+
+  // === Attach Ctrl+Click + Drag listeners (always active) ===
+  document.addEventListener('mousedown', onPotentialCtrlDragStart, true);
+  document.addEventListener('mousemove', onDragMove, true);
+  document.addEventListener('mouseup', onDragEnd, true);
+
+  // Wire the dedicated selected-element sliders + delete/restore buttons
+  function attachSelectedElementControls() {
+    const ids = ['dev-sel-x', 'dev-sel-y', 'dev-sel-x-num', 'dev-sel-y-num'];
+
+    ids.forEach(id => {
+      const input = document.getElementById(id);
+      if (input) {
+        input.addEventListener('input', applySelectedPosition);
+        input.addEventListener('change', applySelectedPosition);
+      }
+    });
+
+    const delBtn = document.getElementById('dev-delete-btn');
+    if (delBtn) delBtn.addEventListener('click', deletePickedElement);
+
+    const restoreBtn = document.getElementById('dev-restore-btn');
+    if (restoreBtn) restoreBtn.addEventListener('click', restoreLastDeleted);
+  }
+
+  attachSelectedElementControls();
+
+  // ?dev=1 shows a small floating button
+  if (new URLSearchParams(location.search).get('dev') === '1') {
+    const btn = document.createElement('div');
+    btn.textContent = 'DEV';
+    btn.style.cssText = 'position:fixed;top:8px;right:8px;background:#ff7722;color:#111;padding:3px 9px;border-radius:4px;font-size:10px;z-index:999999;cursor:pointer;font-weight:700';
+    btn.onclick = () => {
+      tool.classList.toggle('show');
+      if (tool.classList.contains('show')) loadTargetIntoControls();
+    };
+    document.body.appendChild(btn);
+  }
+
+  console.log('%c[Dev Layout Tool] Ctrl+Click to pick & drag elements is now active. Hold Ctrl and click anything.', 'color:#0f0');
+})();
+</script>
+<!-- ================== END DEV LAYOUT TOOL ================== -->
+
 </body>
 </html>
+
