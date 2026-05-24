@@ -1823,6 +1823,11 @@
     position: relative;
     overflow: hidden;
   }
+  @media (max-width: 700px) {
+    .auto-confirm-inner {
+      padding: 20px 30px; /* Reduced padding for smaller screens */
+    }
+  }
   .auto-confirm-inner h2 {
     font-family: var(--ui-font);
     color: var(--orange);
@@ -1891,6 +1896,11 @@
     position: relative;
     overflow-y: auto;
     overflow-x: hidden;
+  }
+  @media (max-width: 700px) {
+    .modal-inner {
+      padding: 20px 30px; /* Reduced padding for smaller screens */
+    }
   }
   .modal-inner::before {
     content: '';
