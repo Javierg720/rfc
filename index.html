@@ -6171,12 +6171,27 @@
       }
       #inlineBuyBonus .ibb-ambient-flicker { animation: ibb-flicker 6s infinite alternate; }
       @keyframes ibb-flicker { 0%, 100% { opacity: 0.8; } 45% { opacity: 0.9; } 50% { opacity: 0.6; } 55% { opacity: 0.85; } }
+
+      @media (max-width: 700px) {
+        #inlineBuyBonus .ibb-main-content {
+          max-width: 100% !important;
+          padding: 0 10px; /* Add some horizontal padding */
+        }
+        #inlineBuyBonus .ibb-feature-grid {
+          grid-template-columns: 1fr !important; /* Single column for smaller screens */
+          gap: 16px !important; /* Reduced gap */
+        }
+        #inlineBuyBonus .ibb-card-red > .ibb-octagon-card.ibb-carbon > .ibb-octagon-card,
+        #inlineBuyBonus .ibb-card-blue > .ibb-octagon-card.ibb-carbon > .ibb-octagon-card {
+          padding: 16px !important; /* Reduced padding for inner card content */
+        }
+      }
     </style>
     <div id="inlineBuyBonus">
       <div class="ibb-spotlight-1 ibb-ambient-flicker"></div>
       <div class="ibb-spotlight-2 ibb-ambient-flicker"></div>
       <div class="ibb-cage-mesh"></div>
-      <div style="width:100%;max-width:1100px;margin:auto;position:relative;z-index:10;">
+      <div class="ibb-main-content" style="width:100%;max-width:1100px;margin:auto;position:relative;z-index:10;">
         <div style="text-align:center;margin-bottom:48px;">
           <div style="display:inline-flex;align-items:center;gap:16px;margin-bottom:12px;">
             <span style="width:12px;height:12px;background:#ff002b;transform:rotate(45deg);box-shadow:0 0 8px #ff002b;"></span>
@@ -6186,7 +6201,7 @@
           <h1 style="font-family:var(--ui-font);font-size:clamp(48px,8vw,96px);font-weight:900;letter-spacing:-0.02em;color:#fff;text-transform:uppercase;font-style:italic;line-height:1;margin:0;">CHOOSE <span class="ibb-gold-text">FEATURE</span></h1>
           <p style="color:#a1a1aa;font-family:var(--ui-font);font-size:clamp(10px,1.5vw,14px);max-width:500px;margin:16px auto 0;text-transform:uppercase;letter-spacing:0.15em;font-weight:600;">LOCK IN THE BONUS ROUND AT YOUR CURRENT PLAY AMOUNT.</p>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;max-width:900px;margin:0 auto;position:relative;">
+        <div class="ibb-feature-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:32px;max-width:900px;margin:0 auto;position:relative;">
           <div style="display:none;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:20;width:80px;height:80px;background:#000;border:4px solid #27272a;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(0,0,0,0.9);" class="ibb-vs-badge">
             <div style="width:100%;height:100%;border-radius:50%;border:1px solid rgba(212,175,55,0.4);display:flex;align-items:center;justify-content:center;background:rgba(9,9,11,0.9);">
               <span style="font-family:var(--ui-font);font-weight:900;font-size:28px;font-style:italic;letter-spacing:-0.05em;color:#fff;">VS</span>
