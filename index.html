@@ -1379,7 +1379,7 @@
     bottom: 6px;
     left: 50%;
     transform: translateX(-50%);
-    display: block;
+    display: none; /* Hide bet-panel everywhere by default */
     width: 1450px;
     height: 228px;
     padding: 0;
@@ -1391,7 +1391,7 @@
   }
   @media (min-width: 1024px) {
     .bet-panel {
-      display: none; /* Hide bet-panel on desktop to avoid double controls */
+      display: none; /* Ensure bet-panel remains hidden on desktop */
     }
   }
   .balance, .bet-display {
