@@ -1,0 +1,165 @@
+/* ============================================
+   RFC Slot Game - Dev Layout Tweaks
+   ============================================
+
+   Use the in-game DEV panel (top-left "DEV" button or press D key)
+   to live-tune:
+     • Reels + Reels Container  (position, size)
+     • Reel Frame               (x/y inset + scale)
+     • Girl / Fighter character (full 6-axis: left/right/top/bottom/width/height)
+
+   These settings now affect BOTH desktop AND mobile (portrait).
+   The mobile media queries read the same --dev-* variables.
+
+   Then click EXPORT — it copies a clean :root {} block you can paste here.
+
+   Example output from the panel:
+   :root {
+     --dev-reels-container-y: -18px;
+     --dev-reel-frame-x: -1.5%;
+     --dev-max-w: 298px;
+     ...
+   }
+   ============================================ */
+
+/* User's current persistent settings (baked into main CSS)
+   These now actively drive .reels-container, .reels, #reel-frame-ov and .max-character
+   on BOTH desktop and (via responsive) mobile. Edit values or paste EXPORT from the DEV panel.
+*/
+
+/* ============================================
+   DESKTOP - Main tuned layout
+   (from desktop.txt export)
+============================================ */
+:root {
+  --dev-reels-container-y: 122px;
+  --dev-reels-container-w: 1163.2px;
+  --dev-reels-container-h: 710.8px;
+
+  /* Inner Reels */
+  --dev-reels-offset-x: 69px;
+  --dev-reels-y: 209px;
+  --dev-reels-w: 862px;
+  --dev-reels-h: 212px;
+
+  /* Reel Frame — now uses tx/ty for independent positioning */
+  --dev-reel-frame-x: 1.7%;
+  --dev-reel-frame-y: -25%;
+  --dev-reel-frame-tx: 6.6%;
+  --dev-reel-frame-ty: 12.1%;
+  --dev-reel-frame-scale: 0.93;
+
+  /* Girl / Fighter */
+  --dev-max-right: 120px;
+  --dev-max-bottom: -216px;
+  --dev-max-w: 211px;
+  --dev-max-h: 406px;
+}
+
+/* ============================================
+   IPAD (Portrait)
+   (from ipad.txt export)
+============================================ */
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+  :root {
+    --dev-reels-container-y: 142px;
+    --dev-reels-container-w: 898.6px;
+    --dev-reels-container-h: 694px;
+
+    /* Inner Reels */
+    --dev-reels-offset-x: 89px;
+    --dev-reels-y: 209px;
+    --dev-reels-w: 484px;
+    --dev-reels-h: 188px;
+
+    /* Reel Frame */
+    --dev-reel-frame-x: 8%;
+    --dev-reel-frame-y: 7.2%;
+    --dev-reel-frame-tx: -8.25%;
+    --dev-reel-frame-ty: 2.2%;
+    --dev-reel-frame-scale: 0.93;
+
+    /* Girl */
+    --dev-max-right: -84px;
+    --dev-max-bottom: -216px;
+    --dev-max-w: 211px;
+    --dev-max-h: 406px;
+  }
+}
+
+/* ============================================
+   IPHONE (Portrait)
+   (from iphone.txt export)
+============================================ */
+@media (max-width: 480px), (max-width: 820px) and (orientation: portrait) {
+  :root {
+    --dev-reels-container-y: 86px;
+    --dev-reels-container-w: 810.4px;
+    --dev-reels-container-h: 710.8px;
+
+    /* Inner Reels */
+    --dev-reels-offset-x: 21px;
+    --dev-reels-y: 209px;
+    --dev-reels-w: 358px;
+    --dev-reels-h: 212px;
+
+    /* Reel Frame */
+    --dev-reel-frame-x: -12.65%;
+    --dev-reel-frame-y: 12.8%;
+    --dev-reel-frame-tx: 4.95%;
+    --dev-reel-frame-ty: 7.7%;
+    --dev-reel-frame-scale: 0.93;
+
+    /* Girl */
+    --dev-max-right: -276px;
+    --dev-max-bottom: -308px;
+    --dev-max-w: 247px;
+    --dev-max-h: 406px;
+  }
+}
+
+/* MOBILE settings (for JS defaults / RESET button in DEV panel)
+   These act as fallback values when no media query matches.
+*/
+:root.mobile {
+  --dev-reels-container-y: 86px;
+  --dev-reels-container-w: 810.4px;
+  --dev-reels-container-h: 710.8px;
+  --dev-reels-offset-x: 21px;
+  --dev-reels-y: 209px;
+  --dev-reels-w: 358px;
+  --dev-reels-h: 212px;
+
+  --dev-reel-frame-x: -12.65%;
+  --dev-reel-frame-y: 12.8%;
+  --dev-reel-frame-tx: 4.95%;
+  --dev-reel-frame-ty: 7.7%;
+  --dev-reel-frame-scale: 0.93;
+
+  --dev-max-right: -276px;
+  --dev-max-bottom: -308px;
+  --dev-max-w: 247px;
+  --dev-max-h: 406px;
+}
+
+/* ============================================
+   NOTES
+============================================
+
+New variables added for better control:
+  --dev-reel-frame-tx / --dev-reel-frame-ty   → independent translation of the reel frame
+  (used in addition to the inset x/y for size)
+
+These three device profiles were generated from the in-game RFC Layout Editor (RLE):
+  - desktop.txt
+  - ipad.txt
+  - iphone.txt
+
+To update in the future:
+  1. Use the in-game RLE (top-left panel) or press D for the full DEV panel
+  2. Tune per device
+  3. EXPORT and paste the :root block into the correct section above
+
+*/
+
+/* Paste future dev panel exports below this line */

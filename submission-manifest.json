@@ -1,6 +1,6 @@
 {
   "game": "RFC",
-  "version": "5.6.0",
+  "version": "5.7.0",
   "packageType": "frontend",
   "entry": "index.html",
   "rtpTarget": "97.0%",
@@ -9,9 +9,9 @@
   "runtime": "Self-contained HTML5/CSS/JavaScript",
   "assets": {
     "policy": "Uses RFC background, bundled symbol art, bundled audio, exact supplied feature-menu and fighter-picker art, premium move-symbol artwork for Bonus 2, and CSS-built Cage Heat gauge artwork",
-    "background": "art/rfc_bg.png",
-    "symbolsDirectory": "symbols/",
-    "moveSymbolsDirectory": "symbols/moves/",
+    "background": "assets/main-bg.jpg"
+    "symbolsDirectory": "assets/symbols/",
+    "moveSymbolsDirectory": "assets/symbols/moves/",
     "uploadsDirectory": "uploads/"
   },
   "rgs": {
@@ -26,7 +26,7 @@
     "Cage Scatter Free Fights",
     "Fighter Pick Multiplier Bonus",
     "Cage Heat Rival Callout",
-    "Final Bell Duel Bonus 2",
+    "Final Bell Duel (5-round title fight championship)",
     "Championship Multiplier reveal on title-belt wins",
     "Continuous Auto Play Toggle",
     "Cinematic Ceremony Layer",

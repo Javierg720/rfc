@@ -1,0 +1,55 @@
+- generic [active] [ref=e1]:
+  - button "Full Screen" [ref=e2] [cursor=pointer]:
+    - img [ref=e3]
+  - main [ref=e5]:
+    - region "Game board" [ref=e6]:
+      - dialog "Intro animation. Click to skip." [ref=e7] [cursor=pointer]: CLICK TO SKIP
+      - img
+      - generic:
+        - generic:
+          - generic:
+            - generic: BONUS
+            - generic: FREE FIGHTS
+            - generic: PICK YOUR FIGHTER
+      - generic:
+        - generic:
+          - generic: BELT SHOWDOWN
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - generic: KNOCKOUT!
+                  - generic: ×5
+              - generic: FIGHTER A
+            - generic: VS
+            - generic:
+              - generic:
+                - generic:
+                  - generic: KNOCKOUT!
+                  - generic: ×5
+              - generic: FIGHTER B
+          - generic: PICK YOUR FIGHTER
+      - button "Toggle sounds" [ref=e11] [cursor=pointer]: S
+      - button "i" [ref=e12] [cursor=pointer]
+      - generic:
+        - generic: WIN
+        - generic: "0.00"
+      - generic:
+        - generic: BIG WIN
+        - generic: "0.00"
+    - generic:
+      - img
+      - button "BUY BONUS" [ref=e141] [cursor=pointer]
+      - generic [ref=e142]:
+        - generic [ref=e143]:
+          - generic [ref=e144]: BALANCE
+          - generic [ref=e145]: "1000.00"
+        - button "Decrease bet" [ref=e146] [cursor=pointer]:
+          - img [ref=e147]
+        - button "Spin" [ref=e148] [cursor=pointer]:
+          - img [ref=e149]
+        - button "Increase bet" [ref=e156] [cursor=pointer]:
+          - img [ref=e157]
+        - generic [ref=e159]:
+          - generic [ref=e160]: TOTAL BET
+          - generic [ref=e161]: "1.00"

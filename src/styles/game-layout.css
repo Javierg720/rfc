@@ -1,0 +1,2116 @@
+/* Define core layout variables */
+:root {
+  /* Reel dimensions */
+  --reel-width: 180px; /* Width of a single reel cell */
+  --reel-height: 180px; /* Height of a single reel cell */
+  --reel-gap: 10px; /* Gap between reels and between cells within a reel */
+  --num-reels: 5;
+  --num-rows: 3; /* Visible rows */
+
+  /* Cage overlay adjustments */
+  --cage-offset-x: 0px; /* Horizontal adjustment for cage */
+  --cage-offset-y: 0px; /* Vertical adjustment for cage */
+  --cage-scale: 1; /* Scale factor for the cage overlay if needed */
+
+  /* Game area dimensions (based on 1920x1080 reference) */
+  --game-area-width: 1920px;
+  --game-area-height: 1080px;
+
+  /* Calculated reel area dimensions */
+  --reels-total-width: calc(var(--num-reels) * var(--reel-width) + (var(--num-reels) - 1) * var(--reel-gap));
+  --reels-total-height: calc(var(--num-rows) * var(--reel-height) + (var(--num-rows) - 1) * var(--reel-gap));
+
+  /* UI Fonts - existing from index.html */
+  --ui-font: 'Barlow Condensed', sans-serif;
+  --display-font: 'Black Ops One', cursive;
+
+  /* Existing color variables from index.html */
+  --orange:   #cc1a2e;
+  --orange-2: #8b0e1c;
+  --orange-3: #ff7722;
+  --orange-4: #ffa144;
+  --green:    #22dd22;
+  --red:      #ff2222;
+  --ink:      #0a0505;
+  --ink-2:    #150a0a;
+  --dust:     #888;
+  --dust-2:   #555;
+  --edge:     #333;
+  --edge-2:   #222;
+
+  /* Existing UI asset variables from index.html */
+  /* --ui-reel-frame erased */
+  --ui-bottom-hud: url("./assets/ui/bottom-hud-shell.webp");
+  --ui-spin-medallion: url("./assets/ui/spin-medallion.webp");
+}
+
+/* Basic reset and full viewport setup - existing from index.html */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%; height: 100vh;
+  margin: 0; padding: 0;
+  overflow: hidden;
+  background: #000;
+  font-family: var(--ui-font);
+  user-select: none;
+  color: #fff;
+}
+
+.wrapper {
+  width: 100vw; height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+  overflow: hidden;
+}
+
+.stage {
+  position: relative;
+  flex-shrink: 0;
+  width: var(--game-area-width);
+  height: var(--game-area-height);
+  background: transparent;
+  transform-origin: center center;
+  overflow: hidden;
+  z-index: 1;
+  /* The existing scaling logic for the stage should remain,
+     but the internal layout will be more robust */
+}
+
+/* Main game area container */
+.game-area {
+  position: absolute;
+  inset: 0; /* Fills the stage */
+  display: grid;
+  grid-template-columns: 1fr auto 1fr; /* Left empty space, game content, right empty space */
+  grid-template-rows: auto 1fr auto; /* Top UI, main game (reels/announcer), bottom UI */
+  width: 100%;
+  height: 100%;
+  place-items: center; /* Center content within grid cells */
+}
+
+/* Reel and Cage Container - this is the core alignment challenge */
+.reel-cage-container {
+  grid-column: 2 / 3; /* Center column */
+  grid-row: 2 / 3; /* Middle row */
+  position: relative;
+  width: var(--reels-total-width);
+  height: calc(var(--reels-total-height) + 12px); /* Account for 6px padding top/bottom of .reels */
+  display: grid; /* Use grid to layer reels and cage */
+  place-items: center; /* Center content within this container */
+}
+
+.reels {
+  grid-area: 1 / 1 / 2 / 2; /* Occupy the entire grid area */
+  display: flex; /* For horizontal arrangement of reels */
+  gap: var(--reel-gap);
+  background: rgba(0, 0, 0, 0.78); /* Existing background */
+  padding: 6px; /* Existing padding */
+  border-radius: 0; /* Existing */
+  box-shadow: none; /* Existing */
+  z-index: 0; /* Below the cage */
+  position: relative; /* For win-layer positioning */
+}
+
+.reel {
+  width: var(--reel-width);
+  height: calc(var(--num-rows) * var(--reel-height) + (var(--num-rows) - 1) * var(--reel-gap));
+  position: relative;
+  overflow: hidden;
+  background: #0a0a0a;
+  border-radius: 4px;
+}
+
+.strip {
+  position: absolute;
+  left: 0; right: 0; top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--reel-gap);
+  will-change: transform, filter;
+}
+
+.cell {
+  width: var(--reel-width);
+  height: var(--reel-height);
+  position: relative;
+  background: /* Existing cell background */
+    radial-gradient(circle at 50% 38%, rgba(255,255,255,0.08), transparent 42%),
+    linear-gradient(180deg, rgba(26,5,9,0.94), rgba(5,2,3,0.98));
+  overflow: hidden;
+  flex-shrink: 0;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 75, 92, 0.16);
+  box-shadow: inset 0 0 18px rgba(0,0,0,0.72), inset 0 0 0 2px rgba(255,255,255,0.025);
+}
+.cell-img {
+  position: absolute; inset: 4px;
+  width: calc(100% - 8px); height: calc(100% - 8px);
+  object-fit: contain;
+  pointer-events: none;
+  z-index: 2;
+  filter: contrast(1.08) saturate(0.94) drop-shadow(0 9px 10px rgba(0,0,0,0.68));
+}
+
+/* Cage Overlay - this is where the magic happens for alignment */
+.cage-overlay {
+  grid-area: 1 / 1 / 2 / 2; /* Occupy the exact same grid area as .reels */
+  position: relative; /* For internal positioning of bars if not using SVG */
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* Allow clicks to pass through to reels */
+  z-index: 10; /* Above the reels */
+  /* The cage image itself */
+  background: url('/assets/new-cage-overlay.png') center center / contain no-repeat; /* Assuming a single cage image */
+  /* Adjustments using CSS variables */
+  transform: translate(var(--cage-offset-x), var(--cage-offset-y)) scale(var(--cage-scale));
+  transform-origin: center center;
+}
+
+/* Announcer character */
+.max-character {
+  grid-column: 3 / 4; /* Right column */
+  grid-row: 2 / 3; /* Middle row */
+  align-self: end; /* Align to bottom of its grid cell */
+  justify-self: end; /* Align to right of its grid cell */
+  width: 334px; /* Existing width */
+  height: 538px; /* Existing height */
+  z-index: 18;
+  pointer-events: none;
+  overflow: hidden;
+  /* Adjust position if needed */
+  margin-right: 20px; /* Example adjustment */
+  margin-bottom: 0;
+}
+.max-character img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* Use contain to ensure full image is visible */
+  object-position: bottom center;
+}
+
+/* Bottom UI Panel */
+.bet-panel {
+  grid-column: 1 / -1; /* Span all columns */
+  grid-row: 3 / 4; /* Bottom row */
+  align-self: end; /* Align to bottom of its grid cell */
+  width: 1450px; /* Existing width */
+  height: 228px; /* Existing height */
+  background: var(--ui-bottom-hud) center/100% 100% no-repeat;
+  z-index: 20;
+  /* Existing styles for bet-panel children should be adjusted relative to this new grid context */
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  :root {
+    --reel-width: 140px;
+    --reel-height: 140px;
+    --reel-gap: 8px;
+    --game-area-width: 100vw; /* Make game area fill width */
+    --game-area-height: 100vh; /* Make game area fill height */
+  }
+  .stage {
+    width: 100vw;
+    height: 100vh;
+    transform: none !important; /* Disable fixed scaling, let flex/grid handle it */
+  }
+  .game-area {
+    grid-template-columns: 1fr auto 1fr; /* Keep structure */
+    grid-template-rows: auto 1fr auto;
+  }
+  .max-character {
+    width: 250px; /* Smaller announcer */
+    height: 400px;
+    margin-right: 10px;
+  }
+  .bet-panel {
+    width: 90%; /* Adjust width for smaller screens */
+    height: 180px; /* Adjust height */
+    background-size: cover; /* Ensure background image covers */
+  }
+}
+
+@media (max-width: 768px) { /* Mobile portrait */
+  :root {
+    --reel-width: 100px;
+    --reel-height: 100px;
+    --reel-gap: 6px;
+  }
+  .game-area {
+    grid-template-columns: 1fr; /* Single column layout */
+    grid-template-rows: auto 1fr auto auto; /* Top, Reels/Cage, Announcer, Bottom UI */
+  }
+  .reel-cage-container {
+    grid-column: 1 / 2;
+    grid-row: 2 / 3;
+    width: 90%; /* Adjust width to fit screen */
+    height: auto; /* Let height adjust */
+    aspect-ratio: calc(var(--reels-total-width) / var(--reels-total-height)); /* Maintain aspect ratio */
+  }
+  .reels {
+    padding: 4px; /* Smaller padding for reels */
+  }
+  .max-character {
+    grid-column: 1 / 2;
+    grid-row: 3 / 4; /* Move announcer below reels */
+    width: 200px;
+    height: 320px;
+    justify-self: center; /* Center announcer */
+    margin-right: 0;
+    margin-top: 20px;
+  }
+  .bet-panel {
+    grid-column: 1 / 2;
+    grid-row: 4 / 5;
+    width: 95%;
+    height: 150px;
+  }
+}
+
+/* Existing styles for .reels-wrap, .win-layer, etc. should be reviewed
+   and potentially adjusted to use the new CSS variables for dimensions. */
+
+/* Example of how to adjust existing styles to use new variables */
+.reels-wrap {
+  /* Original: width: 1210px; height: 908px; */
+  /* This element seems to be an outer frame for the reels,
+     its dimensions should be relative to the reels-container */
+  position: absolute;
+  inset: 0; /* Fill the reel-cage-container */
+  padding: 0;
+  background: transparent;
+  clip-path: none;
+  filter: drop-shadow(0 24px 26px rgba(0,0,0,0.72)) drop-shadow(0 0 22px rgba(204,26,46,0.22));
+}
+.reels-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  /* reel overlay background erased */
+  z-index: 1;
+  pointer-events: none;
+}
+
+.win-layer {
+  /* Original: grid-template-columns: repeat(5, var(--cell)); */
+  grid-template-columns: repeat(var(--num-reels), var(--reel-width));
+  grid-template-rows: repeat(var(--num-rows), var(--reel-height));
+  gap: var(--reel-gap);
+  column-gap: var(--reel-gap); /* Redundant with gap, but for clarity */
+  /* ... other styles ... */
+}
+
+/* --- Existing styles from index.html that are still relevant and not conflicting --- */
+
+/* Viewport background - fills screen behind stage on mobile */
+.viewport-bg {
+  display: none;
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  object-position: center 30%;
+  pointer-events: none;
+  z-index: 0;
+  filter: brightness(0.45) saturate(1.05);
+}
+@media (max-width: 480px) {
+  .viewport-bg { display: none !important; }
+  .stage .bg {
+    display: block !important;
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    object-position: center 30%;
+    z-index: -1;
+  }
+  /* Allow bg to extend beyond stage bounds */
+  .stage { overflow: visible !important; background: transparent !important; }
+}
+@keyframes bonusPulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 0.75; }
+}
+
+/* ============ AMBIENT BG FX ============ */
+/* ringside spotlight beams pulsing crowd — disabled, baked into bg art */
+.bg-fires { display: none; position: absolute; inset: 0; pointer-events: none; z-index: 1; opacity: 0.9; }
+.fire {
+  position: absolute;
+  width: 320px; height: 600px;
+  transform-origin: 50% 0%;
+  filter: blur(20px);
+  mix-blend-mode: screen;
+  background: linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(120,180,255,0.4) 30%, transparent 75%);
+  clip-path: polygon(45% 0, 55% 0, 95% 100%, 5% 100%);
+  animation: spotPulse 1.8s ease-in-out infinite alternate;
+}
+.fire.f1 { left: 100px;  top: -40px; animation-delay: 0s; }
+.fire.f2 { left: 800px;  top: -40px; animation-delay: -0.6s; transform: rotate(-5deg); }
+.fire.f3 { left: 1500px; top: -40px; animation-delay: -1.2s; transform: rotate(8deg); }
+@keyframes spotPulse {
+  0%   { opacity: 0.4; }
+  100% { opacity: 0.85; }
+}
+
+/* arena confetti + electric sparks falling */
+.embers { position: absolute; inset: 0; pointer-events: none; z-index: 2; overflow: hidden; }
+.ember {
+  position: absolute;
+  width: 8px; height: 14px;
+  background: linear-gradient(180deg, #cc1a2e 0%, #8b0e1c 100%);
+  border-radius: 1px;
+  opacity: 0;
+  box-shadow: 0 0 4px rgba(200,26,46,0.8);
+}
+.ember.blue {
+  background: linear-gradient(180deg, #4169E1 0%, #1E3A8A 100%);
+  box-shadow: 0 0 6px rgba(65,105,225,0.9), 0 0 12px rgba(65,105,225,0.5);
+}
+.ember.zap {
+  width: 3px; height: 28px;
+  background: linear-gradient(180deg, #fff 0%, #4169E1 60%, transparent 100%);
+  border-radius: 0;
+  box-shadow: 0 0 8px #fff, 0 0 16px #4169E1;
+  filter: blur(0.4px);
+}
+@keyframes emberRise {
+  0%   { transform: translate(0,0) rotate(0); opacity: 0; }
+  10%  { opacity: 0.95; }
+  100% { transform: translate(var(--dx), 1400px) rotate(720deg); opacity: 0; }
+}
+
+/* subtle scanlines for CRT feel — toned down */
+.scanlines {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  z-index: 48;
+  background: repeating-linear-gradient(0deg, rgba(0,0,0,0.08) 0 2px, transparent 2px 4px);
+  mix-blend-mode: multiply;
+  opacity: 0.25;
+}
+
+/* heavy vignette for cinematic frame — softened, bg already vignettes */
+.vignette {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  z-index: 47;
+  background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.35) 90%, rgba(0,0,0,0.7) 100%);
+}
+
+/* full-screen KO punch flash for big wins */
+.nuke-flash {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  z-index: 90;
+  background: radial-gradient(circle at center, #fff 0%, #ffd0d8 20%, #cc1a2e 50%, transparent 75%);
+  opacity: 0;
+}
+.nuke-flash.fire {
+  animation: koFlash 1.2s steps(8, end) forwards;
+}
+@keyframes koFlash {
+  0%   { opacity: 0; transform: scale(0.3); filter: brightness(3) saturate(1.5); }
+  8%   { opacity: 1; transform: scale(1.6); }
+  16%  { opacity: 0.2; transform: scale(1.4); }
+  24%  { opacity: 0.95; transform: scale(2.0); }
+  32%  { opacity: 0.3; }
+  44%  { opacity: 0.85; transform: scale(2.6); }
+  60%  { opacity: 0.4; }
+  100% { opacity: 0; transform: scale(3.4); }
+}
+
+/* win-line tracer SVG */
+.win-tracer {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  z-index: 22;
+  width: 100%; height: 100%;
+}
+.win-tracer polyline {
+  fill: none;
+  stroke: #ff3a52;
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 20 8;
+  filter: drop-shadow(0 0 14px #cc1a2e) drop-shadow(0 0 28px #ff3a52);
+  animation: traceMarch 0.8s linear infinite, traceFade 0.6s ease-out;
+}
+@keyframes traceMarch {
+  to { stroke-dashoffset: -52; }
+}
+@keyframes traceFade {
+  from { opacity: 0; stroke-width: 1; }
+  to   { opacity: 1; stroke-width: 4; }
+}
+
+/* searchlight sweep during anticipation */
+.searchlight {
+  position: absolute;
+  top: 126px;
+  left: 50%;
+  transform: translateX(-50%) rotate(0deg);
+  transform-origin: 50% 0%;
+  width: 4px; height: 700px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(120,180,255,0.5) 40%, transparent 90%);
+  filter: blur(3px);
+  pointer-events: none;
+  z-index: 4;
+  opacity: 0;
+}
+.searchlight.sweep {
+  animation: slSweep 1.2s ease-in-out;
+}
+@keyframes slSweep {
+  0%   { opacity: 0; transform: translateX(-50%) rotate(-40deg); }
+  30%  { opacity: 0.9; }
+  100% { opacity: 0; transform: translateX(-50%) rotate(40deg); }
+}
+
+/* bonus side hazard bars */
+.hazard-side {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 24px;
+  background: repeating-linear-gradient(
+    0deg,
+    var(--orange) 0 20px,
+    #000 20px 40px
+  );
+  opacity: 0;
+  transition: opacity 0.6s;
+  z-index: 2;
+  animation: hazardScroll 1.2s linear infinite;
+}
+.hazard-side.left  { left: 0; }
+.hazard-side.right { right: 0; }
+.stage.bonus .hazard-side { opacity: 0.7; }
+@keyframes hazardScroll {
+  0%   { background-position: 0 0; }
+  100% { background-position: 0 40px; }
+}
+
+/* ------- TITLE ------- */
+/* Hidden — the background art already includes the RFC logo + tagline */
+.title { display: none; }
+.title-old {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 5;
+}
+.title-img {
+  width: 560px;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 6px 24px rgba(0,0,0,0.85))
+          drop-shadow(0 0 40px rgba(200, 26, 46, 0.55));
+}
+.title-sub {
+  font-size: 14px;
+  letter-spacing: 8px;
+  color: var(--dust-2);
+  margin-top: -6px;
+}
+
+/* ------- OCTAGON PIPS ------- */
+.escalation {
+  position: absolute;
+  top: 36px;
+  left: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 20;
+}
+.esc-label {
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: var(--dust-2);
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.pips {
+  display: flex;
+  gap: 8px;
+}
+.pip {
+  width: 36px; height: 36px;
+  background: #1a1a1a;
+  border: 2px solid #2a2a2a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: #333;
+  transition: all 0.3s;
+  clip-path: polygon(15% 0, 100% 0, 85% 100%, 0 100%);
+}
+.pip.active {
+  background: linear-gradient(180deg, var(--orange), var(--orange-2));
+  border-color: var(--orange);
+  color: #000;
+  box-shadow: 0 0 16px rgba(200, 26, 46, 0.6);
+}
+.pip.fill-burst {
+  animation: pipBurst 0.5s ease-out;
+}
+@keyframes pipBurst {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.4); box-shadow: 0 0 28px var(--orange); }
+  100% { transform: scale(1); }
+}
+
+/* ------- MULTIPLIER BADGE ------- */
+.mult-badge {
+  position: absolute;
+  top: 36px;
+  right: 40px;
+  min-width: 220px;
+  background: linear-gradient(180deg, #1a1010, #0a0505);
+  border: 3px solid var(--orange);
+  padding: 12px 28px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 0 20px rgba(200, 26, 46, 0.4);
+  display: none;
+  z-index: 20;
+  transition: transform 0.3s;
+}
+.stage.bonus .mult-badge { display: block; }
+.mult-badge.bump { animation: multBump 0.6s cubic-bezier(0.34, 1.6, 0.64, 1); }
+@keyframes multBump {
+  0%   { transform: scale(1); }
+  35%  { transform: scale(1.4); box-shadow: 0 0 40px var(--orange); }
+  100% { transform: scale(1); }
+}
+
+.mult-label {
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: var(--orange);
+  font-weight: 700;
+}
+.mult-value {
+  font-family: var(--ui-font);
+  font-size: 48px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+  margin-top: 4px;
+  text-shadow: 0 0 20px var(--orange);
+}
+
+/* ------- VS BONUS OVERLAY ------- */
+.vs-battle-overlay {
+  position: absolute; inset: 0; z-index: 90;
+  background: rgba(0,0,0,0.82);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+.vs-battle-overlay.show {
+  opacity: 1; pointer-events: auto;
+}
+.vs-battle-scene {
+  text-align: center;
+  transform: scale(0.85);
+  transition: transform 0.5s cubic-bezier(.2,1.4,.28,1);
+}
+.vs-battle-overlay.show .vs-battle-scene {
+  transform: scale(1);
+}
+.vs-battle-kicker {
+  font-family: var(--display-font);
+  font-size: 28px; letter-spacing: 10px; color: var(--orange);
+   margin-bottom: 30px;
+  text-shadow: 0 0 30px rgba(204,26,46,0.7);
+}
+.vs-battle-fighters {
+  display: flex; align-items: center; gap: 60px;
+  margin-bottom: 30px;
+}
+.vs-fighter-card {
+  width: 320px; padding: 16px;
+  background: rgba(0,0,0,0.7);
+  border: 4px solid rgba(255,255,255,0.12);
+  border-radius: 20px;
+  transition: all 0.5s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.vs-fighter-card:hover {
+  border-color: var(--orange);
+  box-shadow: 0 0 50px rgba(204,26,46,0.4);
+  transform: scale(1.06);
+}
+.vs-fighter-card:active {
+  transform: scale(0.97);
+}
+.vs-fighter-portrait {
+  width: 100%; height: 320px;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  background: linear-gradient(180deg, #1a1a2e, #0f0f1a);
+  background-size: cover;
+  background-position: top center;
+  transition: all 0.5s ease;
+}
+.vs-fighter-portrait video.vs-fighter-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  z-index: 1;
+}
+.vs-fighter-card:hover .vs-fighter-portrait {
+  transform: scale(1.08);
+}
+.vs-fighter-card.vs-picked {
+  border-color: #3388ff !important;
+  box-shadow: 0 0 60px rgba(51,136,255,0.5), inset 0 0 30px rgba(51,136,255,0.15) !important;
+  transform: scale(1.1);
+}
+.vs-fighter-card.vs-picked::after {
+  content: 'YOUR PICK';
+  position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+  background: #3388ff; color: #fff; font-size: 13px; font-weight: 700;
+  letter-spacing: 3px; padding: 4px 16px; border-radius: 6px;
+  white-space: nowrap;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+.vs-fighter-name {
+  font-family: var(--display-font); font-size: 30px;
+  letter-spacing: 6px; color: #fff; margin-top: 16px;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.8);
+}
+.vs-fighter-mult {
+  font-size: 48px; font-weight: 700; color: var(--orange);
+  text-shadow: 0 0 24px rgba(204,26,46,0.6);
+  margin-top: 8px;
+  transition: all 0.3s ease;
+}
+.vs-fighter-mult.vs-mult-reveal {
+  animation: vsMultReveal 0.8s ease forwards;
+}
+@keyframes vsMultReveal {
+  0% { transform: scale(1); color: var(--orange); }
+  40% { transform: scale(1.8); color: #ffcc22; text-shadow: 0 0 60px rgba(255,204,34,0.9); }
+  100% { transform: scale(1.4); color: #ffcc22; text-shadow: 0 0 40px rgba(255,204,34,0.7); }
+}
+.vs-vs-text {
+  font-family: var(--display-font); font-size: 64px;
+   color: #fff;
+  text-shadow: 0 0 40px rgba(255,255,255,0.4);
+  animation: vsPulse 1.2s ease-in-out infinite alternate;
+}
+@keyframes vsPulse {
+  from { transform: scale(1); }
+  to { transform: scale(1.2); text-shadow: 0 0 60px rgba(255,255,255,0.7); }
+}
+.vs-battle-status {
+  font-family: var(--display-font);
+  font-size: 28px; letter-spacing: 8px; color: #fff;
+   min-height: 40px;
+  text-shadow: 0 0 20px rgba(255,255,255,0.4);
+  transition: all 0.3s ease;
+}
+.vs-winner {
+  border-color: #ffcc22 !important;
+  box-shadow: 0 0 40px rgba(255,204,34,0.4), inset 0 0 30px rgba(255,204,34,0.15) !important;
+  transform: scale(1.08);
+}
+.vs-winner img {
+  filter: drop-shadow(0 0 20px rgba(255,204,34,0.6));
+}
+.vs-loser {
+  transform: scale(0.92);
+}
+.vs-loser .vs-fighter-portrait {
+  filter: grayscale(0.7) brightness(0.4);
+  opacity: 0.5;
+}
+.vs-loser .vs-fighter-portrait::after {
+  content: 'K.O.';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--display-font);
+  font-size: 80px;
+  color: #ff1e39;
+  text-shadow: 0 0 30px rgba(255,30,57,0.9), 0 0 60px rgba(255,30,57,0.5), 0 4px 12px rgba(0,0,0,0.9);
+  letter-spacing: 4px;
+  z-index: 5;
+  animation: vsKoPop 0.5s ease forwards;
+}
+@keyframes vsKoPop {
+  0% { transform: scale(2); opacity: 0; }
+  60% { transform: scale(0.9); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.vs-cell-transform {
+  animation: vsCellFlip 0.4s ease;
+}
+@keyframes vsCellFlip {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+/* Fight time active state */
+.vs-battle-overlay.vs-fight-active .vs-fighter-card {
+  animation: vsCardShake 0.15s ease-in-out infinite;
+}
+@keyframes vsCardShake {
+  0%, 100% { transform: translateX(0) rotate(0deg); }
+  25% { transform: translateX(-6px) rotate(-2deg); }
+  75% { transform: translateX(6px) rotate(2deg); }
+}
+.vs-battle-overlay.vs-fight-active .vs-vs-text {
+  animation: vsPulse 0.2s ease-in-out infinite alternate;
+  color: #ff1e39;
+  text-shadow: 0 0 40px rgba(255,30,57,0.8);
+}
+
+/* Championship total display */
+.vs-championship-total {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 20;
+  text-align: center;
+  background: rgba(0,0,0,0.85);
+  border: 2px solid rgba(212,175,55,0.5);
+  border-radius: 20px;
+  padding: 40px 60px;
+  box-shadow: 0 0 60px rgba(212,175,55,0.3), inset 0 0 40px rgba(212,175,55,0.1);
+  animation: vsChampTotalPop 0.6s ease forwards;
+}
+@keyframes vsChampTotalPop {
+  0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+  60% { transform: translate(-50%, -50%) scale(1.08); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+.vs-championship-total .vs-champ-label {
+  font-family: var(--ui-font);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 6px;
+  color: #d4af37;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.vs-championship-total .vs-champ-amount {
+  font-family: var(--ui-font);
+  font-size: 72px;
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: 2px;
+  line-height: 1;
+}
+.vs-championship-total .vs-champ-amount.win {
+  color: #44dd66;
+  text-shadow: 0 0 30px rgba(68,221,102,0.6), 0 4px 12px rgba(0,0,0,0.8);
+}
+.vs-championship-total .vs-champ-amount.loss {
+  color: #ff1e39;
+  text-shadow: 0 0 30px rgba(255,30,57,0.6), 0 4px 12px rgba(0,0,0,0.8);
+}
+.vs-championship-total .vs-champ-amount.break-even {
+  color: #d4af37;
+  text-shadow: 0 0 30px rgba(212,175,55,0.6), 0 4px 12px rgba(0,0,0,0.8);
+}
+.vs-championship-total .vs-champ-click {
+  font-family: var(--ui-font);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: #71717a;
+  text-transform: uppercase;
+  margin-top: 10px;
+  animation: vsChampPulse 1.5s ease-in-out infinite;
+}
+@keyframes vsChampPulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* Attack animation played ON the fighter card */
+.vs-fighter-attack-on-card {
+  position: absolute; inset: 0;
+  z-index: 10;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: opacity 0.3s ease;
+  background: rgba(0,0,0,0.3);
+}
+.vs-fighter-attack-on-card.show {
+  opacity: 1;
+}
+.vs-fighter-attack-on-card img,
+.vs-fighter-attack-on-card video {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  animation: vsAttackOnCardPose 0.5s ease-in-out infinite alternate;
+}
+@keyframes vsAttackOnCardPose {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.04); }
+}
+.vs-attack-fx-on-card {
+  position: absolute; top: 8%; z-index: 11;
+  font-family: var(--ui-font); font-size: 32px;
+  font-weight: 900; color: #ffcc22; letter-spacing: 3px;
+  text-shadow: 0 0 20px rgba(255,204,34,0.9), 0 2px 6px rgba(0,0,0,0.9);
+  animation: vsAttackFxPop 0.4s ease forwards;
+  opacity: 0;
+}
+.vs-fighter-attack-on-card.show .vs-attack-fx-on-card {
+  opacity: 1;
+}
+.vs-attack-mult-on-card {
+  position: absolute; bottom: 8%; z-index: 11;
+  font-family: var(--ui-font); font-size: 52px;
+  font-weight: 900; color: #fff;
+  text-shadow: 0 0 30px rgba(255,60,60,1), 0 2px 6px rgba(0,0,0,0.9);
+  letter-spacing: 2px;
+  animation: vsAttackMultSlide 0.4s ease 0.2s forwards;
+  opacity: 0;
+}
+.vs-fighter-attack-on-card.show .vs-attack-mult-on-card {
+  opacity: 1;
+}
+
+/* ------- REELS ------- */
+/* The .reels-container and .reels styles are now defined above in the new layout */
+
+/* ---- Max Character (bottom-right, legs cut off at page bottom) ---- */
+/* Max character styles are now defined above in the new layout */
+/* Hide Max on mid-range viewports, show repositioned on mobile */
+@media (min-width: 481px) and (max-width: 1100px) {
+  .max-character { display: none; }
+}
+@media (max-width: 480px) {
+  .max-character {
+    display: block;
+    right: 60px; /* moved closer to reels on mobile */
+    bottom: 0;
+  }
+}
+
+/* ---- each reel is a viewport ---- */
+/* Reel and strip styles are now defined above in the new layout */
+/* top/bottom fade to hide strip edges */
+.reel::before,
+.reel::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  height: 22px;
+  z-index: 3;
+  pointer-events: none;
+}
+.reel::before { top: 0;    background: linear-gradient(180deg, rgba(0,0,0,0.85), transparent); }
+.reel::after  { bottom: 0; background: linear-gradient(0deg,   rgba(0,0,0,0.85), transparent); }
+
+/* final-row win effects (applied to cells on the visible 3-row snapshot) */
+.win-layer {
+  position: absolute;
+  inset: 6px;
+  display: grid;
+  grid-template-columns: repeat(var(--num-reels), var(--reel-width));
+  grid-template-rows: repeat(var(--num-rows), var(--reel-height));
+  gap: var(--reel-gap);
+  column-gap: var(--reel-gap);
+  pointer-events: none;
+  z-index: 4;
+}
+.win-cell {
+  position: relative;
+  border: 2px solid transparent;
+  border-radius: 2px;
+  transition: opacity 0.2s, border-color 0.2s, box-shadow 0.2s;
+  opacity: 0;
+}
+.win-cell.win {
+  opacity: 1;
+  border-color: var(--orange);
+  box-shadow: 0 0 24px var(--orange), inset 0 0 12px rgba(200, 26, 46, 0.4);
+}
+.win-cell.dim {
+  opacity: 1;
+  background: rgba(0,0,0,0.55);
+}
+@keyframes winPulse {
+  0%   { transform: scale(1); }
+  100% { transform: scale(1.04); }
+}
+
+/* reel anticipation (bonus) — last reel pulsing glow before stop */
+.reel.anticipate {
+  box-shadow: inset 0 0 0 3px var(--orange), 0 0 40px var(--orange);
+  animation: anticipate 0.35s ease-in-out infinite alternate;
+}
+@keyframes anticipate {
+  0%   { box-shadow: inset 0 0 0 3px var(--orange), 0 0 20px rgba(200,26,46,0.4); }
+  100% { box-shadow: inset 0 0 0 3px var(--orange), 0 0 60px rgba(200,26,46,0.9); }
+}
+
+/* winning symbols heartbeat — pop in/out like a pulse, on the cell itself */
+.cell.symbol-heartbeat {
+  animation: symbolHeartbeat 0.7s ease-in-out infinite;
+  animation-delay: var(--hb-delay, 0ms);
+  transform-origin: center center;
+  will-change: transform;
+  z-index: 3;
+}
+@keyframes symbolHeartbeat {
+  0%, 100% { transform: scale(1); }
+  18%      { transform: scale(1.08); }
+  32%      { transform: scale(0.96); }
+  50%      { transform: scale(1.05); }
+  66%      { transform: scale(0.99); }
+}
+
+/* reel stop thump removed — no bouncing */
+
+/* ------- FIGHTER TAKEOVER (bonus reel transform) ------- */
+.reel.fighter-takeover {
+  position: relative;
+  z-index: 5;
+  overflow: visible;
+}
+.reel.fighter-takeover::before {
+  content: '';
+  position: absolute;
+  top: -6px; left: -6px; right: -6px; bottom: -6px;
+  border-radius: 6px;
+  pointer-events: none;
+  z-index: 6;
+  box-shadow:
+    inset 0 0 30px rgba(255,255,255,0.6),
+    0 0 40px var(--ft-glow, #ff3a52),
+    0 0 80px var(--ft-glow, #ff3a52);
+  border: 3px solid var(--ft-glow, #ff3a52);
+  animation: ftPulse 0.6s ease-out 0.2s 3 alternate;
+}
+.reel.fighter-takeover::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  z-index: 7;
+  background:
+    linear-gradient(180deg,
+      transparent 0%,
+      rgba(255,255,255,0.9) 48%,
+      rgba(255,255,255,0.9) 52%,
+      transparent 100%);
+  mix-blend-mode: screen;
+  transform: translateY(-100%);
+  animation: ftSweep 0.55s ease-out forwards;
+}
+@keyframes ftPulse {
+  0%   { filter: brightness(1); }
+  100% { filter: brightness(1.6) saturate(1.4); }
+}
+@keyframes ftSweep {
+  0%   { transform: translateY(-100%); opacity: 1; }
+  60%  { opacity: 1; }
+  100% { transform: translateY(120%); opacity: 0; }
+}
+.cell.fighter-cell {
+  animation: ftCellReveal 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+}
+@keyframes ftCellReveal {
+  0%   { opacity: 0; transform: scale(0.5) rotateX(80deg); filter: brightness(2.5); }
+  60%  { filter: brightness(1.6); }
+  100% { opacity: 1; transform: scale(1) rotateX(0deg); filter: brightness(1); }
+}
+.cell.fighter-cell:nth-child(2) { animation-delay: 0.12s; }
+.cell.fighter-cell:nth-child(3) { animation-delay: 0.24s; }
+
+/* anchor cell — the one the fighter actually landed on, glows but doesn't reveal */
+.cell.fighter-cell-anchor {
+  animation: ftAnchorPulse 0.4s ease-out 2;
+  z-index: 8;
+}
+@keyframes ftAnchorPulse {
+  0%   { filter: brightness(1); transform: scale(1); }
+  50%  { filter: brightness(2.2) saturate(1.6); transform: scale(1.08); }
+  100% { filter: brightness(1); transform: scale(1); }
+}
+
+/* impact burst on scatter landings */
+.cell.scatter-land::after {
+  content: '';
+  position: absolute; inset: -30px;
+  background:
+    conic-gradient(from 0deg, transparent 0deg, rgba(255,80,100,0.9) 6deg, transparent 12deg,
+                              transparent 30deg, rgba(255,255,255,0.95) 36deg, transparent 42deg,
+                              transparent 60deg, rgba(255,80,100,0.9) 66deg, transparent 72deg,
+                              transparent 90deg, rgba(255,255,255,0.95) 96deg, transparent 102deg,
+                              transparent 120deg, rgba(255,80,100,0.9) 126deg, transparent 132deg,
+                              transparent 150deg, rgba(255,255,255,0.95) 156deg, transparent 162deg,
+                              transparent 180deg, rgba(255,80,100,0.9) 186deg, transparent 192deg,
+                              transparent 210deg, rgba(255,255,255,0.95) 216deg, transparent 222deg,
+                              transparent 240deg, rgba(255,80,100,0.9) 246deg, transparent 252deg,
+                              transparent 270deg, rgba(255,255,255,0.95) 276deg, transparent 282deg,
+                              transparent 300deg, rgba(255,80,100,0.9) 306deg, transparent 312deg,
+                              transparent 330deg, rgba(255,255,255,0.95) 336deg, transparent 342deg,
+                              transparent 360deg),
+    radial-gradient(circle, rgba(200,26,46,0.7), transparent 70%);
+  animation: scatterFlash 0.9s ease-out forwards;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  filter: blur(0.5px);
+}
+@keyframes scatterFlash {
+  0%   { opacity: 0; transform: scale(0.2) rotate(0deg); }
+  30%  { opacity: 1; transform: scale(1.3) rotate(45deg); }
+  100% { opacity: 0; transform: scale(2.0) rotate(120deg); }
+}
+
+/* ------- WIN DISPLAY ------- */
+.win-display {
+  position: absolute;
+  top: 48%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 20;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.win-display.show { opacity: 1; }
+.win-label {
+  font-family: var(--ui-font);
+  font-size: 20px;
+  letter-spacing: 8px;
+  color: var(--orange);
+  font-weight: 700;
+}
+.win-amount {
+  font-family: var(--ui-font);
+  font-size: 100px;
+  font-weight: 700;
+  color: var(--orange);
+  text-shadow: 0 0 50px rgba(200, 26, 46, 0.9), 0 0 100px rgba(200, 26, 46, 0.5);
+  animation: winPulse 0.5s ease-in-out infinite;
+  line-height: 1;
+}
+
+/* Replay Play Again button */
+.replay-play-again {
+  position: absolute;
+  top: 58%;
+  left: 50%;
+  transform: translateX(-50%) scale(0.9);
+  z-index: 25;
+  background: linear-gradient(180deg, var(--orange), var(--orange-2));
+  border: 2px solid var(--orange-3);
+  border-radius: 8px;
+  padding: 14px 36px;
+  font-family: var(--ui-font);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: #fff;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  cursor: pointer;
+  box-shadow: 0 0 30px rgba(200, 26, 46, 0.5), 0 4px 0 rgba(0,0,0,0.4);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s, transform 0.3s;
+}
+.replay-play-again.show {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-50%) scale(1);
+}
+.replay-play-again:hover {
+  filter: brightness(1.15);
+  transform: translateX(-50%) scale(1.05);
+}
+.replay-play-again:active {
+  transform: translateX(-50%) scale(0.97);
+  box-shadow: 0 0 20px rgba(200, 26, 46, 0.3), 0 2px 0 rgba(0,0,0,0.4);
+}
+
+/* BIG WIN banner */
+.bigwin {
+  position: absolute;
+  top: 26px;
+  left: 50%;
+  transform: translateX(-50%) scale(0);
+  text-align: center;
+  z-index: 30;
+  pointer-events: none;
+  opacity: 0;
+}
+.bigwin.show {
+  opacity: 1;
+  animation: bigwinIn 0.5s cubic-bezier(0.34, 1.7, 0.64, 1) forwards;
+}
+@keyframes bigwinIn {
+  0%   { transform: translateX(-50%) scale(0)    rotate(-6deg); opacity: 0; }
+  60%  { transform: translateX(-50%) scale(1.1)  rotate(1deg);  opacity: 1; }
+  100% { transform: translateX(-50%) scale(1)    rotate(0deg);  opacity: 1; }
+}
+.bigwin-label {
+  font-family: var(--ui-font);
+  font-size: 64px;
+  font-weight: 900;
+  letter-spacing: 8px;
+  color: #fff;
+  background: linear-gradient(180deg, #fff 0%, #ffd0d8 50%, #cc1a2e 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter:
+    drop-shadow(0 0 30px #cc1a2e)
+    drop-shadow(0 0 60px rgba(255,80,100,0.8))
+    drop-shadow(0 8px 0 #8b0e1c)
+    drop-shadow(0 14px 30px rgba(0,0,0,0.9));
+  animation: bigwinGlow 1.2s ease-in-out infinite alternate;
+  transform: skewX(-4deg);
+}
+@keyframes bigwinGlow {
+  0%   { text-shadow: 0 0 30px var(--orange), 0 6px 0 var(--orange-2); }
+  100% { text-shadow: 0 0 70px var(--orange), 0 0 140px rgba(200,26,46,0.7), 0 6px 0 var(--orange-2); }
+}
+.bigwin-amount {
+  font-family: var(--ui-font);
+  font-size: 88px;
+  font-weight: 700;
+  color: var(--orange);
+  text-shadow: 0 0 40px rgba(200,26,46,0.9), 0 6px 0 #000;
+  line-height: 1;
+  margin-top: 6px;
+}
+
+/* sparkle star bursts around big win (CSS-only) */
+.spark {
+  position: absolute;
+  width: 32px; height: 32px;
+  background:
+    linear-gradient(0deg,   transparent 45%, #fff 49%, #fff 51%, transparent 55%),
+    linear-gradient(90deg,  transparent 45%, #fff 49%, #fff 51%, transparent 55%),
+    linear-gradient(45deg,  transparent 47%, #ff3a52 49%, #ff3a52 51%, transparent 53%),
+    linear-gradient(-45deg, transparent 47%, #ff3a52 49%, #ff3a52 51%, transparent 53%),
+    radial-gradient(circle, #fff 0%, transparent 30%);
+  filter: drop-shadow(0 0 8px #fff) drop-shadow(0 0 16px #ff3a52);
+  pointer-events: none;
+  opacity: 0;
+  mix-blend-mode: screen;
+}
+
+/* ============ EXPLOSIONS ============ */
+.explosion-core {
+  position: absolute;
+  width: 60px; height: 60px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 25;
+  background: radial-gradient(circle, #fff 0%, #ffe680 20%, var(--orange) 45%, var(--orange-2) 70%, transparent 100%);
+  filter: blur(2px);
+  animation: expCore 0.6s ease-out forwards;
+  mix-blend-mode: screen;
+}
+.explosion-core.gold {
+  background: radial-gradient(circle, #fff 0%, #ffe680 30%, #ffc22e 55%, #e02235 80%, transparent 100%);
+}
+@keyframes expCore {
+  0%   { transform: scale(0.2); opacity: 1; }
+  30%  { transform: scale(2.5); opacity: 1; }
+  70%  { transform: scale(3.2); opacity: 0.7; }
+  100% { transform: scale(3.8); opacity: 0; }
+}
+
+.explosion-ring {
+  position: absolute;
+  width: 60px; height: 60px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 24;
+  border: 4px solid var(--orange);
+  box-shadow: 0 0 30px var(--orange), inset 0 0 20px var(--orange);
+  animation: expRing 0.75s ease-out forwards;
+}
+.explosion-ring.gold { border-color: #ffc22e; box-shadow: 0 0 30px #ffc22e, inset 0 0 20px #ffc22e; }
+@keyframes expRing {
+  0%   { transform: scale(0.3); opacity: 1; border-width: 6px; }
+  100% { transform: scale(5);   opacity: 0; border-width: 1px; }
+}
+
+.explosion-particle {
+  position: absolute;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 26;
+  background: radial-gradient(circle, #fff 0%, var(--orange-4) 40%, var(--orange) 80%);
+  box-shadow: 0 0 12px var(--orange), 0 0 24px rgba(200, 26, 46, 0.6);
+}
+.explosion-particle.gold {
+  background: radial-gradient(circle, #fff 0%, #ffe680 40%, #ffc22e 80%);
+  box-shadow: 0 0 12px #ffc22e, 0 0 24px rgba(255, 194, 46, 0.6);
+}
+
+.explosion-smoke {
+  position: absolute;
+  width: 180px; height: 180px;
+  pointer-events: none;
+  z-index: 23;
+  background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.9) 0%, rgba(255,80,100,0.7) 30%, rgba(140,20,40,0.5) 55%, transparent 80%);
+  border-radius: 50%;
+  filter: blur(6px);
+  opacity: 0.95;
+  mix-blend-mode: screen;
+  animation: expSmoke 1.4s ease-out forwards;
+}
+@keyframes expSmoke {
+  0%   { transform: translate(-25%, -25%) scale(0.3) rotate(0deg); opacity: 1; }
+  60%  { opacity: 0.7; }
+  100% { transform: translate(-25%, -55%) scale(2.2) rotate(30deg); opacity: 0; }
+}
+
+/* KO shockwave ring (CSS-only) */
+.nuke-ring {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 400px; height: 400px;
+  margin-left: -200px; margin-top: -200px;
+  border: 8px solid #ff3a52;
+  border-radius: 50%;
+  box-shadow:
+    0 0 60px #cc1a2e,
+    inset 0 0 60px #ff3a52,
+    0 0 120px rgba(204,26,46,0.6);
+  pointer-events: none;
+  z-index: 45;
+  opacity: 0;
+  mix-blend-mode: screen;
+}
+.nuke-ring.fire {
+  animation: nukeRingFire 1.4s ease-out forwards;
+}
+@keyframes nukeRingFire {
+  0%   { transform: scale(0.2); opacity: 0; }
+  20%  { opacity: 1; }
+  100% { transform: scale(6); opacity: 0; }
+}
+
+/* ------- FREE SPIN COUNTER ------- */
+.fs-counter {
+  position: absolute;
+  top: 36px;
+  right: 280px;
+  left: auto;
+  transform: none;
+  min-width: 160px;
+  height: 56px;
+  background: rgba(0, 0, 0, 0.85);
+  padding: 6px 20px 8px;
+  border: 2px solid var(--orange);
+  border-radius: 8px;
+  display: none;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  z-index: 80;
+  box-shadow: 0 0 20px rgba(200, 26, 46, 0.4);
+}
+.stage.bonus .fs-counter { display: flex; }
+.stage.bonus .feature-entry-btn { display: none; }
+.fs-label {
+  font-family: var(--display-font);
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--orange);
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.2;
+}
+.fs-count {
+  font-family: var(--display-font);
+  font-size: 28px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+  transition: transform 0.25s, color 0.25s;
+}
+.fs-count.retrigger {
+  animation: fsRetrigger 0.7s ease-out;
+}
+@keyframes fsRetrigger {
+  0%   { transform: scale(1); color: #fff; }
+  40%  { transform: scale(1.6); color: var(--orange); text-shadow: 0 0 30px var(--orange); }
+  100% { transform: scale(1); color: #fff; }
+}
+.fs-cancel {
+  position: absolute;
+  top: -18px;
+  right: -10px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #ff3a3a, #cc0000);
+  border: 2px solid #fff;
+  color: #fff;
+  font-family: var(--ui-font);
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 81;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+  transition: transform 0.15s, box-shadow 0.15s;
+  padding: 0;
+  line-height: 1;
+}
+.fs-cancel:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 20px rgba(255, 58, 58, 0.6);
+}
+.fs-cancel:active {
+  transform: scale(0.95);
+}
+
+/* ------- BET PANEL ------- */
+/* Bet panel styles are now defined above in the new layout */
+.balance, .bet-display {
+  position: absolute;
+  min-width: 0;
+  text-align: center;
+}
+.balance {
+  left: 116px;
+  top: 12px;
+  width: 286px;
+}
+.bet-display {
+  right: 306px;
+  top: 10px;
+  width: 260px;
+}
+.stat-label {
+  display: block;
+  font-size: 13px;
+  letter-spacing: 3px;
+  color: var(--dust-2);
+  font-weight: 700;
+  opacity: 0;
+  height: 0;
+  overflow: hidden;
+}
+.balance-amount {
+  display: block;
+  font-family: var(--ui-font);
+  font-size: 32px;
+  font-weight: 700;
+  color: #f4f4f4;
+  margin-top: 4px;
+  text-shadow: 0 3px 0 #000, 0 0 12px rgba(255,255,255,0.24);
+}
+.bet-amount {
+  display: block;
+  font-family: var(--ui-font);
+  font-size: 30px;
+  font-weight: 700;
+  color: #fff;
+  margin-top: 4px;
+}
+.bet-amount.replay-cost {
+  font-size: 22px;
+  line-height: 1.15;
+  white-space: pre-line;
+}
+.bet-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+.btn {
+  width: 82px; height: 82px;
+  font-size: 50px;
+  font-weight: 700;
+  background:
+    linear-gradient(180deg, rgba(210,216,224,0.32), rgba(28,31,36,0.9) 48%, rgba(5,6,8,0.96)),
+    repeating-linear-gradient(135deg, rgba(255,255,255,0.09) 0 2px, transparent 2px 9px);
+  color: #d9dde4;
+  border: 1px solid rgba(225,232,242,0.46);
+  cursor: pointer;
+  border-radius: 10px;
+  transition: all 0.15s;
+  font-family: inherit;
+  line-height: 1;
+  text-shadow: 0 3px 0 #000, 0 0 10px rgba(255,255,255,0.28);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.34),
+    inset 0 -12px 24px rgba(0,0,0,0.58),
+    0 0 14px rgba(255,58,82,0.16);
+}
+.btn:hover:not(:disabled) {
+  filter: brightness(1.14);
+  border-color: rgba(255,255,255,0.7);
+}
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.auto-btn {
+  position: absolute;
+  top: 5px;
+  left: 524px;
+  width: 134px;
+  height: 82px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(225,232,242,0.46);
+  border-radius: 10px;
+  background:
+    linear-gradient(180deg, rgba(210,216,224,0.32), rgba(28,31,36,0.9) 48%, rgba(5,6,8,0.96)),
+    repeating-linear-gradient(135deg, rgba(255,255,255,0.09) 0 2px, transparent 2px 9px);
+  color: #d9dde4;
+  font-family: var(--ui-font);
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: 3px;
+  line-height: 1;
+  text-indent: 0;
+  text-shadow: 0 3px 0 #000, 0 0 10px rgba(255,255,255,0.28);
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.34),
+    inset 0 -12px 24px rgba(0,0,0,0.58),
+    0 0 14px rgba(255,58,82,0.16);
+  transition: all 0.15s;
+}
+.auto-btn:hover:not(:disabled),
+.auto-btn.active {
+  filter: brightness(1.14);
+  border-color: rgba(255,255,255,0.7);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.34),
+    inset 0 -12px 24px rgba(0,0,0,0.58),
+    0 0 18px rgba(255,58,82,0.34);
+}
+.auto-btn:active:not(:disabled) {
+  transform: translateY(2px);
+}
+.auto-btn:disabled {
+  cursor: not-allowed;
+  filter: grayscale(0.65) brightness(0.72);
+  opacity: 0.45;
+}
+.bonus-buy-btn {
+  display: inline-block;
+  background: linear-gradient(180deg, #f3bd5c, #b24716 56%, #5b1505);
+  color: #fff7d8;
+  border: 3px solid #e8a23c;
+  padding: 14px 22px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  border-radius: 12px;
+  cursor: pointer;
+  text-align: center;
+  line-height: 1.25;
+  text-transform: uppercase;
+  margin-right: 12px;
+  box-shadow: 0 4px 0 rgba(0,0,0,0.4), 0 0 18px rgba(232,162,60,0.5), inset 0 1px 0 rgba(255,255,255,0.22);
+  animation: featurePulse 1.8s ease-in-out infinite;
+  min-width: 100px;
+}
+@keyframes featurePulse {
+  0%, 100% { box-shadow: 0 4px 0 rgba(0,0,0,0.4), 0 0 16px rgba(232,162,60,0.38), inset 0 1px 0 rgba(255,255,255,0.20); }
+  50% { box-shadow: 0 4px 0 rgba(0,0,0,0.4), 0 0 34px rgba(255,210,95,0.82), inset 0 1px 0 rgba(255,255,255,0.30); }
+}
+.bonus-buy-btn:hover:not(:disabled) { filter: brightness(1.12); }
+.bonus-buy-btn:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 2px 0 rgba(0,0,0,0.4); }
+.bonus-buy-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.bonus-buy-mult { font-size: 16px; color: #e8a23c; display: block; margin-top: 2px; }
+
+.spin-btn {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 132px;
+  height: 102px;
+  transform: translate(-50%, -50%);
+  padding: 0 0 4px;
+  font-size: 19px;
+  font-weight: 900;
+  background: var(--ui-spin-medallion) center/100% 100% no-repeat;
+  color: transparent;
+  border: none;
+  cursor: pointer;
+  letter-spacing: 5px;
+  border-radius: 50%;
+  box-shadow: none;
+  transition: all 0.15s;
+  font-family: var(--ui-font);
+  text-shadow: none;
+  text-indent: -9999px;
+  overflow: hidden;
+}
+.spin-btn:hover:not(:disabled) {
+  filter: brightness(1.12) saturate(1.12);
+  transform: translate(-50%, -52%);
+}
+.spin-btn:active:not(:disabled) { transform: translate(-50%, -50%) scale(0.98); }
+.spin-btn:disabled {
+  filter: grayscale(0.75) brightness(0.6);
+  color: transparent;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+.spin-btn.stop {
+  background: linear-gradient(180deg, #ff2222, #aa1010);
+  color: transparent;
+  animation: stopPulse 0.8s ease-in-out infinite alternate;
+}
+@keyframes stopPulse {
+  0%   { box-shadow: 0 4px 20px rgba(255,34,34,0.5); }
+  100% { box-shadow: 0 4px 40px rgba(255,34,34,0.9); }
+}
+
+/* ===== SPIN ARROW BUTTON ===== */
+.spin-arrow-btn {
+  transition: opacity 0.2s, transform 0.15s;
+}
+.spin-arrow-btn:active {
+  transform: scale(0.92);
+}
+.spin-arrow-btn.stop {
+  opacity: 0.5;
+  pointer-events: none;
+}
+.spin-arrow-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ===== PREMIUM 3D SPIN BUTTON ===== */
+.premium-spin-container {
+  perspective: 1000px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.premium-spin-container .outer-bezel {
+  background: radial-gradient(circle at 35% 35%, #2a2a2f 0%, #0d0d11 60%, #020205 100%);
+  box-shadow:
+    0 25px 60px rgba(0, 0, 0, 0.95),
+    0 0 40px rgba(255, 0, 60, 0.15),
+    inset 0 2px 3px rgba(255, 255, 255, 0.25),
+    inset 0 -5px 15px rgba(0, 0, 0, 0.85);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transform-style: preserve-3d;
+  cursor: pointer;
+}
+.premium-spin-container .textured-ring {
+  background-image:
+    linear-gradient(45deg, #15151a 25%, transparent 25%),
+    linear-gradient(-45deg, #15151a 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #15151a 75%),
+    linear-gradient(-45deg, transparent 75%, #15151a 75%);
+  background-size: 6px 6px;
+  background-position: 0 0, 0 3px, 3px -3px, -3px 0px;
+  box-shadow:
+    inset 0 0 15px rgba(0, 0, 0, 0.95),
+    0 1px 1px rgba(255, 255, 255, 0.05);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.premium-spin-container .neon-trench {
+  box-shadow:
+    inset 0 0 12px rgba(0, 0, 0, 0.95),
+    0 0 0px rgba(255, 0, 60, 0);
+  transition: box-shadow 0.3s ease;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background: transparent;
+}
+.premium-spin-container.active-glow .neon-trench {
+  box-shadow:
+    inset 0 0 8px rgba(0, 0, 0, 0.9),
+    0 0 30px #ff003c,
+    0 0 12px #ff003c;
+}
+.premium-spin-container .button-core {
+  background: radial-gradient(circle at 50% 15%, #ff2a5f 0%, #b30024 45%, #5a000f 85%, #1f0003 100%);
+  transform: translateZ(28px);
+  transition: transform 0.1s cubic-bezier(0.1, 0.8, 0.2, 1), background 0.2s, box-shadow 0.2s;
+  box-shadow:
+    0 18px 30px rgba(0, 0, 0, 0.85),
+    inset 0 12px 12px rgba(255, 255, 255, 0.38),
+    inset 0 -12px 18px rgba(0, 0, 0, 0.9),
+    0 0 18px rgba(255, 0, 60, 0.4);
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transform-style: preserve-3d;
+}
+.premium-spin-container .outer-bezel:hover .button-core {
+  background: radial-gradient(circle at 50% 10%, #ff3d6f 0%, #cd002d 45%, #6e0014 85%, #2c0006 100%);
+  box-shadow:
+    0 18px 35px rgba(0, 0, 0, 0.85),
+    inset 0 14px 14px rgba(255, 255, 255, 0.48),
+    inset 0 -10px 18px rgba(0, 0, 0, 0.8),
+    0 0 35px rgba(255, 0, 60, 0.75);
+}
+.premium-spin-container .outer-bezel:active .button-core {
+  transform: translateZ(3px);
+  background: radial-gradient(circle at 50% 30%, #cc0025 0%, #7e0017 50%, #3a0008 90%, #0d0001 100%);
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.95),
+    inset 0 3px 5px rgba(255, 255, 255, 0.12),
+    inset 0 -4px 10px rgba(0, 0, 0, 0.95),
+    0 0 50px rgba(255, 0, 60, 0.95);
+}
+.premium-spin-container .glass-reflection {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0) 50.1%, rgba(0, 0, 0, 0.4) 100%);
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+.premium-spin-container .shimmer-sweep {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  pointer-events: none;
+}
+.premium-spin-container .shimmer-sweep::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0) 45%,
+    rgba(255, 255, 255, 0.35) 50%,
+    rgba(255, 255, 255, 0) 55%
+  );
+  transform: rotate(30deg);
+  transition: transform 0.8s ease-in-out;
+  pointer-events: none;
+}
+.premium-spin-container .outer-bezel:hover .shimmer-sweep::after {
+  transform: translate(50%, 50%) rotate(30deg);
+}
+.premium-spin-container .shockwave-ring {
+  position: absolute;
+  border: 3.5px solid #ff003c;
+  border-radius: 50%;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 15;
+}
+.premium-spin-container .animate-shockwave {
+  animation: shockwave-out 0.45s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+}
+@keyframes shockwave-out {
+  0%   { transform: scale(0.92); opacity: 0.95; filter: blur(0px); }
+  100% { transform: scale(1.35); opacity: 0; filter: blur(8px); }
+}
+.premium-spin-container .neon-pulse {
+  animation: pulse-neon 2.5s infinite ease-in-out;
+}
+@keyframes pulse-neon {
+  0%, 100% { box-shadow: 0 0 15px rgba(255, 0, 60, 0.4), inset 0 12px 12px rgba(255, 255, 255, 0.35); }
+  50%      { box-shadow: 0 0 35px rgba(255, 0, 60, 0.85), inset 0 12px 15px rgba(255, 255, 255, 0.45); }
+}
+.premium-spin-container .btn-text {
+  font-family: var(--display-font);
+  font-size: 18px;
+  font-weight: 900;
+  color: transparent;
+  background: linear-gradient(to bottom, #fff, #e0e0e0, #999);
+  -webkit-background-clip: text;
+  background-clip: text;
+  letter-spacing: 2px;
+  text-shadow: 0 4px 6px rgba(0,0,0,0.65);
+  line-height: 1;
+}
+.premium-spin-container .btn-subtext {
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  color: rgba(255, 150, 170, 0.8);
+  margin-top: 2px;
+  font-family: var(--display-font);
+}
+.premium-spin-container .btn-stars {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  margin-bottom: 2px;
+}
+.premium-spin-container .btn-stars span {
+  font-size: 8px;
+  color: #d4af37;
+}
+.premium-spin-container .btn-stars div {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+}
+
+/* ------- AUTO CONFIRM MODAL ------- */
+.auto-confirm-modal {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.88);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 270;
+}
+.auto-confirm-modal.show { display: flex; animation: fadeIn 0.3s; }
+.auto-confirm-inner {
+  background: linear-gradient(180deg, var(--ink-2), var(--ink));
+  border: 4px solid var(--orange);
+  border-radius: 16px;
+  padding: 50px 80px;
+  text-align: center;
+  box-shadow: 0 0 60px rgba(200, 26, 46, 0.6), 0 0 120px rgba(200, 26, 46, 0.3);
+  animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  max-width: 80%;
+  position: relative;
+  overflow: hidden;
+}
+@media (max-width: 700px) {
+  .auto-confirm-inner {
+    padding: 20px 30px; /* Reduced padding for smaller screens */
+  }
+}
+.auto-confirm-inner h2 {
+  font-family: var(--ui-font);
+  color: var(--orange);
+  font-size: 56px;
+  letter-spacing: 8px;
+  text-shadow: 0 0 30px var(--orange);
+  margin-bottom: 16px;
+  font-weight: 700;
+}
+.auto-confirm-inner p {
+  color: #fff;
+  font-size: 20px;
+  line-height: 1.6;
+  margin: 12px 0;
+  letter-spacing: 2px;
+}
+.auto-confirm-buttons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 24px;
+}
+.auto-confirm-buttons button {
+  background: linear-gradient(180deg, var(--orange), var(--orange-2));
+  color: #000;
+  border: none;
+  border-radius: 40px;
+  padding: 18px 60px;
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: 4px;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(200, 26, 46, 0.5);
+  font-family: var(--ui-font);
+}
+.auto-confirm-buttons button:hover { transform: translateY(-2px); }
+.auto-confirm-buttons button.cancel {
+  background: linear-gradient(180deg, #444, #222);
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+/* ------- MODAL ------- */
+.modal {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.88);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 260;
+}
+.modal.show { display: flex; animation: fadeIn 0.3s; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.modal-inner {
+  background: linear-gradient(180deg, var(--ink-2), var(--ink));
+  border: 4px solid var(--orange);
+  border-radius: 16px;
+  padding: 50px 80px;
+  text-align: center;
+  box-shadow: 0 0 60px rgba(200, 26, 46, 0.6), 0 0 120px rgba(200, 26, 46, 0.3);
+  animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  max-width: 80%;
+  max-height: 85vh;
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+@media (max-width: 700px) {
+  .modal-inner {
+    padding: 20px 30px; /* Reduced padding for smaller screens */
+  }
+}
+.modal-inner::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 16px;
+  background: conic-gradient(from 0deg, transparent, var(--orange), transparent 30%);
+  animation: modalSweep 4s linear infinite;
+  z-index: -1;
+  opacity: 0.3;
+}
+@keyframes modalSweep { to { transform: rotate(360deg); } }
+@keyframes popIn {
+  from { transform: scale(0.6); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+.modal h2 {
+  font-family: var(--ui-font);
+  color: var(--orange);
+  font-size: 56px;
+  letter-spacing: 8px;
+  text-shadow: 0 0 30px var(--orange);
+  margin-bottom: 16px;
+  font-weight: 700;
+}
+.modal p {
+  color: #fff;
+  font-size: 20px;
+  line-height: 1.6;
+  margin: 12px 0;
+  letter-spacing: 2px;
+}
+.modal .big-number {
+  display: block;
+  font-family: var(--ui-font);
+  font-size: 110px;
+  color: var(--orange);
+  font-weight: 700;
+  margin: 20px 0;
+  line-height: 1;
+  text-shadow: 0 0 30px var(--orange), 0 6px 0 #000;
+}
+.modal .stat-row {
+  display: flex;
+  justify-content: space-around;
+  gap: 30px;
+  margin: 24px 0;
+}
+.modal .stat-cell {
+  padding: 10px 20px;
+  background: rgba(200,26,46,0.08);
+  border: 1px solid rgba(200,26,46,0.4);
+  border-radius: 8px;
+  min-width: 140px;
+}
+.modal .stat-cell .k {
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--orange);
+  font-weight: 700;
+}
+.modal .stat-cell .v {
+  font-family: var(--ui-font);
+  font-size: 30px;
+  font-weight: 700;
+  color: #fff;
+  margin-top: 4px;
+}
+.modal button {
+  background: linear-gradient(180deg, var(--orange), var(--orange-2));
+  color: #000;
+  border: none;
+  border-radius: 40px;
+  padding: 18px 60px;
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+  box-shadow: 0 4px 20px rgba(200, 26, 46, 0.5);
+  font-family: var(--ui-font);
+}
+.modal button:hover { transform: translateY(-2px); }
+
+/* ------- TOASTS ------- */
+.toast {
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  background: linear-gradient(180deg, var(--orange), var(--orange-2));
+  color: #000;
+  padding: 14px 40px;
+  border-radius: 30px;
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: 3px;
+}
+
+/* ============================================
+   PROPER DEV LAYOUT SYSTEM
+   These variables are controlled by src/lib/layout/LayoutManager
+   and match the profiles used in the RLE tool + dev-layout-tweaks.css
+============================================ */
+
+:root {
+  /* Reels positioning (used in dev mode / when LayoutManager is active) */
+  --dev-reels-container-y: 0px;
+  --dev-reels-container-w: auto;
+  --dev-reels-container-h: auto;
+  --dev-reels-offset-x: 0px;
+  --dev-reels-y: 0px;
+  --dev-reels-w: auto;
+  --dev-reels-h: auto;
+
+  /* Reel frame overlay */
+  --dev-reel-frame-x: 0%;
+  --dev-reel-frame-y: 0%;
+  --dev-reel-frame-tx: 0%;
+  --dev-reel-frame-ty: 0%;
+  --dev-reel-frame-scale: 1;
+
+  /* Host / Fighter character (the girl) */
+  --dev-max-right: 20px;
+  --dev-max-bottom: 0px;
+  --dev-max-w: 247px;
+  --dev-max-h: 418px;
+}
+
+/* ============================================
+   DEV LAYOUT MODE (full wiring - "wire everything")
+   Activated by LayoutManager when you switch profiles via ProfileSwitcher.
+   All your RLE-tuned values now control the real components.
+============================================ */
+
+.dev-layout-active .game-stage {
+  position: absolute;
+  top: var(--dev-reels-container-y);
+  left: 50%;
+  transform: translateX(calc(-50% + var(--dev-reels-offset-x)));
+  width: var(--dev-reels-container-w);
+  height: var(--dev-reels-container-h);
+}
+
+.dev-layout-active .reels-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.dev-layout-active .reels {
+  position: absolute;
+  top: var(--dev-reels-y);
+  left: 50%;
+  transform: translateX(calc(-50% + var(--dev-reels-offset-x)));
+  width: var(--dev-reels-w);
+  height: var(--dev-reels-h);
+}
+
+/* Reel Frame - the decorative overlay you spent so much time tuning */
+.dev-layout-active .reel-frame,
+.dev-layout-active .reel-frame-ov,
+.dev-layout-active #reel-frame-ov {
+  position: absolute;
+  top: var(--dev-reel-frame-y);
+  left: var(--dev-reel-frame-x);
+  right: var(--dev-reel-frame-x);
+  bottom: var(--dev-reel-frame-y);
+  transform: translate(var(--dev-reel-frame-tx), var(--dev-reel-frame-ty)) 
+             scale(var(--dev-reel-frame-scale));
+  transform-origin: center;
+  background: url("./assets/reel-frame.webp") center / 100% 100% no-repeat;
+  z-index: 25;
+  pointer-events: none;
+}
+
+/* Host / Fighter character (the girl) - full control */
+.dev-layout-active .host-character,
+.dev-layout-active .max-character {
+  position: fixed !important;
+  right: var(--dev-max-right) !important;
+  bottom: var(--dev-max-bottom) !important;
+  width: var(--dev-max-w) !important;
+  height: var(--dev-max-h) !important;
+  z-index: 50;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* Mobile demo support */
+.dev-layout-active .mobile-reels {
+  position: relative;
+  width: var(--dev-reels-w, 100%);
+  height: var(--dev-reels-h, auto);
+  left: var(--dev-reels-offset-x, 0);
+}
+
+/* Cabinet / cage overlay in dev mode (if it uses absolute) */
+.dev-layout-active .art-cabinet {
+  top: var(--dev-reels-container-y, -85px);
+  /* other adjustments can be added as needed */
+}

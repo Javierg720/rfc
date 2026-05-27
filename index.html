@@ -12,17 +12,18 @@
 <title>RFC — Ruthless Fighting Championship</title>
 <meta property="og:title" content="RFC — Ruthless Fighting Championship">
 <meta property="og:description" content="High-volatility, fighting-themed 243-ways slot game. Enter the cage and fight for massive wins!">
-<meta property="og:image" content="./assets/images/thumbnail-BCDW3BS3.jpg">
+<!-- og:image background reference removed (background erased) -->
 <meta property="og:type" content="website">
 <link rel="icon" href="data:,">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="preload" href="./assets/images/champ-BiOkFbwx.webp" as="image">
-<link rel="preload" href="./assets/images/rage-DhUJwnWo.webp" as="image">
-<link rel="preload" href="./assets/images/chief-DsDlmqig.webp" as="image">
-<link rel="preload" href="./assets/images/mcwhiskey-Dcr9pN-r.webp" as="image">
+<link rel="preload" href="./assets/symbols/CHAMP.png" as="image">
+<link rel="preload" href="./assets/symbols/RAGE.png" as="image">
+<link rel="preload" href="./assets/symbols/CHIEF.png" as="image">
+<link rel="preload" href="./assets/symbols/MCWHISKEY.png" as="image">
 <link rel="stylesheet" href="./dev-layout-tweaks.css">
+<link rel="stylesheet" href="/src/styles/game-layout.css">
 <style>
   :root {
     --orange:   #cc1a2e;
@@ -40,9 +41,9 @@
 
     --cell:     180px;
     --gap:      0px;
-    --ui-reel-frame: url("./assets/images/reel-frame-BtPHoJk2.webp");
-    --ui-bottom-hud: url("./assets/images/bottom-hud-shell-DZVuexWl.webp");
-    --ui-spin-medallion: url("./assets/images/spin-medallion-BY-10DFn.webp");
+    /* --ui-reel-frame erased */
+    --ui-bottom-hud: url("./assets/ui/bottom-hud-shell.webp");
+    --ui-spin-medallion: url("./assets/ui/spin-medallion.webp");
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -98,7 +99,7 @@
     object-fit: cover;
     filter: contrast(1.06) saturate(1.08);
   }
-  @media (max-width: 820px) and (orientation: portrait) {
+  @media (max-width: 1700px) and (orientation: portrait) {
     .startup-intro video {
       width: 100%;
       height: 100vh;
@@ -446,7 +447,7 @@
     text-shadow: 0 0 20px var(--orange);
   }
 
-  /* ------- VS BATTLE OVERLAY ------- */
+  /* ------- VS BONUS OVERLAY ------- */
   .vs-battle-overlay {
     position: absolute; inset: 0; z-index: 90;
     background: rgba(0,0,0,0.82);
@@ -503,7 +504,8 @@
     background-position: top center;
     transition: all 0.5s ease;
   }
-  .vs-fighter-portrait video.vs-fighter-video {
+  .vs-fighter-portrait video.vs-fighter-video,
+  .vs-fighter-portrait video.vs-fighter-ko-video {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -594,6 +596,39 @@
     letter-spacing: 4px;
     z-index: 5;
     animation: vsKoPop 0.5s ease forwards;
+  }
+  .vs-start-btn {
+    font-family: var(--display-font);
+    font-size: 24px;
+    letter-spacing: 6px;
+    color: #fff;
+    background: linear-gradient(180deg, #ff3a52, #cc1a2e);
+    border: 3px solid rgba(255,255,255,0.2);
+    border-radius: 12px;
+    padding: 16px 48px;
+    margin-top: 24px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    box-shadow: 0 0 30px rgba(255,58,82,0.4), inset 0 0 20px rgba(255,255,255,0.1);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .vs-start-btn.enabled {
+    opacity: 1;
+    pointer-events: auto;
+    animation: vsStartPulse 1.2s ease-in-out infinite alternate;
+  }
+  .vs-start-btn.enabled:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 50px rgba(255,58,82,0.6), inset 0 0 30px rgba(255,255,255,0.15);
+  }
+  .vs-start-btn.enabled:active {
+    transform: scale(0.96);
+  }
+  @keyframes vsStartPulse {
+    from { box-shadow: 0 0 30px rgba(255,58,82,0.4), inset 0 0 20px rgba(255,255,255,0.1); }
+    to { box-shadow: 0 0 50px rgba(255,58,82,0.7), inset 0 0 30px rgba(255,255,255,0.2); }
   }
   @keyframes vsKoPop {
     0% { transform: scale(2); opacity: 0; }
@@ -740,12 +775,12 @@
 
   /* ------- REELS ------- */
   .reels-container {
-    position: absolute;
-    top: 0px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 1210px;
-    height: 908px;
+    position: absolute !important;
+    top: 122px !important;
+    left: 50% !important;
+    transform: translateX(calc(-50% + 69px)) !important;
+    width: 1163px !important;
+    height: 711px !important;
     z-index: 0;
   }
   /* Crimson octagon cage frame behind the reels */
@@ -761,7 +796,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: var(--ui-reel-frame) center/100% 100% no-repeat;
+    /* reel overlay background erased */
     z-index: 1;
     pointer-events: none;
   }
@@ -792,10 +827,12 @@
     text-shadow: 0 0 10px rgba(200, 26, 46, 0.6);
   }
   .reels {
-    position: absolute;
-    left: 50%;
-    top: 134px;
-    transform: translateX(-50%);
+    position: absolute !important;
+    left: 50% !important;
+    top: 209px !important;
+    transform: translateX(calc(-50% + 69px)) !important;
+    width: 862px !important;
+    height: 212px !important;
     display: flex;
     gap: var(--gap);
     background: rgba(0, 0, 0, 0.78);
@@ -811,14 +848,29 @@
     box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.8), 0 0 60px rgba(200, 26, 46, 0.5);
   }
 
+  /* Reel frame (the decorative overlay) — now driven by dev settings so baked values in dev-layout-tweaks.css apply on desktop */
+  #reel-frame-ov {
+    position: absolute !important;
+    top: -25% !important;
+    left: 1.7% !important;
+    right: 1.7% !important;
+    bottom: -25% !important;
+    z-index: 25;
+    pointer-events: none;
+    background: url('./assets/reel-frame.webp') center/100% 100% no-repeat;
+    will-change: transform;
+    transform: translate(6.6%, 12.1%) scale(0.93) !important;
+    transform-origin: center;
+  }
+
   /* ---- Max Character (bottom-right, legs cut off at page bottom) ---- */
   .max-character {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    width: 334px;
-    height: 538px;
-    z-index: 18;
+    position: fixed !important;
+    right: 120px !important;
+    bottom: -216px !important;
+    width: 211px !important;
+    height: 406px !important;
+    z-index: 50;
     pointer-events: none;
     overflow: hidden;
   }
@@ -835,11 +887,113 @@
   @media (min-width: 481px) and (max-width: 1100px) {
     .max-character { display: none; }
   }
-  @media (max-width: 480px) {
+
+  /* Force girl visible on actual phone portrait sizes (override the above hide) */
+  @media (max-width: 480px), (max-width: 1700px) and (orientation: portrait) {
     .max-character {
-      display: block;
-      right: 0; /* Position to the bottom right */
-      bottom: 0; /* Position to the bottom right */
+      display: block !important;
+    }
+  }
+  /* Better reel cell sizing on small phones */
+  @media (max-width: 520px) {
+    :root {
+      --cell: 92px;
+    }
+  }
+
+  /* ============================================
+     MOBILE PORTRAIT FIXES - Proper mobile UX
+     ============================================ */
+  @media (max-width: 1700px) and (orientation: portrait) {
+    :root {
+      /* 5 reels fill container width evenly; formula: (container - 4px padding) / 5 */
+      --cell: calc((min(96vw, 520px) - 4px) / 5);
+    }
+
+    /* Reels + girl + overlay now respect the same --dev-* settings as desktop.
+       Using iPhone profile as primary mobile fallback (from iphone.txt). */
+    .reels-container {
+      /* Position reels in upper-center of screen, leaving room for spin button below */
+      top: calc(8vh + 86px) !important;
+      width: min(98vw, 810px) !important;
+      height: 711px !important;
+      max-height: 85vh !important;
+      left: 50% !important;
+      transform: translateX(calc(-50% + 21px)) !important;
+    }
+
+    .reels {
+      top: 209px !important;
+      left: 21px !important;
+      width: 358px !important;
+      height: 212px !important;
+      transform: none !important;
+      padding: 2px !important;
+    }
+
+    /* Prevent flex-shrink so all 5 reels stay square */
+    .reel {
+      flex-shrink: 0 !important;
+    }
+
+    /* Reel frame overlay - iPhone tuned values */
+    #reel-frame-ov {
+      top: 12.8% !important;
+      bottom: 12.8% !important;
+      left: -12.65% !important;
+      right: -12.65% !important;
+      transform: translate(4.95%, 7.7%) scale(0.93) !important;
+    }
+
+    /* Cage overlay is too large for mobile — hide it */
+    #cage-frame-ov {
+      display: none !important;
+    }
+
+    /* Girl now fully respects the dev girl variables (--dev-max-right, --dev-max-w, --dev-max-h etc) */
+    .max-character, #maxCharacter {
+      display: block !important;
+      position: fixed !important;
+      width: 247px !important;
+      height: 406px !important;
+      left: auto !important;
+      right: -276px !important;
+      top: auto !important;
+      bottom: -308px !important;
+      z-index: 50 !important;
+      opacity: 1 !important;
+      transform: none !important;
+      pointer-events: none !important;
+      overflow: visible !important;
+    }
+
+    /* Left bias for the reels+girl group — re-uses your existing --dev-reels-offset-x so one control moves the cluster on both desktop and mobile */
+    .reels-container {
+      left: calc(50% + 21px) !important;
+    }
+
+    /* Ensure reels are fully visible and not clipped */
+    .reels-wrap {
+      overflow: visible !important;
+    }
+
+    /* Make sure reel cells are visible and properly sized */
+    .cell {
+      min-width: var(--cell) !important;
+      min-height: var(--cell) !important;
+    }
+
+    /* Thumb-friendly bottom controls */
+    .stage.portrait-phone .spin-btn {
+      width: 120px !important;
+      height: 120px !important;
+      font-size: 16px !important;
+      border-radius: 9999px !important;
+    }
+
+    .stage.portrait-phone .bet-display {
+      width: 56% !important;
+      left: 40% !important;
     }
   }
 
@@ -1387,7 +1541,7 @@
     border: 0;
     border-radius: 0;
     box-shadow: none;
-    z-index: 20;
+    z-index: 35; /* Raised so HUD sits above the girl on desktop */
   }
   @media (min-width: 1024px) {
     .bet-panel {
@@ -1572,6 +1726,7 @@
     text-shadow: none;
     text-indent: -9999px;
     overflow: hidden;
+    z-index: 35; /* Keep spin button above the girl on desktop */
   }
   .spin-btn:hover:not(:disabled) {
     filter: brightness(1.12) saturate(1.12);
@@ -2091,25 +2246,11 @@
     background: #fff;
     opacity: 0;
   }
-  .bonus-intro.show .bi-flash {
-    animation: biFlash 0.35s ease-out forwards;
-  }
-  @keyframes biFlash {
-    0%   { opacity: 0; }
-    20%  { opacity: 0.95; background: #fff; }
-    50%  { opacity: 0.7;  background: #cc1a2e; }
-    100% { opacity: 0; }
-  }
 
   .bonus-intro.show::before {
     content: '';
     position: absolute; inset: 0;
     background: radial-gradient(ellipse at center, rgba(40,10,0,0.85) 0%, rgba(0,0,0,0.98) 80%);
-    animation: biBackdrop 0.4s ease-out forwards;
-  }
-  @keyframes biBackdrop {
-    from { opacity: 0; }
-    to   { opacity: 1; }
   }
 
   .bi-scan {
@@ -2124,14 +2265,6 @@
       transparent 100%);
     opacity: 0;
   }
-  .bonus-intro.show .bi-scan {
-    animation: biScan 1.2s ease-out 0.2s forwards;
-  }
-  @keyframes biScan {
-    0%   { opacity: 0; left: -40%; }
-    30%  { opacity: 1; }
-    100% { opacity: 0; left: 100%; }
-  }
 
   .bi-bar {
     position: absolute;
@@ -2144,22 +2277,6 @@
   }
   .bi-bar-top { top: 0; transform: translateY(-100%); }
   .bi-bar-bot { bottom: 0; transform: translateY(100%); }
-  .bonus-intro.show .bi-bar-top {
-    animation: biBarTop 0.5s cubic-bezier(0.25, 1, 0.5, 1) 0.3s forwards;
-  }
-  .bonus-intro.show .bi-bar-bot {
-    animation: biBarBot 0.5s cubic-bezier(0.25, 1, 0.5, 1) 0.3s forwards;
-  }
-  @keyframes biBarTop {
-    0%   { transform: translateY(-100%); opacity: 0; }
-    60%  { opacity: 1; }
-    100% { transform: translateY(0);     opacity: 1; }
-  }
-  @keyframes biBarBot {
-    0%   { transform: translateY(100%);  opacity: 0; }
-    60%  { opacity: 1; }
-    100% { transform: translateY(0);     opacity: 1; }
-  }
 
   .bi-stripes {
     position: absolute;
@@ -2419,8 +2536,7 @@
     z-index: 210;
     display: none;
     background:
-      radial-gradient(ellipse at center, rgba(40,8,12,0.92) 0%, rgba(0,0,0,0.98) 75%),
-      url("./assets/images/rfc_bg-CeQ-9Wej.png") center/cover no-repeat;
+      radial-gradient(ellipse at center, rgba(40,8,12,0.92) 0%, rgba(0,0,0,0.98) 75%);
     overflow: hidden;
   }
   .pick-screen.show { display: block; opacity: 1; animation: pickFadeIn 0.18s ease-out both; }
@@ -2791,7 +2907,7 @@
     background: linear-gradient(180deg, rgba(80,20,20,0.95), rgba(40,10,10,0.95));
   }
 
-  @media (max-width: 820px) and (orientation: portrait) {
+  @media (max-width: 1700px) and (orientation: portrait) {
     .pick-header { top: 82px; }
     .pick-title { font-size: 78px; letter-spacing: 7px; }
     .pick-subtitle { font-size: 26px; letter-spacing: 9px; margin-top: 10px; }
@@ -3118,7 +3234,8 @@
   }
 
   /* ===== Premium art pass alignment fixes ===== */
-  .reels-container { top: -3px; }
+  /* DISABLED so your RLE exports actually work */
+  /* .reels-container { top: -50px; } */
   .balance {
     left: 94px;
     top: 0px;
@@ -3171,9 +3288,8 @@
   }
 
   .stage.compact-landscape .reels-container {
-    top: 0;
-    transform: translateX(-50%) scale(0.82);
-    transform-origin: top center;
+    /* Disabled — using your RLE-tuned values instead */
+    /* top: -50px; transform: translateX(-50%) scale(0.82); ... */
   }
   .stage.compact-landscape .bet-panel {
     top: 586px;
@@ -4041,8 +4157,8 @@
       radial-gradient(circle at 86% 34%, rgba(255,255,255,0.28) 0 1.6%, transparent 4.6%),
       radial-gradient(circle at 18% 46%, rgba(255,41,56,0.54), transparent 25%),
       radial-gradient(circle at 82% 46%, rgba(58,145,255,0.56), transparent 25%),
-      linear-gradient(90deg, rgba(98,0,10,0.82), rgba(4,5,9,0.94) 38%, rgba(4,5,9,0.94) 62%, rgba(0,34,100,0.84)),
-      url("./assets/images/rfc_bg-CeQ-9Wej.png") center/cover no-repeat !important;
+      linear-gradient(90deg, rgba(98,0,10,0.82), rgba(4,5,9,0.94) 38%, rgba(4,5,9,0.94) 62%, rgba(0,34,100,0.84));
+    /* main background image layer removed (erased) */
     backdrop-filter: blur(2px) saturate(1.22) contrast(1.08);
     perspective: 1400px;
   }
@@ -4414,7 +4530,7 @@
     border-radius: 0 !important;
     clip-path: none !important;
     color: transparent !important;
-    background: url("assets/ui/feature-menu-exact.png") center/contain no-repeat !important;
+    /* background: url("assets/ui/feature-menu-exact.png") center/contain no-repeat !important; -- file not present, commented */
     box-shadow: 0 30px 70px rgba(0,0,0,0.58) !important;
     overflow: visible !important;
     animation: featureExactIn 0.2s cubic-bezier(.18,1.05,.28,1) both !important;
@@ -4606,7 +4722,7 @@
 
   /* Exact fighter-pick artwork with transparent hit zones and fighter overlays only. */
   .pick-screen {
-    background: url("./assets/images/fighter-picker-exact-nWBN6V3u.png") center/cover no-repeat !important;
+    background: url("./assets/ui/fighter-picker-exact.png") center/cover no-repeat !important;
   }
   .pick-screen::before {
     content: '';
@@ -5115,14 +5231,15 @@
       <div class="mobile-clock" id="mobileClock">--:--</div>
     </div>
   </div>
-  <img class="viewport-bg" id="viewportBg" src="./art/rfc_bg.png" alt="" loading="eager" fetchpriority="high">
+  <img class="viewport-bg" id="viewportBg" src="./assets/main-bg.png" alt="" loading="eager" fetchpriority="high">
+  <div id="bg-flare-overlay" style="position:fixed;inset:0;z-index:0;pointer-events:none;background:url('./assets/overlays/flare-overlay.png') center/cover no-repeat;opacity:0.6;mix-blend-mode:screen;"></div>
   <div class="stage" id="stage" style="font-weight: 400" role="region" aria-label="Game board">
     <div class="startup-intro" id="startupIntro" role="dialog" aria-label="Intro animation. Click to skip.">
-      <video id="startupIntroVideo" src="./assets/media/intro_desktop-DvqU7Lkg.mp4" muted playsinline preload="auto"></video>
+      <video id="startupIntroVideo" src="./assets/intro_desktop.mp4" muted playsinline preload="auto"></video>
     </div>
-    <img class="bg" id="bgImg" src="./art/rfc_bg.png" alt="" loading="eager" fetchpriority="high">
-    <audio id="bonusMusic" src="./assets/media/background_loop-CrHTu3B_.mp3" loop preload="auto"></audio>
-    <audio id="crownStinger" src="./assets/media/King_Crowned-CbCPh11F.mp3" preload="auto"></audio>
+    <img class="bg" id="bgImg" src="./assets/main-bg.png" alt="" loading="eager" fetchpriority="high">
+    <audio id="bonusMusic" src="./assets/background_loop.mp3" loop preload="auto"></audio>
+    <audio id="crownStinger" src="./assets/King_Crowned.mp3" preload="auto"></audio>
     <div class="overlay"></div>
     <div class="bg-fires"><span class="fire f1"></span><span class="fire f2"></span><span class="fire f3"></span></div>
     <div class="embers" id="embers"></div>
@@ -5137,7 +5254,7 @@
       <div class="ceremony-panel">
         <div class="ceremony-copy">
           <div class="ceremony-kicker" id="ceremonyKicker">BONUS</div>
-          <div class="ceremony-title" id="ceremonyTitle">FREE FIGHTS</div>
+          <div class="ceremony-title" id="ceremonyTitle">FREE SPINS BONUS</div>
           <div class="ceremony-sub" id="ceremonySub">PICK YOUR FIGHTER</div>
         </div>
         <div class="ceremony-progress"><span></span></div>
@@ -5152,7 +5269,7 @@
       <div class="title-sub">— ENTER THE CAGE —</div>
     </div>
 
-    <!-- VS Battle Overlay -->
+    <!-- VS Bonus Overlay -->
     <!-- VS Fighter Selection Overlay (large portraits) -->
     <div class="vs-battle-overlay" id="vsBattleOverlay">
       <div class="vs-battle-scene" id="vsBattleScene">
@@ -5183,6 +5300,9 @@
           </div>
         </div>
         <div class="vs-battle-status" id="vsBattleStatus">PICK YOUR FIGHTER</div>
+        <div style="display:flex;justify-content:center;width:100%;">
+          <button class="vs-start-btn" id="vsStartBtn" style="display:none;">START</button>
+        </div>
       </div>
     </div>
 
@@ -5206,6 +5326,8 @@
     </div>
 
     <div class="reels-container">
+      <div id="cage-frame-ov" style="position:absolute; inset:-12.1% -7.4%; z-index:30; pointer-events:none; background: url('./assets/thisisthecageoverlay.png') center/100% 100% no-repeat; will-change: transform;"></div>
+      <div id="reel-frame-ov" style="background: url('./assets/reel-frame.webp') center/100% 100% no-repeat; will-change: transform;"></div>
       <div class="reels-wrap">
       <div class="reels" id="reels">
         <div class="win-layer" id="winLayer"></div>
@@ -5213,10 +5335,6 @@
       </div>
     </div>
 
-    <!-- Max Character (bottom-right, legs cut off at page bottom) -->
-    <div class="max-character" id="maxCharacter" aria-hidden="true">
-      <img class="max-sprite" id="maxSprite" src="./assets/fighter-max/frame_021.png" alt="">
-    </div>
 
     <div class="win-display" id="winDisplay">
       <div class="win-label">WIN</div>
@@ -5255,8 +5373,8 @@
     </div>
 
     <div class="fs-counter">
-      <button class="fs-cancel" id="fsCancel" title="End Free Fights">×</button>
-      <div class="fs-label">FREE FIGHTS LEFT</div>
+      <button class="fs-cancel" id="fsCancel" title="End Free Spins Bonus">×</button>
+      <div class="fs-label">FREE SPINS BONUS LEFT</div>
       <div class="fs-count" id="fsCount">0</div>
     </div>
 
@@ -5467,23 +5585,15 @@
         width: 112px; height: 56px;
         border-radius: 12px;
         margin-left: 20px;
-        background: linear-gradient(to bottom, #dc2626, #7f1d1d, #450a0a);
-        border: 2px solid rgba(239,68,68,0.6);
-        box-shadow: 0 10px 25px rgba(220,38,38,0.35), inset 0 2px 4px rgba(255,255,255,0.2);
+        background: linear-gradient(180deg, #008060 0%, #004d3a 100%);
+        border: 2px solid #e1b353;
+        box-shadow: 0 4px 15px rgba(0, 128, 96, 0.4), 0 0 10px rgba(225, 179, 83, 0.3);
         color: #fff;
         display: flex; flex-direction: column; align-items: center; justify-content: center;
         cursor: pointer; transition: filter 0.2s;
       }
       #inlineControls .ic-desk-buy-btn:hover { filter: brightness(1.1); }
-      @media (max-width: 1023px) {
-        #inlineControls .ic-mobile { display: flex; }
-        #inlineControls .ic-desktop { display: none; }
-      }
-      @media (min-width: 1024px) {
-        #inlineControls .ic-mobile { display: none; }
-        #inlineControls .ic-desktop { display: flex; }
-      }
-      /* Mobile controls — viewport pixel sizes (inlineControls is outside scaled stage) */
+      /* Move media queries below the base styles so they aren't overridden */
       #inlineControls { flex-direction: column; align-items: center; }
       #inlineControls .ic-mobile {
         max-width: 100%; width: 100%;
@@ -5498,8 +5608,8 @@
         align-items: center;
         width: 100%;
         padding: 6px 20px;
-        background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.6) 80%, rgba(0,0,0,0) 100%);
-        border-top: 1px solid rgba(255,255,255,0.06);
+        background: linear-gradient(to top, rgba(0,0,0,0.98) 0%, rgba(0,0,0,0.88) 65%, rgba(0,0,0,0.55) 100%);
+        border-top: 1px solid rgba(255,255,255,0.04);
         pointer-events: auto;
         margin-bottom: 6px;
       }
@@ -5509,6 +5619,16 @@
       }
       #inlineControls .mobile-hud-box.text-left { align-items: flex-start; }
       #inlineControls .mobile-hud-box.text-right { align-items: flex-end; }
+
+      @media (max-width: 1023px) {
+        #inlineControls .ic-mobile { display: flex !important; }
+        #inlineControls .ic-desktop { display: none !important; }
+      }
+      @media (min-width: 1024px) {
+        #inlineControls .ic-mobile { display: none !important; }
+        #inlineControls .ic-desktop { display: flex !important; }
+        #inlineControls .ic-bonus-float { display: none !important; }
+      }
       #inlineControls .hud-label {
         font-size: 10px;
         color: #8e8e93;
@@ -5764,7 +5884,7 @@
       }
 
       /* Landscape and portrait specifics */
-      @media (max-width: 820px) and (orientation: portrait) {
+      @media (max-width: 1700px) and (orientation: portrait) {
         .mobile-header {
           display: flex;
         }
@@ -5772,7 +5892,8 @@
           display: none !important;
         }
         .max-character {
-          display: none !important;
+          /* Overridden by your RLE dev variables below */
+          display: block !important;
         }
       }
     </style>
@@ -5837,8 +5958,11 @@
           </button>
           <button class="console-btn mobile-circle-btn" id="icAutoMob" aria-label="Auto play">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
-              <text x="12" y="15.5" font-family="var(--ui-font), sans-serif" font-weight="900" font-size="8" text-anchor="middle" fill="currentColor" stroke="none">A</text>
+              <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path>
+              <path d="M21 3v5h-5"></path>
+              <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path>
+              <path d="M3 21v-5h5"></path>
+              <text x="12" y="16" font-family="var(--ui-font), sans-serif" font-weight="900" font-size="9" text-anchor="middle" fill="currentColor" stroke="none">A</text>
             </svg>
             <span class="ic-indicator" id="icAutoIndMob"></span>
           </button>
@@ -5868,11 +5992,12 @@
           </button>
         </div>
         <button class="console-btn ic-action-btn ic-buy-btn" id="icBuyBonusMob" style="display:none;"></button>
+      </div> <!-- Close ic-mobile -->
       <div class="ic-desktop">
         <div class="ic-desktop-bar">
           <div class="ic-desk-display"><span class="ic-label">BALANCE</span><span class="ic-value font-heavy" id="icBalanceDesk">949.00</span></div>
           <button class="console-btn ic-desk-buy-btn" id="icBuyBonusDesk">
-            <span style="font-size:11px;color:#fca5a5;font-weight:800;letter-spacing:0.15em;margin-bottom:4px;">FEATURE</span>
+            <span style="font-size:11px;color:#a7f3d0;font-weight:800;letter-spacing:0.15em;margin-bottom:4px;">BUY</span>
             <span style="font-size:13px;color:#fff;font-weight:900;letter-spacing:0.1em;text-shadow:0 2px 4px rgba(0,0,0,0.8);">BONUS</span>
           </button>
           <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin:0 auto;">
@@ -5991,10 +6116,26 @@
         cursor: pointer;
         border: 3px solid transparent;
       }
-      #inlinePickFighter .ipf-fighter-card.active-red { filter: drop-shadow(0 0 30px rgba(255,30,57,0.45)); border-color: #ff1e39; }
-      #inlinePickFighter .ipf-fighter-card.active-gold { filter: drop-shadow(0 0 30px rgba(223,186,115,0.45)); border-color: #dfba73; }
-      #inlinePickFighter .ipf-fighter-card.active-blue { filter: drop-shadow(0 0 30px rgba(0,149,255,0.45)); border-color: #0095ff; }
-      #inlinePickFighter .ipf-fighter-card.active-purple { filter: drop-shadow(0 0 30px rgba(184,50,252,0.45)); border-color: #b832fc; }
+      #inlinePickFighter .ipf-fighter-card.active-red { 
+        filter: drop-shadow(0 0 40px rgba(255,30,57,0.6)); 
+        border-color: #ff1e39;
+        transform: scale(1.03);
+      }
+      #inlinePickFighter .ipf-fighter-card.active-gold { 
+        filter: drop-shadow(0 0 40px rgba(223,186,115,0.6)); 
+        border-color: #dfba73;
+        transform: scale(1.03);
+      }
+      #inlinePickFighter .ipf-fighter-card.active-blue { 
+        filter: drop-shadow(0 0 40px rgba(0,149,255,0.6)); 
+        border-color: #0095ff;
+        transform: scale(1.03);
+      }
+      #inlinePickFighter .ipf-fighter-card.active-purple { 
+        filter: drop-shadow(0 0 40px rgba(184,50,252,0.6)); 
+        border-color: #b832fc;
+        transform: scale(1.03);
+      }
       #inlinePickFighter .ipf-shimmer { position: relative; overflow: hidden; }
       #inlinePickFighter .ipf-shimmer::before {
         content: ''; position: absolute; top: 0; left: -150%; width: 40%; height: 100%;
@@ -6006,32 +6147,163 @@
       @keyframes ipf-spin-ccw { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
       #inlinePickFighter .ipf-rot-cw { animation: ipf-spin-cw 25s infinite linear; }
       #inlinePickFighter .ipf-rot-ccw { animation: ipf-spin-ccw 35s infinite linear; }
+      
+      /* Premium Dashboard Styles */
+      #inlinePickFighter .ipf-premium-dashboard {
+        background: rgba(20, 20, 25, 0.45);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+        padding: 16px;
+      }
+      #inlinePickFighter .ipf-glass-panel {
+        background: rgba(0, 0, 0, 0.4);
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      
+      /* Glowing Enter Button */
+      #inlinePickFighter .ipf-enter-btn {
+        position: relative;
+        border-radius: 12px;
+        overflow: hidden;
+        cursor: pointer;
+        border: none;
+        background: transparent;
+        transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+        padding: 0;
+      }
+      #inlinePickFighter .ipf-enter-btn:hover {
+        transform: scale(1.02);
+      }
+      #inlinePickFighter .ipf-enter-btn::before {
+        content: ''; position: absolute;
+        top: -100%; left: -100%; width: 300%; height: 300%;
+        background: conic-gradient(transparent, #dfba73, transparent 30%);
+        animation: ipf-spin-cw 4s linear infinite;
+      }
+      #inlinePickFighter .ipf-enter-btn-inner {
+        position: absolute; inset: 2px;
+        background: linear-gradient(to bottom, #1b1c22, #050505);
+        border-radius: 10px; z-index: 2;
+        display: flex; justify-content: center; align-items: center;
+        transition: all 0.3s;
+      }
+      #inlinePickFighter .ipf-enter-btn:hover .ipf-enter-btn-inner {
+        background: linear-gradient(to bottom, #dfba73, #b45309);
+      }
+      #inlinePickFighter .ipf-enter-btn:hover span.enter-text {
+        color: #fff !important;
+        text-shadow: 0 2px 10px rgba(255,255,255,0.6) !important;
+      }
+
       @media (max-width: 1023px) {
         #inlinePickFighter .ipf-grid { grid-template-columns: repeat(2, 1fr) !important; }
       }
-      @media (max-width: 480px) {
+      @media (max-width: 600px) {
+        #inlinePickFighter {
+          padding: 4px;
+        }
+        #inlinePickFighter > div:nth-child(4) {
+          padding-top: 24px !important;
+        }
         #inlinePickFighter .ipf-grid {
-          grid-template-columns: 1fr !important; /* Single column for very small screens */
-          gap: 10px !important; /* Reduced gap */
+          grid-template-columns: repeat(2, 1fr) !important;
+          gap: 12px !important;
+          margin-bottom: 24px !important;
         }
         #inlinePickFighter .ipf-fighter-card {
-          padding: 1px !important; /* Reduced padding for fighter cards */
+          padding: 4px !important;
+          background: rgba(30, 30, 35, 0.5) !important;
+          backdrop-filter: blur(12px) !important;
+          -webkit-backdrop-filter: blur(12px) !important;
+          border-radius: 12px !important;
         }
         #inlinePickFighter .ipf-fighter-card .ipf-octagon-border {
-          padding: 4px !important; /* Reduced inner padding */
+          padding: 6px !important;
+        }
+        /* Make fonts scale properly inside the 2x2 grid */
+        #inlinePickFighter .ipf-fighter-card span {
+          font-size: clamp(14px, 4vw, 18px) !important;
+        }
+        #inlinePickFighter .ipf-fighter-card div {
+          font-size: 10px !important;
+          letter-spacing: 0.05em !important;
+        }
+        
+        /* Premium Dashboard style for spins/mults */
+        #inlinePickFighter .ipf-premium-dashboard {
+          padding: 12px !important;
+          border-radius: 12px !important;
         }
         #inlinePickFighter .ipf-controls-grid {
-          grid-template-columns: 1fr !important; /* Single column for controls */
-          gap: 10px !important;
+          grid-template-columns: 1fr !important; /* Stack vertically if too narrow, or keep 50/50? Let's use 1fr 1fr */
+          grid-template-columns: 1fr 1fr !important;
+          gap: 12px !important;
         }
+        #inlinePickFighter .ipf-controls-grid > div:nth-child(2) {
+          display: none !important; /* Hide RFC center badge on mobile */
+        }
+        #inlinePickFighter .ipf-glass-panel {
+          padding: 8px !important;
+          border-radius: 8px !important;
+        }
+        #inlinePickFighter .ipf-controls-grid div[id^="ipfSpin"] span:first-child,
+        #inlinePickFighter .ipf-controls-grid div[id^="ipfMult"] span:first-child {
+          font-size: 20px !important;
+        }
+        
+        /* Action Footer */
+        #inlinePickFighter .ipf-premium-dashboard > div:last-child {
+          grid-template-columns: 1fr !important; /* Stack Play Amount and Start button on mobile */
+          gap: 12px !important;
+        }
+        
         #inlinePickFighter #ipfStartBtn {
-          height: 60px !important; /* Make start button taller */
-          font-size: 18px !important; /* Adjust font size */
+          height: 72px !important;
+          border-radius: 16px !important;
         }
+        #inlinePickFighter #ipfStartBtn div {
+          padding: 0 !important;
+          justify-content: center !important;
+        }
+        #inlinePickFighter #ipfStartBtn span {
+          font-size: 24px !important;
+          text-shadow: 0 2px 4px rgba(0,0,0,0.8) !important;
+        }
+
         #inlinePickFighter .ipf-cancel-btn {
-          padding: 8px 20px !important; /* Reduced padding for cancel button */
-          font-size: 12px !important; /* Reduced font size */
-          margin-top: 20px !important; /* Adjust margin */
+          padding: 12px 24px !important;
+          font-size: 14px !important;
+          margin-top: 16px !important;
+        }
+        /* Mobile headers */
+        #inlinePickFighter h1 { font-size: clamp(36px, 10vw, 52px) !important; margin-bottom: 4px !important; text-shadow: 0 4px 20px rgba(255,30,57,0.5); }
+        #inlinePickFighter > div > div:first-child p { font-size: 12px !important; letter-spacing: 0.25em !important; opacity: 0.9; }
+      }
+
+      /* Free Spins Counter Mobile Repositioning */
+      @media (max-width: 820px) {
+        .fs-counter {
+          top: 8px !important;
+          right: auto !important;
+          left: 50% !important;
+          transform: translateX(-50%) !important;
+          min-width: 140px !important;
+          height: 48px !important;
+          border-width: 2px !important;
+          border-color: #dfba73 !important;
+          background: rgba(0, 0, 0, 0.95) !important;
+          box-shadow: 0 0 15px rgba(223, 186, 115, 0.5) !important;
+          z-index: 99 !important; /* Ensure it floats above the mobile layout */
+        }
+        .fs-count {
+          font-size: 24px !important;
+        }
+        .fs-label {
+          font-size: 10px !important;
         }
       }
     </style>
@@ -6039,7 +6311,7 @@
       <div class="ipf-spotlight ipf-spotlight-left"></div>
       <div class="ipf-spotlight ipf-spotlight-right"></div>
       <div class="ipf-cage-mesh"></div>
-      <div style="width:100%;max-width:1100px;margin:auto;position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;height:100vh;max-height:100vh;overflow:hidden;padding-top:12px;">
+      <div style="width:100%;max-width:1100px;margin:auto;position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;height:100vh;max-height:100vh;overflow:auto;padding-top:12px;">
         <div style="text-align:center;margin-bottom:8px;flex-shrink:0;">
           <h1 style="font-family:'Bebas Neue',Impact,sans-serif;font-size:clamp(32px,5vw,56px);font-weight:700;letter-spacing:0.08em;text-transform:uppercase;line-height:1;margin:0;"><span class="ipf-metallic-red">RFC</span> <span class="ipf-metallic-silver">BONUS</span></h1>
           <p style="color:#f4f4f5;font-family:'Bebas Neue',Impact,sans-serif;font-size:clamp(14px,2.5vw,20px);letter-spacing:0.25em;text-transform:uppercase;font-weight:700;margin:6px 0 0;">PICK YOUR CONTENDER</p>
@@ -6049,7 +6321,7 @@
             <div class="ipf-octagon-border" style="background:linear-gradient(to bottom, #09090d, #040406);display:flex;flex-direction:column;height:100%;padding:8px;position:relative;overflow:hidden;">
               <div style="aspect-ratio:3/4;width:100%;border-radius:6px;background:#040406;border:1px solid #18181b;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;" class="ipf-tech-grid">
                 <div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(255,30,57,0.1), transparent);z-index:2;"></div>
-                <img id="ipfImg0" src="./assets/images/champ-BiOkFbwx.webp" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;z-index:1;" alt="CHAMP">
+                <img id="ipfImg0" src="./assets/symbols/CHAMP.png" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;z-index:1;" alt="CHAMP">
               </div>
               <div style="margin-top:10px;text-align:center;"><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:22px;font-weight:700;color:#fff;letter-spacing:0.1em;">CHAMP</span><div style="font-family:'Bebas Neue',Impact,sans-serif;font-size:13px;color:#71717a;text-transform:uppercase;letter-spacing:0.12em;font-weight:700;margin-top:4px;">8 SPINS x4</div></div>
             </div>
@@ -6058,7 +6330,7 @@
             <div class="ipf-octagon-border" style="background:linear-gradient(to bottom, #09090d, #040406);display:flex;flex-direction:column;height:100%;padding:8px;position:relative;overflow:hidden;">
               <div style="aspect-ratio:3/4;width:100%;border-radius:6px;background:#040406;border:1px solid #18181b;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;" class="ipf-tech-grid">
                 <div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(223,186,115,0.1), transparent);z-index:2;"></div>
-                <img id="ipfImg1" src="./assets/images/chief-DsDlmqig.webp" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;z-index:1;" alt="CHIEF">
+                <img id="ipfImg1" src="./assets/symbols/CHIEF.png" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;z-index:1;" alt="CHIEF">
               </div>
               <div style="margin-top:10px;text-align:center;"><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:22px;font-weight:700;color:#fff;letter-spacing:0.1em;">CHIEF</span><div style="font-family:'Bebas Neue',Impact,sans-serif;font-size:13px;color:#71717a;text-transform:uppercase;letter-spacing:0.12em;font-weight:700;margin-top:4px;">12 SPINS x3</div></div>
             </div>
@@ -6067,7 +6339,7 @@
             <div class="ipf-octagon-border" style="background:linear-gradient(to bottom, #09090d, #040406);display:flex;flex-direction:column;height:100%;padding:8px;position:relative;overflow:hidden;">
               <div style="aspect-ratio:3/4;width:100%;border-radius:6px;background:#040406;border:1px solid #18181b;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;" class="ipf-tech-grid">
                 <div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(0,149,255,0.1), transparent);z-index:2;"></div>
-                <img id="ipfImg2" src="./assets/images/rage-DhUJwnWo.webp" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;z-index:1;" alt="RAGE">
+                <img id="ipfImg2" src="./assets/symbols/RAGE.png" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;z-index:1;" alt="RAGE">
               </div>
               <div style="margin-top:10px;text-align:center;"><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:22px;font-weight:700;color:#fff;letter-spacing:0.1em;">RAGE</span><div style="font-family:'Bebas Neue',Impact,sans-serif;font-size:13px;color:#71717a;text-transform:uppercase;letter-spacing:0.12em;font-weight:700;margin-top:4px;">15 SPINS x2</div></div>
             </div>
@@ -6076,58 +6348,74 @@
             <div class="ipf-octagon-border" style="background:linear-gradient(to bottom, #09090d, #040406);display:flex;flex-direction:column;height:100%;padding:8px;position:relative;overflow:hidden;">
               <div style="aspect-ratio:3/4;width:100%;border-radius:6px;background:#040406;border:1px solid #18181b;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;" class="ipf-tech-grid">
                 <div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(184,50,252,0.1), transparent);z-index:2;"></div>
-                <img id="ipfImg3" src="./assets/images/mcwhiskey-Dcr9pN-r.webp" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;z-index:1;" alt="MCWHISKEY">
+                <img id="ipfImg3" src="./assets/symbols/MCWHISKEY.png" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;z-index:1;" alt="MCWHISKEY">
               </div>
               <div style="margin-top:10px;text-align:center;"><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:22px;font-weight:700;color:#fff;letter-spacing:0.1em;">MCWHISKEY</span><div style="font-family:'Bebas Neue',Impact,sans-serif;font-size:13px;color:#71717a;text-transform:uppercase;letter-spacing:0.12em;font-weight:700;margin-top:4px;">20 SPINS x1</div></div>
             </div>
           </div>
         </div>
-        <div class="ipf-controls-grid" style="max-width:900px;margin:0 auto 8px;width:100%;display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;flex-shrink:0;">
-          <div style="background:linear-gradient(to right, #170c0e, #0a0a0d);border:1px solid rgba(39,39,42,0.6);height:56px;border-radius:8px 0 0 8px;display:flex;flex-direction:column;justify-content:center;padding-left:16px;position:relative;overflow:hidden;">
-            <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:#ff1e39;box-shadow:0 0 10px #ff1e39;"></div>
-            <span style="color:#ff1e39;font-family:'Bebas Neue',Impact,sans-serif;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;font-weight:700;margin-bottom:4px;">FREE SPINS</span>
-            <div style="display:flex;align-items:center;gap:16px;">
-              <div id="ipfSpin4" style="display:flex;flex-direction:column;align-items:center;transition:all 0.3s;opacity:1;transform:scale(1.1);"><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:22px;font-weight:700;color:#fff;line-height:1;">4</span><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:10px;color:#71717a;text-transform:uppercase;font-weight:700;letter-spacing:0.1em;">SPINS</span></div>
-              <div id="ipfSpin6" style="display:flex;flex-direction:column;align-items:center;transition:all 0.3s;opacity:0.35;"><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:22px;font-weight:700;color:#fff;line-height:1;">6</span><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:10px;color:#71717a;text-transform:uppercase;font-weight:700;letter-spacing:0.1em;">SPINS</span></div>
-              <div id="ipfSpin8" style="display:flex;flex-direction:column;align-items:center;transition:all 0.3s;opacity:0.35;"><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:22px;font-weight:700;color:#fff;line-height:1;">8</span><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:10px;color:#71717a;text-transform:uppercase;font-weight:700;letter-spacing:0.1em;">SPINS</span></div>
-              <div id="ipfSpin16" style="display:flex;flex-direction:column;align-items:center;transition:all 0.3s;opacity:0.35;"><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:22px;font-weight:700;color:#fff;line-height:1;">16</span><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:10px;color:#71717a;text-transform:uppercase;font-weight:700;letter-spacing:0.1em;">SPINS</span></div>
+        <div class="ipf-premium-dashboard" style="max-width:900px;margin:0 auto 16px;width:100%;flex-shrink:0;display:flex;flex-direction:column;gap:16px;">
+          
+          <div class="ipf-controls-grid" style="display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center;">
+            <!-- FREE SPINS -->
+            <div class="ipf-glass-panel" style="padding:12px 16px;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden;">
+              <div style="position:absolute;top:0;left:0;width:3px;height:100%;background:#ff1e39;box-shadow:0 0 12px #ff1e39;"></div>
+              <span style="color:#ff1e39;font-family:'Bebas Neue',Impact,sans-serif;font-size:12px;letter-spacing:0.2em;text-transform:uppercase;font-weight:700;margin-bottom:6px;">FREE SPINS</span>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding-right:8px;">
+                <div id="ipfSpin4" style="display:flex;flex-direction:column;align-items:center;transition:all 0.3s;opacity:1;transform:scale(1.1);"><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:26px;font-weight:700;color:#fff;line-height:1;text-shadow:0 0 10px rgba(255,255,255,0.4);">4</span><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:11px;color:#71717a;text-transform:uppercase;font-weight:700;letter-spacing:0.1em;">SPINS</span></div>
+                <div id="ipfSpin6" style="display:flex;flex-direction:column;align-items:center;transition:all 0.3s;opacity:0.35;"><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:26px;font-weight:700;color:#fff;line-height:1;">6</span><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:11px;color:#71717a;text-transform:uppercase;font-weight:700;letter-spacing:0.1em;">SPINS</span></div>
+                <div id="ipfSpin8" style="display:flex;flex-direction:column;align-items:center;transition:all 0.3s;opacity:0.35;"><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:26px;font-weight:700;color:#fff;line-height:1;">8</span><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:11px;color:#71717a;text-transform:uppercase;font-weight:700;letter-spacing:0.1em;">SPINS</span></div>
+                <div id="ipfSpin16" style="display:flex;flex-direction:column;align-items:center;transition:all 0.3s;opacity:0.35;"><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:26px;font-weight:700;color:#fff;line-height:1;">16</span><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:11px;color:#71717a;text-transform:uppercase;font-weight:700;letter-spacing:0.1em;">SPINS</span></div>
+              </div>
             </div>
-          </div>
-          <div style="display:flex;justify-content:center;">
-            <div style="width:40px;height:40px;background:#000;border:2px solid #27272a;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 15px rgba(0,0,0,0.8);">
-              <div style="width:32px;height:32px;border-radius:50%;border:1px solid rgba(223,186,55,0.3);background:#09090b;display:flex;align-items:center;justify-content:center;">
-                <span style="font-family:var(--ui-font);font-weight:900;font-size:11px;font-style:italic;color:#dfba73;">RFC</span>
+            
+            <!-- CENTER RFC BADGE -->
+            <div style="display:flex;justify-content:center;">
+              <div style="width:44px;height:44px;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 20px rgba(0,0,0,0.8), inset 0 0 10px rgba(223,186,115,0.1);">
+                <div style="width:34px;height:34px;border-radius:50%;border:1px solid rgba(223,186,115,0.4);background:rgba(9,9,11,0.8);display:flex;align-items:center;justify-content:center;">
+                  <span style="font-family:var(--ui-font);font-weight:900;font-size:12px;font-style:italic;color:#dfba73;text-shadow:0 0 5px rgba(223,186,115,0.5);">RFC</span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- MULTIPLIER -->
+            <div class="ipf-glass-panel" style="padding:12px 16px;display:flex;flex-direction:column;justify-content:center;align-items:flex-end;position:relative;overflow:hidden;">
+              <div style="position:absolute;top:0;right:0;width:3px;height:100%;background:#0095ff;box-shadow:0 0 12px #0095ff;"></div>
+              <span style="color:#0095ff;font-family:'Bebas Neue',Impact,sans-serif;font-size:12px;letter-spacing:0.2em;text-transform:uppercase;font-weight:700;margin-bottom:6px;">MULTIPLIER</span>
+              <div style="display:flex;align-items:center;justify-content:space-between;width:100%;padding-left:8px;">
+                <div id="ipfMult12" style="display:flex;flex-direction:column;align-items:center;transition:all 0.3s;opacity:1;transform:scale(1.1);"><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:26px;font-weight:700;color:#fff;line-height:1;text-shadow:0 0 10px rgba(255,255,255,0.4);">x12</span><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:11px;color:#71717a;text-transform:uppercase;font-weight:700;letter-spacing:0.1em;">MULT</span></div>
+                <div id="ipfMult8" style="display:flex;flex-direction:column;align-items:center;transition:all 0.3s;opacity:0.35;"><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:26px;font-weight:700;color:#fff;line-height:1;">x8</span><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:11px;color:#71717a;text-transform:uppercase;font-weight:700;letter-spacing:0.1em;">MULT</span></div>
+                <div id="ipfMult6" style="display:flex;flex-direction:column;align-items:center;transition:all 0.3s;opacity:0.35;"><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:26px;font-weight:700;color:#fff;line-height:1;">x6</span><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:11px;color:#71717a;text-transform:uppercase;font-weight:700;letter-spacing:0.1em;">MULT</span></div>
+                <div id="ipfMult3" style="display:flex;flex-direction:column;align-items:center;transition:all 0.3s;opacity:0.35;"><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:26px;font-weight:700;color:#fff;line-height:1;">x3</span><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:11px;color:#71717a;text-transform:uppercase;font-weight:700;letter-spacing:0.1em;">MULT</span></div>
               </div>
             </div>
           </div>
-          <div style="background:linear-gradient(to left, #0c121c, #0a0a0d);border:1px solid rgba(39,39,42,0.6);height:56px;border-radius:0 8px 8px 0;display:flex;flex-direction:column;justify-content:center;align-items:flex-end;padding-right:16px;position:relative;overflow:hidden;">
-            <div style="position:absolute;top:0;right:0;width:4px;height:100%;background:#0095ff;box-shadow:0 0 10px #0095ff;"></div>
-            <span style="color:#0095ff;font-family:'Bebas Neue',Impact,sans-serif;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;font-weight:700;margin-bottom:4px;">MULTIPLIER</span>
-            <div style="display:flex;align-items:center;gap:16px;">
-              <div id="ipfMult12" style="display:flex;flex-direction:column;align-items:center;transition:all 0.3s;opacity:1;transform:scale(1.1);"><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:22px;font-weight:700;color:#fff;line-height:1;">x12</span><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:10px;color:#71717a;text-transform:uppercase;font-weight:700;letter-spacing:0.1em;">MULT</span></div>
-              <div id="ipfMult8" style="display:flex;flex-direction:column;align-items:center;transition:all 0.3s;opacity:0.35;"><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:22px;font-weight:700;color:#fff;line-height:1;">x8</span><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:10px;color:#71717a;text-transform:uppercase;font-weight:700;letter-spacing:0.1em;">MULT</span></div>
-              <div id="ipfMult6" style="display:flex;flex-direction:column;align-items:center;transition:all 0.3s;opacity:0.35;"><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:22px;font-weight:700;color:#fff;line-height:1;">x6</span><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:10px;color:#71717a;text-transform:uppercase;font-weight:700;letter-spacing:0.1em;">MULT</span></div>
-              <div id="ipfMult3" style="display:flex;flex-direction:column;align-items:center;transition:all 0.3s;opacity:0.35;"><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:22px;font-weight:700;color:#fff;line-height:1;">x3</span><span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:10px;color:#71717a;text-transform:uppercase;font-weight:700;letter-spacing:0.1em;">MULT</span></div>
+
+          <!-- ACTION ROW -->
+          <div style="display:grid;grid-template-columns:1fr 2fr 1fr;gap:16px;align-items:stretch;">
+            <!-- PLAY AMOUNT -->
+            <div class="ipf-glass-panel" style="padding:12px;display:flex;flex-direction:column;justify-content:center;align-items:center;">
+              <span style="font-size:11px;font-family:'Bebas Neue',Impact,sans-serif;color:#71717a;letter-spacing:0.15em;text-transform:uppercase;font-weight:700;margin-bottom:2px;">PLAY AMOUNT</span>
+              <span id="ipfBalance" style="font-family:'Bebas Neue',Impact,sans-serif;font-size:20px;font-weight:700;color:#fff;letter-spacing:0.05em;">$1,000.00</span>
+            </div>
+            
+            <!-- START BUTTON -->
+            <button id="ipfStartBtn" onclick="ipfStartGame()" class="ipf-enter-btn" style="height:100%;min-height:64px;">
+              <div class="ipf-enter-btn-inner">
+                <span class="enter-text" style="font-family:'Bebas Neue',Impact,sans-serif;font-size:clamp(20px,3vw,28px);font-weight:700;letter-spacing:0.15em;color:#dfba73;transition:color 0.3s, text-shadow 0.3s;">ENTER THE CAGE</span>
+              </div>
+            </button>
+            
+            <!-- WINNINGS (HIDDEN DURING SELECT) -->
+            <div class="ipf-glass-panel" style="padding:12px;display:none;flex-direction:column;justify-content:center;align-items:center;">
+              <span style="font-size:11px;font-family:'Bebas Neue',Impact,sans-serif;color:#71717a;letter-spacing:0.15em;text-transform:uppercase;font-weight:700;margin-bottom:2px;">WINNINGS</span>
+              <span id="ipfWin" style="font-family:'Bebas Neue',Impact,sans-serif;font-size:20px;font-weight:700;color:#dfba73;letter-spacing:0.05em;">$0.00</span>
             </div>
           </div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 2fr 1fr;gap:8px;align-items:center;max-width:900px;margin:0 auto;width:100%;flex-shrink:0;">
-          <div class="ipf-carbon" style="border:1px solid rgba(39,39,42,0.8);padding:8px 12px;border-radius:8px;display:flex;flex-direction:column;justify-content:center;height:48px;box-shadow:0 5px 15px rgba(0,0,0,0.5);">
-            <span style="font-size:10px;font-family:'Bebas Neue',Impact,sans-serif;color:#71717a;letter-spacing:0.12em;text-transform:uppercase;font-weight:700;">PLAY AMOUNT</span>
-            <span id="ipfBalance" style="font-family:'Bebas Neue',Impact,sans-serif;font-size:18px;font-weight:700;color:#fff;letter-spacing:0.04em;">$1,000.00</span>
-          </div>
-          <button id="ipfStartBtn" onclick="ipfStartGame()" class="ipf-shimmer" style="background:#18181b;border:2px solid rgba(223,186,55,0.4);border-radius:8px;padding:4px;box-shadow:0 10px 25px rgba(0,0,0,0.6);transition:all 0.3s;cursor:pointer;height:48px;display:flex;" onmouseover="this.querySelector('div').style.background='linear-gradient(to bottom, #dfba73, #b45309)'" onmouseout="this.querySelector('div').style.background='linear-gradient(to bottom, #1b1c22, #000)'">
-            <div style="background:linear-gradient(to bottom, #1b1c22, #000);border-radius:4px;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;">
-              <span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:clamp(16px,2.5vw,22px);font-weight:700;letter-spacing:0.15em;color:#dfba73;">ENTER THE CAGE</span>
-            </div>
-          </button>
-          <div class="ipf-carbon" style="border:1px solid rgba(39,39,42,0.8);padding:8px 12px;border-radius:8px;display:flex;flex-direction:column;justify-content:center;align-items:flex-end;height:48px;box-shadow:0 5px 15px rgba(0,0,0,0.5);">
-            <span style="font-size:10px;font-family:'Bebas Neue',Impact,sans-serif;color:#71717a;letter-spacing:0.12em;text-transform:uppercase;font-weight:700;">WINNINGS</span>
-            <span id="ipfWin" style="font-family:'Bebas Neue',Impact,sans-serif;font-size:18px;font-weight:700;color:#dfba73;letter-spacing:0.04em;">$0.00</span>
-          </div>
-        </div>
-        <div style="text-align:center;margin-top:40px;">
-          <button id="ipfCancelBtn" onclick="ibbCancel()" class="ipf-cancel-btn" style="padding:12px 32px;background:#18181b;border:1px solid #3f3f46;color:#a1a1aa;font-family:var(--ui-font);font-weight:700;text-transform:uppercase;font-style:italic;letter-spacing:0.1em;font-size:14px;border-radius:4px;cursor:pointer;transition:all 0.3s;" onmouseover="this.style.borderColor='#71717a'" onmouseout="this.style.borderColor='#3f3f46'">CANCEL</button>
+
+        <div style="text-align:center;margin-top:24px;">
+          <button id="ipfCancelBtn" onclick="ibbCancel()" class="ipf-cancel-btn" style="padding:12px 40px;background:rgba(24,24,27,0.6);backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,0.1);color:#a1a1aa;font-family:var(--ui-font);font-weight:700;text-transform:uppercase;font-style:italic;letter-spacing:0.15em;font-size:14px;border-radius:8px;cursor:pointer;transition:all 0.3s;" onmouseover="this.style.borderColor='rgba(255,255,255,0.4)';this.style.color='#fff';" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='#a1a1aa';">CANCEL</button>
         </div>
       </div>
     </div>
@@ -6157,7 +6445,7 @@
       <div class="bi-rings"></div>
       <div class="bi-content">
         <div class="bi-incoming" id="biIncoming">FIGHT TIME</div>
-        <div class="bi-title" id="biTitle">FREE FIGHTS</div>
+        <div class="bi-title" id="biTitle">FREE SPINS BONUS</div>
         <div class="bi-num-wrap">
           <span class="bi-num" id="biNum">10</span>
         </div>
@@ -6234,37 +6522,62 @@
       #inlineBuyBonus .ibb-shimmer:hover::before { left: 150%; }
       #inlineBuyBonus .ibb-card-red {
         filter: drop-shadow(0 0 1px rgba(255,0,43,0.2));
-        transition: filter 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        transition: filter 0.4s ease, transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s;
         cursor: pointer;
+        transform: scale(1);
       }
       #inlineBuyBonus .ibb-card-red:hover {
         filter: drop-shadow(0 15px 30px rgba(255,0,43,0.25)) drop-shadow(0 0 10px rgba(255,0,43,0.4));
-        transform: translateY(-8px) scale(1.02);
+        transform: translateY(-4px) scale(1.02);
+      }
+      #inlineBuyBonus .ibb-card-red:active {
+        transform: scale(0.97);
+        filter: drop-shadow(0 5px 15px rgba(255,0,43,0.3));
       }
       #inlineBuyBonus .ibb-card-blue {
         filter: drop-shadow(0 0 1px rgba(0,102,255,0.2));
-        transition: filter 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        transition: filter 0.4s ease, transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s;
         cursor: pointer;
+        transform: scale(1);
       }
       #inlineBuyBonus .ibb-card-blue:hover {
         filter: drop-shadow(0 15px 30px rgba(0,102,255,0.2)) drop-shadow(0 0 10px rgba(0,102,255,0.3));
-        transform: translateY(-8px) scale(1.02);
+        transform: translateY(-4px) scale(1.02);
+      }
+      #inlineBuyBonus .ibb-card-blue:active {
+        transform: scale(0.97);
+        filter: drop-shadow(0 5px 15px rgba(0,102,255,0.3));
       }
       #inlineBuyBonus .ibb-ambient-flicker { animation: ibb-flicker 6s infinite alternate; }
       @keyframes ibb-flicker { 0%, 100% { opacity: 0.8; } 45% { opacity: 0.9; } 50% { opacity: 0.6; } 55% { opacity: 0.85; } }
 
-      @media (max-width: 700px) {
+      /* Mobile First / Premium Responsive Adjustments */
+      @media (max-width: 820px) {
+        #inlineBuyBonus {
+          padding: 8px;
+        }
         #inlineBuyBonus .ibb-main-content {
           max-width: 100% !important;
-          padding: 0 10px; /* Add some horizontal padding */
+          padding: 0 4px;
         }
         #inlineBuyBonus .ibb-feature-grid {
-          grid-template-columns: 1fr !important; /* Single column for smaller screens */
-          gap: 16px !important; /* Reduced gap */
+          grid-template-columns: 1fr !important;
+          gap: 24px !important;
         }
         #inlineBuyBonus .ibb-card-red > .ibb-octagon-card.ibb-carbon > .ibb-octagon-card,
         #inlineBuyBonus .ibb-card-blue > .ibb-octagon-card.ibb-carbon > .ibb-octagon-card {
-          padding: 16px !important; /* Reduced padding for inner card content */
+          padding: 24px !important; 
+        }
+        /* Hide VS Badge on mobile vertical stack to prevent awkward overlaps */
+        #inlineBuyBonus .ibb-vs-badge {
+          display: none !important;
+        }
+        /* Make fonts punchier on small screens */
+        #inlineBuyBonus h1 { font-size: clamp(36px, 12vw, 64px) !important; margin-top: 12px !important; }
+        #inlineBuyBonus h2 { font-size: 28px !important; margin-bottom: 8px !important; }
+        #inlineBuyBonus p { font-size: 13px !important; line-height: 1.4 !important; margin-bottom: 24px !important; }
+        #inlineBuyBonus .ibb-shimmer > div {
+           padding: 12px 16px !important;
         }
       }
     </style>
@@ -6296,7 +6609,7 @@
                   <span style="font-size:12px;font-family:var(--ui-font);font-weight:700;letter-spacing:0.1em;color:#ff002b;text-transform:uppercase;">HIGH VOLATILITY</span>
                 </div>
                 <div style="margin-bottom:40px;flex-grow:1;">
-                  <h2 style="font-family:var(--ui-font);font-size:clamp(32px,5vw,48px);font-weight:900;color:#fff;font-style:italic;letter-spacing:-0.02em;text-transform:uppercase;line-height:1;margin:0 0 16px;">Free Fights</h2>
+                  <h2 style="font-family:var(--ui-font);font-size:clamp(32px,5vw,48px);font-weight:900;color:#fff;font-style:italic;letter-spacing:-0.02em;text-transform:uppercase;line-height:1;margin:0 0 16px;">Free Spins Bonus</h2>
                   <p style="color:#a1a1aa;font-size:14px;line-height:1.6;font-weight:600;margin-bottom:32px;max-width:400px;">Pick your contender. Unleash free spins inside the cage with high-yield multipliers locked in for consecutive championship rounds.</p>
                   <div style="border-top:1px solid rgba(39,39,42,0.8);padding-top:24px;display:flex;flex-direction:column;gap:12px;font-family:var(--ui-font);font-size:14px;letter-spacing:0.05em;">
                     <div style="display:flex;justify-content:space-between;align-items:center;color:#71717a;"><span style="text-transform:uppercase;">STYLE:</span><span style="color:#fff;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;text-align:right;">Volatile Multipliers</span></div>
@@ -6396,9 +6709,9 @@
         <div style="font-size:14px;letter-spacing:1.2px;color:var(--dust);margin-top:12px;text-align:left;line-height:1.45;">
           <p style="margin:0 0 8px;">243 ways to win. Wins = multiplier × ways × play amount. Left-to-right consecutive reels.</p>
           <p style="margin:0 0 8px;">Wild substitutes for all regular symbols except scatter. Title Belt lands can trigger the Championship Multiplier: a random 1×–10× boost to the current spin win where supported by the round result.</p>
-          <p style="margin:0 0 8px;">3 or more scatter symbols trigger Free Fights. Pick a fighter: fewer spins award a stronger fighter multiplier (3×–6×). When the picked fighter lands, that reel becomes a Fighter Takeover reel and expands the winning ways.</p>
-          <p style="margin:0 0 8px;">VS Battle: When the Title Belt lands between two fighters, pick your contender for a 2×–5× bet multiplier prize. 50/50 odds — trust your gut.</p>
-          <p style="margin:0 0 8px;">Championship Mode: Buy entry into a 5-round back-to-back title fight gauntlet for 100× your base play amount. Pick your fighter each round — winners pay 2×–5× multipliers with fighter takeovers. How many rounds can you survive?</p>
+          <p style="margin:0 0 8px;">3 or more scatter symbols trigger Free Spins Bonus. Pick a fighter: fewer spins award a stronger fighter multiplier (3×–6×). When the picked fighter lands, that reel becomes a Fighter Takeover reel and expands the winning ways.</p>
+          <p style="margin:0 0 8px;">VS Bonus: When the Title Belt lands between two fighters, pick your contender for a 2×–5× bet multiplier prize. 50/50 odds — trust your gut.</p>
+          <p style="margin:0 0 8px;">Final Bell Duel: Buy entry into a 5-round back-to-back title fight gauntlet for 100× your base play amount. Pick your fighter each round — winners pay 2×–5× multipliers with fighter takeovers. How many rounds can you survive?</p>
           <p style="margin:0 0 8px;">Configured RTP: ~96.5%. Maximum win: 5000× play amount. Volatility: high. Feature mode cost: 100× base play amount where enabled by the Remote Game Server.</p>
           <p style="margin:0;">All balances, plays, wins, feature availability, and final settlement are controlled by the Remote Game Server. Browser animations are illustrative only.</p>
         </div>
@@ -6558,7 +6871,7 @@
     const vv = window.visualViewport;
     const vw = Math.max(1, Math.round((vv && vv.width) || window.innerWidth || document.documentElement.clientWidth || 1));
     const vh = Math.max(1, Math.round((vv && vv.height) || window.innerHeight || document.documentElement.clientHeight || 1));
-    const portraitPhone = vw <= 820 && vh > vw;
+    const portraitPhone = vw <= 1700 && vh > vw;
 
     const containScale = Math.min(vw / 1920, vh / 1080);
     const playScale = Math.min(vw / 1020, vh / 1080);
@@ -6589,6 +6902,14 @@
   };
 
   function adjustForControls() {
+    const icMobile = document.querySelector('.ic-mobile');
+    if (icMobile) {
+      if (window.innerWidth >= 1024) {
+        icMobile.style.setProperty('display', 'none', 'important');
+      } else {
+        icMobile.style.setProperty('display', 'flex', 'important');
+      }
+    }
     // Stub kept for compatibility; actual scaling is now reference-style
     fitStage();
   }
@@ -6626,65 +6947,85 @@
   // Paytable matches Stake Engine 0_0_ways SDK template values, lightly tuned for 12-symbol set.
   // Ways games multiply win × ways × play amount — these mults are 1/3-ish of "lines" mults to compensate.
   const SYM = {
-    H1:  { img: 'symbols/sym_belt.png?v=2',        label: 'Title Belt',   tier: 'top',     win: { 3: 2.16, 4: 3.60, 5: 7.20 } },
-    H2:  { img: 'symbols/sym_champion.png',    label: 'Champ',     tier: 'high',    win: { 3: 1.44, 4: 2.88, 5: 5.76 } },
-    H3:  { img: 'symbols/sym_conor.png?v=2',   label: 'McWhiskey', tier: 'high',    win: { 3: 0.72, 4: 1.44, 5: 3.60 } },
-    H4:  { img: 'symbols/sym_chief.png',       label: 'Chief',     tier: 'high',    win: { 3: 0.36, 4: 0.72, 5: 2.16 } },
-    H5:  { img: 'symbols/sym_shouter.png',     label: 'Rage',      tier: 'high',    win: { 3: 0.29, 4: 0.58, 5: 1.44 } },
-    L1:  { img: 'symbols/sym_K.png',           label: 'K',         tier: 'mid',     win: { 3: 0.29, 4: 0.58, 5: 1.44 } },
-    L2:  { img: 'symbols/sym_Q.png',           label: 'Q',         tier: 'mid',     win: { 3: 0.14, 4: 0.36, 5: 1.08 } },
-    L3:  { img: 'symbols/sym_J.png',           label: 'J',         tier: 'low',     win: { 3: 0.14, 4: 0.29, 5: 0.86 } },
-    L4:  { img: 'symbols/sym_A.png',           label: 'A',         tier: 'low',     win: { 3: 0.14, 4: 0.36, 5: 1.08 } },
-    W:   { img: 'symbols/sym_wild_nate.png?v=2',   label: 'Wild',      tier: 'wild',    win: null },
-    S:   { img: 'symbols/sym_scatter_cage.png?v=1', label: 'Cage Scatter', tier: 'scatter', win: null },
+    H1:  { img: 'assets/symbols/BELT.png',        label: 'Title Belt',   tier: 'top',     win: { 3: 2.16, 4: 3.60, 5: 7.20 } },
+    H2:  { img: 'assets/symbols/CHAMP.png',    label: 'Champ',     tier: 'high',    win: { 3: 1.44, 4: 2.88, 5: 5.76 } },
+    H3:  { img: 'assets/symbols/MCWHISKEY.png',   label: 'McWhiskey', tier: 'high',    win: { 3: 0.72, 4: 1.44, 5: 3.60 } },
+    H4:  { img: 'assets/symbols/CHIEF.png',       label: 'Chief',     tier: 'high',    win: { 3: 0.36, 4: 0.72, 5: 2.16 } },
+    H5:  { img: 'assets/symbols/RAGE.png',     label: 'Rage',      tier: 'high',    win: { 3: 0.29, 4: 0.58, 5: 1.44 } },
+    L1:  { img: 'assets/symbols/K.png',           label: 'K',         tier: 'mid',     win: { 3: 0.29, 4: 0.58, 5: 1.44 } },
+    L2:  { img: 'assets/symbols/Q.png',           label: 'Q',         tier: 'mid',     win: { 3: 0.14, 4: 0.36, 5: 1.08 } },
+    L3:  { img: 'assets/symbols/J.png',           label: 'J',         tier: 'low',     win: { 3: 0.14, 4: 0.29, 5: 0.86 } },
+    L4:  { img: 'assets/symbols/A.png',           label: 'A',         tier: 'low',     win: { 3: 0.14, 4: 0.36, 5: 1.08 } },
+    W:   { img: 'assets/symbols/WILD.png',   label: 'Wild',      tier: 'wild',    win: null },
+    S:   { img: 'assets/symbols/SCATTER.png', label: 'Cage Scatter', tier: 'scatter', win: null },
   };
 
   function resolveSymbol(symId) {
     return SYM[symId] ? symId : 'L1';
   }
 
-  // VS Battle fighter symbols (for belt showdown feature)
+  // VS Bonus fighter symbols (for belt showdown feature)
   const VS_FIGHTER_SYMBOLS = ['H2', 'H3', 'H4', 'H5'];
   const VS_FIGHTER_META = {
-    H2: { name: 'CHAMP',     selectImg: 'assets/fighter-select/champ.webp',     selectedImg: 'assets/fighter-select/champ_pick.gif',     color: '#ff3a52', animA: 'assets/fighter-animations/champ_a.webm', animB: 'assets/fighter-animations/champ_b.webm' },
-    H3: { name: 'RAGE',      selectImg: 'assets/fighter-select/rage.webp',      selectedImg: 'assets/fighter-select/rage_pick.gif',      color: '#c44dff', animA: 'assets/fighter-animations/rage_a.webm',       animB: 'assets/fighter-animations/rage_b.webm' },
-    H4: { name: 'CHIEF',     selectImg: 'assets/fighter-select/chief.webp',     selectedImg: 'assets/fighter-select/chief_pick.gif',     color: '#ffa530', animA: 'assets/fighter-animations/chief_a.webm',      animB: 'assets/fighter-animations/chief_b.webm' },
-    H5: { name: 'MCWHISKEY', selectImg: 'assets/fighter-select/mcwhiskey.webp', selectedImg: 'assets/fighter-select/mcwhiskey_pick.gif', color: '#44dd66', animA: 'assets/fighter-animations/mcwhiskey_a.webm',  animB: 'assets/fighter-animations/mcwhiskey_b.webm' },
+    H2: { name: 'CHAMP',     selectImg: 'assets/symbols/CHAMP.png',     selectedImg: 'assets/NEW_FIGHTER_ANIMATIONS/CHAMPSELECT.gif',     color: '#ff3a52', animA: 'assets/NEW_FIGHTER_ANIMATIONS/CHAMPMOVE1.gif', animB: 'assets/NEW_FIGHTER_ANIMATIONS/CHAMPMOVE2.gif', animC: 'assets/NEW_FIGHTER_ANIMATIONS/CHAMPMOVE3.gif', koAnim: 'assets/NEW_FIGHTER_ANIMATIONS/CHAMP_KO.gif' },
+    H3: { name: 'RAGE',      selectImg: 'assets/symbols/RAGE.png',      selectedImg: 'assets/NEW_FIGHTER_ANIMATIONS/RAGESELECT.gif',      color: '#c44dff', animA: 'assets/NEW_FIGHTER_ANIMATIONS/RAGEMOVE1.gif',       animB: 'assets/NEW_FIGHTER_ANIMATIONS/RAGEMOVE2.gif', animC: 'assets/NEW_FIGHTER_ANIMATIONS/RAGEMOVE3.gif', koAnim: 'assets/NEW_FIGHTER_ANIMATIONS/RAGE_KO.gif' },
+    H4: { name: 'CHIEF',     selectImg: 'assets/symbols/CHIEF.png',     selectedImg: 'assets/NEW_FIGHTER_ANIMATIONS/CHIEFSELECT.gif',     color: '#ffa530', animA: 'assets/NEW_FIGHTER_ANIMATIONS/CHIEFMOVE.gif',      animB: 'assets/NEW_FIGHTER_ANIMATIONS/CHIEFMOVE2.gif', animC: 'assets/NEW_FIGHTER_ANIMATIONS/CHIEFMOVE3.gif', koAnim: 'assets/NEW_FIGHTER_ANIMATIONS/CHIEF_KO.gif' },
+    H5: { name: 'MCWHISKEY', selectImg: 'assets/symbols/MCWHISKEY.png', selectedImg: 'assets/NEW_FIGHTER_ANIMATIONS/MCWHISKEYSELECT.gif', color: '#44dd66', animA: 'assets/NEW_FIGHTER_ANIMATIONS/MCWHISKEYMOVE1.gif',  animB: 'assets/NEW_FIGHTER_ANIMATIONS/MCWHISKEYMOVE2.gif', koAnim: 'assets/NEW_FIGHTER_ANIMATIONS/MCWHISKEY_KO.gif' },
   };
 
   // Default fallback animation for unknown fighters
-  const DEFAULT_FIGHTER_ANIM = 'assets/fighter-animations/champ_b.webm';
+  const DEFAULT_FIGHTER_ANIM = 'assets/NEW_FIGHTER_ANIMATIONS/CHAMPMOVE1.gif';
 
-  // Preload all fighter images so VS Battle shows instantly
+  // Helper: play SELECT animation on a fighter portrait
+  function playSelectAnimation(portraitEl, selectedImg) {
+    if (!portraitEl) return;
+    stopSelectAnimation(portraitEl);
+    portraitEl.style.backgroundImage = 'none';
+    const img = document.createElement('img');
+    img.className = 'vs-select-anim';
+    img.src = selectedImg;
+    img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;z-index:1;';
+    portraitEl.appendChild(img);
+  }
+
+  // Helper: stop SELECT animation on a fighter portrait
+  function stopSelectAnimation(portraitEl) {
+    if (!portraitEl) return;
+    const img = portraitEl.querySelector('img.vs-select-anim');
+    if (img) img.remove();
+  }
+
+  // Preload all fighter images so VS Bonus shows instantly
   function preloadFighterImages() {
     // selectImg (.webp portraits) are already preloaded via <link rel="preload"> in <head>
-    // Defer heavy animation videos until after page is interactive
     const deferred = new Set();
     Object.values(VS_FIGHTER_META).forEach(meta => {
       deferred.add(meta.selectedImg);
       deferred.add(meta.animA);
       deferred.add(meta.animB);
+      if (meta.animC) deferred.add(meta.animC);
+      if (meta.koAnim) deferred.add(meta.koAnim);
     });
-    requestIdleCallback(() => {
-      deferred.forEach(src => {
-        if (src.endsWith('.webm')) {
-          const video = document.createElement('video');
-          video.src = src;
-          video.preload = 'auto';
-          video.muted = true;
-          video.playsInline = true;
-        } else {
-          const img = new Image(); img.src = src;
-        }
-      });
-    }, { timeout: 3000 });
+    deferred.forEach(src => {
+      if (src.endsWith('.webm') || src.endsWith('.mp4')) {
+        const video = document.createElement('video');
+        video.src = src;
+        video.preload = 'auto';
+        video.muted = true;
+        video.playsInline = true;
+      } else {
+        const img = new Image(); img.src = src;
+      }
+    });
   }
 
   function getFighterAnimation(fighterKey) {
     const meta = VS_FIGHTER_META[fighterKey];
     if (!meta) return DEFAULT_FIGHTER_ANIM;
-    // Randomly pick animation A or B (visual only — CSPRNG not required)
-    return Math.random() < 0.5 ? meta.animA : meta.animB;
+    // Randomly pick animation A, B, or C (visual only — CSPRNG not required)
+    const anims = [meta.animA, meta.animB];
+    if (meta.animC) anims.push(meta.animC);
+    return anims[Math.floor(Math.random() * anims.length)];
   }
 
   const WINCAP = 5000; // ×base play amount, hard ceiling per spin
@@ -6889,6 +7230,7 @@
     vsAttackBVid:    document.getElementById('vsAttackBVid'),
     vsAttackBFx:     document.getElementById('vsAttackBFx'),
     vsAttackBMult:   document.getElementById('vsAttackBMult'),
+    vsStartBtn:      document.getElementById('vsStartBtn'),
     rtpBtn:        document.getElementById('rtpBtn'),
     rtpPanel:      document.getElementById('rtpPanel'),
     rtpSpins:      document.getElementById('rtpSpins'),
@@ -7154,7 +7496,7 @@
   // base-game win contribution, bonus trigger rate, free-spin payout, and wincap hits.
   // Bonus simulation: on 3+ scatters → free spins with fighter multipliers.
   // Retriggers: 3+ scatters during FS → +5 spins (capped at +20 total).
-  // VS Battle: H1 between two fighters on same row → pick'em for 2x-5x bet.
+  // VS Bonus: H1 between two fighters on same row → pick'em for 2x-5x bet.
   function simulateOneSpin(bet) {
     const fighterIds = ['H2', 'H3', 'H4', 'H5'];
 
@@ -7181,7 +7523,7 @@
     let vsWin = 0;
     let triggeredBonus = false;
 
-    // VS Battle simulation (H1 in center column between two fighters)
+    // VS Bonus simulation (H1 in center column between two fighters)
     const vsCol = 2;
     for (let row = 0; row < 3; row++) {
       if (baseGrid[vsCol][row] === 'H1') {
@@ -7466,8 +7808,8 @@
     await wait(1550);
   }
 
-  // ---------- VS BATTLE FEATURE (Player Choice) ----------
-  // Force a VS Battle by injecting belt + fighters into the grid center
+  // ---------- VS BONUS FEATURE (Player Choice) ----------
+  // Force a VS Bonus by injecting belt + fighters into the grid center
   function forceVsBattleGrid(grid) {
     const newGrid = grid.map(col => col.slice());
     // Place belt in center column (col 2), center row (row 1) — demo/review only
@@ -7543,19 +7885,33 @@
     els.vsFighterAName.textContent = metaA.name;
     els.vsFighterBName.textContent = metaB.name;
 
-    // Set background images
-    console.log('Setting VS Battle images:', metaA.selectImg, metaB.selectImg);
+    // Fully reset portraits: stop ALL animations, remove ALL imgs/videos, show static
+    [els.vsFighterAPortrait, els.vsFighterBPortrait].forEach(p => {
+      if (!p) return;
+      // Remove select animation img
+      const selImg = p.querySelector('img.vs-select-anim');
+      if (selImg) selImg.remove();
+      // Remove win video
+      const winVid = p.querySelector('video.vs-fighter-video');
+      if (winVid) { winVid.pause(); winVid.remove(); }
+      // Remove win img
+      const winImg = p.querySelector('img.vs-fighter-video');
+      if (winImg) winImg.remove();
+      // Remove KO video
+      const koVid = p.querySelector('video.vs-fighter-ko-video');
+      if (koVid) { koVid.pause(); koVid.remove(); }
+      // Remove KO img
+      const koImg = p.querySelector('img.vs-fighter-ko-video');
+      if (koImg) koImg.remove();
+      // Clear background
+      p.style.backgroundImage = '';
+    });
+    // Set static portraits
     if (els.vsFighterAPortrait) {
       els.vsFighterAPortrait.style.backgroundImage = `url('${metaA.selectImg}')`;
-      console.log('Set fighter A portrait:', els.vsFighterAPortrait.style.backgroundImage);
-    } else {
-      console.error('vsFighterAPortrait element not found!');
     }
     if (els.vsFighterBPortrait) {
       els.vsFighterBPortrait.style.backgroundImage = `url('${metaB.selectImg}')`;
-      console.log('Set fighter B portrait:', els.vsFighterBPortrait.style.backgroundImage);
-    } else {
-      console.error('vsFighterBPortrait element not found!');
     }
 
     return new Promise((resolve) => {
@@ -7564,11 +7920,18 @@
       els.vsFighterBMult.textContent = '';
       els.vsBattleStatus.textContent = 'PICK YOUR FIGHTER';
 
-      // Make cards clickable
-      els.vsFighterACard.style.cursor = 'pointer';
-      els.vsFighterBCard.style.cursor = 'pointer';
+      // Reset cards
       els.vsFighterACard.classList.remove('vs-picked', 'vs-winner', 'vs-loser');
       els.vsFighterBCard.classList.remove('vs-picked', 'vs-winner', 'vs-loser');
+      els.vsFighterACard.style.cursor = 'pointer';
+      els.vsFighterBCard.style.cursor = 'pointer';
+
+      // Reset START button
+      if (els.vsStartBtn) {
+        els.vsStartBtn.style.display = 'block';
+        els.vsStartBtn.classList.remove('enabled');
+        els.vsStartBtn.textContent = 'PICK A FIGHTER';
+      }
 
       els.vsBattleOverlay.classList.remove('show', 'winner-revealed');
       void els.vsBattleOverlay.offsetWidth;
@@ -7579,30 +7942,55 @@
       setTimeout(() => beep(392, 0.16, 0.06, 'triangle'), 200);
       setTimeout(() => beep(523, 0.2, 0.06, 'square'), 400);
 
-      // One-shot click handlers
-      function pickA() {
-        cleanup();
+      let currentPick = null;
+
+      function selectA() {
+        if (currentPick === fighterA) return;
+        currentPick = fighterA;
         els.vsFighterACard.classList.add('vs-picked');
-        if (els.vsFighterAPortrait) els.vsFighterAPortrait.style.backgroundImage = `url('${metaA.selectedImg}')`;
-        state.vsPlayerPick = fighterA;
-        resolve(fighterA);
+        els.vsFighterBCard.classList.remove('vs-picked');
+        playSelectAnimation(els.vsFighterAPortrait, metaA.selectedImg);
+        stopSelectAnimation(els.vsFighterBPortrait);
+        if (els.vsFighterBPortrait) els.vsFighterBPortrait.style.backgroundImage = `url('${metaB.selectImg}')`;
+        enableStart();
       }
-      function pickB() {
-        cleanup();
+
+      function selectB() {
+        if (currentPick === fighterB) return;
+        currentPick = fighterB;
         els.vsFighterBCard.classList.add('vs-picked');
-        if (els.vsFighterBPortrait) els.vsFighterBPortrait.style.backgroundImage = `url('${metaB.selectedImg}')`;
-        state.vsPlayerPick = fighterB;
-        resolve(fighterB);
+        els.vsFighterACard.classList.remove('vs-picked');
+        playSelectAnimation(els.vsFighterBPortrait, metaB.selectedImg);
+        stopSelectAnimation(els.vsFighterAPortrait);
+        if (els.vsFighterAPortrait) els.vsFighterAPortrait.style.backgroundImage = `url('${metaA.selectImg}')`;
+        enableStart();
       }
+
+      function enableStart() {
+        if (els.vsStartBtn) {
+          els.vsStartBtn.textContent = 'START';
+          els.vsStartBtn.classList.add('enabled');
+        }
+      }
+
+      function startFight() {
+        if (!currentPick) return;
+        cleanup();
+        state.vsPlayerPick = currentPick;
+        resolve(currentPick);
+      }
+
       function cleanup() {
         els.vsFighterACard.onclick = null;
         els.vsFighterBCard.onclick = null;
+        if (els.vsStartBtn) els.vsStartBtn.onclick = null;
         els.vsFighterACard.style.cursor = 'default';
         els.vsFighterBCard.style.cursor = 'default';
       }
 
-      els.vsFighterACard.onclick = pickA;
-      els.vsFighterBCard.onclick = pickB;
+      els.vsFighterACard.onclick = selectA;
+      els.vsFighterBCard.onclick = selectB;
+      if (els.vsStartBtn) els.vsStartBtn.onclick = startFight;
     });
   }
 
@@ -7613,12 +8001,10 @@
     const winnerMeta = VS_FIGHTER_META[winnerKey];
     const playerWon = playerPick === winnerKey;
 
-    // === PHASE 1: Both fighters selected - play their selected GIFs for 3 seconds ===
-    els.vsBattleStatus.textContent = 'FIGHTING...';
-    beep(196, 0.14, 0.06, 'sawtooth');
-    await wait(3000);
+    // Hide START button during fight
+    if (els.vsStartBtn) els.vsStartBtn.style.display = 'none';
 
-    // === PHASE 2: Fight time! 3-5 seconds of screen shake + punch effects ===
+    // === PHASE 1: Fight time! 3-5 seconds of screen shake + punch effects ===
     const fightDuration = 3000 + Math.floor(Math.random() * 2000); // 3-5 seconds
     els.vsBattleStatus.textContent = 'FIGHT TIME!';
     els.vsBattleOverlay.classList.add('vs-fight-active');
@@ -7659,37 +8045,46 @@
     els.vsBattleOverlay.style.background = '';
     els.vsBattleOverlay.classList.remove('vs-fight-active');
 
-    // === PHASE 3: Reveal winner ===
+    // === PHASE 2: Reveal winner ===
     els.vsBattleStatus.textContent = winnerMeta.name + ' WINS!';
     els.vsBattleOverlay.classList.add('winner-revealed');
     (winnerIsA ? els.vsFighterACard : els.vsFighterBCard).classList.add('vs-winner');
     (winnerIsA ? els.vsFighterBCard : els.vsFighterACard).classList.add('vs-loser');
 
-    // Play winner's victory animation on their portrait (loops via video)
-    const winnerAnim = CSPRNG.randomFloat() < 0.5 ? winnerMeta.animA : winnerMeta.animB;
+    // Play winner's victory animation on their portrait
+    const winnerAnim = getFighterAnimation(winnerKey);
     const winnerPortrait = winnerIsA ? els.vsFighterAPortrait : els.vsFighterBPortrait;
     const loserPortrait = winnerIsA ? els.vsFighterBPortrait : els.vsFighterAPortrait;
+    const loserMeta = winnerIsA ? metaB : metaA;
     if (winnerPortrait) {
+      // Remove any select animation img first
+      const selImg = winnerPortrait.querySelector('img.vs-select-anim');
+      if (selImg) selImg.remove();
+      // Remove any old video
+      const oldVid = winnerPortrait.querySelector('video.vs-fighter-video');
+      if (oldVid) { oldVid.pause(); oldVid.remove(); }
       winnerPortrait.style.backgroundImage = 'none';
-      let winVid = winnerPortrait.querySelector('video.vs-fighter-video');
-      if (!winVid) {
-        winVid = document.createElement('video');
-        winVid.className = 'vs-fighter-video';
-        winVid.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;z-index:1;';
-        winVid.loop = true;
-        winVid.muted = true;
-        winVid.playsInline = true;
-        winVid.autoplay = true;
-        winnerPortrait.appendChild(winVid);
-      }
-      winVid.src = winnerAnim;
-      winVid.play().catch(() => {});
+      const winImg = document.createElement('img');
+      winImg.className = 'vs-fighter-video';
+      winImg.src = winnerAnim;
+      winImg.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;z-index:1;';
+      winnerPortrait.appendChild(winImg);
     }
-    // Stop the loser's looping animation by freezing on their select image
+    // Play loser's KO animation
     if (loserPortrait) {
+      // Remove any select animation img first
+      const selImg = loserPortrait.querySelector('img.vs-select-anim');
+      if (selImg) selImg.remove();
       const loseVid = loserPortrait.querySelector('video.vs-fighter-video');
       if (loseVid) { loseVid.pause(); loseVid.remove(); }
-      loserPortrait.style.backgroundImage = `url('${winnerIsA ? metaB.selectImg : metaA.selectImg}')`;
+      const oldKoVid = loserPortrait.querySelector('video.vs-fighter-ko-video');
+      if (oldKoVid) { oldKoVid.pause(); oldKoVid.remove(); }
+      loserPortrait.style.backgroundImage = 'none';
+      const koImg = document.createElement('img');
+      koImg.className = 'vs-fighter-ko-video';
+      koImg.src = loserMeta.koAnim;
+      koImg.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;z-index:1;';
+      loserPortrait.appendChild(koImg);
     }
 
     // Winner sound
@@ -7728,26 +8123,8 @@
       await wait(1500);
     }
 
-    // === PHASE 4: Wait for user click to continue ===
-    els.vsBattleStatus.textContent = 'CLICK TO CONTINUE';
-    els.vsBattleOverlay.style.cursor = 'pointer';
-    let continueClicked = false;
-    await new Promise(resolve => {
-      const handler = (e) => {
-        if (continueClicked) return;
-        continueClicked = true;
-        e.stopPropagation();
-        e.preventDefault();
-        els.vsBattleOverlay.onclick = null;
-        els.vsBattleOverlay.style.cursor = '';
-        resolve();
-      };
-      els.vsBattleOverlay.onclick = handler;
-    });
-
-    els.vsBattleOverlay.classList.remove('show', 'winner-revealed');
-    els.vsFighterACard.classList.remove('vs-picked', 'vs-winner', 'vs-loser');
-    els.vsFighterBCard.classList.remove('vs-picked', 'vs-winner', 'vs-loser');
+    // Brief result display then auto-continue (for looping)
+    await wait(1200);
 
     return playerWon;
   }
@@ -7791,14 +8168,27 @@
     // Clear on-card attack overlays and pause videos
     if (els.vsAttackA) { els.vsAttackA.classList.remove('show'); if (els.vsAttackAVid) { els.vsAttackAVid.pause(); els.vsAttackAVid.src = ''; } }
     if (els.vsAttackB) { els.vsAttackB.classList.remove('show'); if (els.vsAttackBVid) { els.vsAttackBVid.pause(); els.vsAttackBVid.src = ''; } }
-    // Clear portrait videos
+    // Clear portrait videos, KO imgs, and select anims
     [els.vsFighterAPortrait, els.vsFighterBPortrait].forEach(p => {
       if (p) {
         const vid = p.querySelector('video.vs-fighter-video');
         if (vid) { vid.pause(); vid.remove(); }
+        const koVid = p.querySelector('video.vs-fighter-ko-video');
+        if (koVid) { koVid.pause(); koVid.remove(); }
+        const koImg = p.querySelector('img.vs-fighter-ko-video');
+        if (koImg) koImg.remove();
+        const winImg = p.querySelector('img.vs-fighter-video');
+        if (winImg) winImg.remove();
+        const selImg = p.querySelector('img.vs-select-anim');
+        if (selImg) selImg.remove();
         p.style.backgroundImage = '';
       }
     });
+    // Reset cards
+    if (els.vsFighterACard) els.vsFighterACard.classList.remove('vs-picked', 'vs-winner', 'vs-loser');
+    if (els.vsFighterBCard) els.vsFighterBCard.classList.remove('vs-picked', 'vs-winner', 'vs-loser');
+    // Hide START button
+    if (els.vsStartBtn) { els.vsStartBtn.style.display = 'none'; els.vsStartBtn.classList.remove('enabled'); }
     // CRITICAL: Clear any lingering onclick handlers on the overlay
     if (els.vsBattleOverlay) {
       els.vsBattleOverlay.onclick = null;
@@ -7806,8 +8196,114 @@
     }
   }
 
+  // Partial clear: reset for next round in a sequence (keeps overlay open)
+  function clearVsBattleRoundState() {
+    // Clear on-card attack overlays and pause videos
+    if (els.vsAttackA) { els.vsAttackA.classList.remove('show'); if (els.vsAttackAVid) { els.vsAttackAVid.pause(); els.vsAttackAVid.src = ''; } }
+    if (els.vsAttackB) { els.vsAttackB.classList.remove('show'); if (els.vsAttackBVid) { els.vsAttackBVid.pause(); els.vsAttackBVid.src = ''; } }
+    // Clear portrait videos, KO imgs, win imgs, and select anims
+    [els.vsFighterAPortrait, els.vsFighterBPortrait].forEach(p => {
+      if (p) {
+        const vid = p.querySelector('video.vs-fighter-video');
+        if (vid) { vid.pause(); vid.remove(); }
+        const koVid = p.querySelector('video.vs-fighter-ko-video');
+        if (koVid) { koVid.pause(); koVid.remove(); }
+        const koImg = p.querySelector('img.vs-fighter-ko-video');
+        if (koImg) koImg.remove();
+        const winImg = p.querySelector('img.vs-fighter-video');
+        if (winImg) winImg.remove();
+        const selImg = p.querySelector('img.vs-select-anim');
+        if (selImg) selImg.remove();
+        p.style.backgroundImage = '';
+      }
+    });
+    // Reset cards
+    if (els.vsFighterACard) els.vsFighterACard.classList.remove('vs-picked', 'vs-winner', 'vs-loser');
+    if (els.vsFighterBCard) els.vsFighterBCard.classList.remove('vs-picked', 'vs-winner', 'vs-loser');
+    // Hide START button
+    if (els.vsStartBtn) { els.vsStartBtn.style.display = 'none'; els.vsStartBtn.classList.remove('enabled'); }
+    // Reset overlay state
+    if (els.vsBattleOverlay) {
+      els.vsBattleOverlay.classList.remove('winner-revealed', 'vs-fight-active');
+      els.vsBattleOverlay.onclick = null;
+      els.vsBattleOverlay.style.cursor = '';
+    }
+    if (els.vsBattleScene) els.vsBattleScene.style.transform = '';
+  }
+
+  // Run a multi-fight VS sequence: winner stays, new opponent each round
+  async function runVsBattleSequence(initialFighterA, initialFighterB, initialWinnerIsA, initialWinnerMult, triggerBet) {
+    const MAX_VS_ROUNDS = 5;
+    let currentFighterA = initialFighterA;
+    let currentFighterB = initialFighterB;
+    let currentWinnerIsA = initialWinnerIsA;
+    let currentWinnerMult = initialWinnerMult;
+    let totalVsWin = 0;
+    let round = 0;
+
+    while (round < MAX_VS_ROUNDS) {
+      round++;
+
+      // Step 1: Player picks a fighter
+      const playerPick = await runVsBattlePlayerChoice(currentFighterA, currentFighterB);
+
+      // Step 2: Reveal winner with suspense
+      const playerWon = await revealVsBattleWinner(
+        currentFighterA,
+        currentFighterB,
+        currentWinnerIsA,
+        currentWinnerMult,
+        playerPick
+      );
+
+      // Step 3: Apply win if player picked correctly
+      if (playerWon) {
+        const vsWinAmount = triggerBet * currentWinnerMult;
+        totalVsWin += vsWinAmount;
+        state.balance += vsWinAmount;
+        state.lastWin = vsWinAmount;
+        showWin(vsWinAmount);
+        spawnSparkles(20);
+        triggerStageImpact('big');
+        playRoundHorn(0.14);
+        if (vsWinAmount >= triggerBet * 5) {
+          await showBigWin(vsWinAmount, triggerBet);
+        }
+        toast('YOU WIN! ' + VS_FIGHTER_META[currentWinnerIsA ? currentFighterA : currentFighterB].name + ' ×' + currentWinnerMult);
+      } else {
+        toast('YOU LOSE');
+        await wait(1000);
+        // Player lost - end the sequence
+        break;
+      }
+
+      // Step 4: Setup next fight (winner stays, new opponent)
+      if (round < MAX_VS_ROUNDS) {
+        const winnerKey = currentWinnerIsA ? currentFighterA : currentFighterB;
+        const pool = VS_FIGHTER_SYMBOLS.filter(k => k !== winnerKey);
+        const newOpponent = pool[CSPRNG.randomInt(pool.length)];
+
+        currentFighterA = winnerKey;
+        currentFighterB = newOpponent;
+        currentWinnerIsA = CSPRNG.randomFloat() < 0.5;
+        currentWinnerMult = 2 + CSPRNG.randomInt(4);
+
+        // Brief pause then reset for next round
+        await wait(800);
+        clearVsBattleRoundState();
+        // Force reflow to ensure clean visual reset before next round
+        void els.vsBattleOverlay.offsetWidth;
+      }
+    }
+
+    // Sequence complete - hide overlay
+    if (els.vsBattleOverlay) els.vsBattleOverlay.classList.remove('show', 'winner-revealed');
+    clearVsBattleState();
+    return totalVsWin;
+  }
+
   async function startChampionshipMode() {
-    // Championship Mode: 5 back-to-back VS Battle rounds
+    // Final Bell Duel: 5 back-to-back VS Bonus rounds
     const CHAMPIONSHIP_ROUNDS = 5;
     const play = getBet();
     state.spinning = true;
@@ -7817,7 +8313,7 @@
     state.championshipRoundWins = []; // Track each round's result for final display
 
     // Show championship intro
-    els.vsBattleStatus.textContent = 'CHAMPIONSHIP MODE';
+    els.vsBattleStatus.textContent = 'FINAL BELL DUEL';
     els.vsBattleOverlay.classList.remove('show', 'winner-revealed');
     void els.vsBattleOverlay.offsetWidth;
     els.vsBattleOverlay.classList.add('show');
@@ -8106,16 +8602,53 @@
     requestAnimationFrame(tick);
   }
 
+  function duckBackgroundLoop(durationMs = 2500, duckVolume = 0.08) {
+    const loop = document.getElementById('bonusMusic');
+    if (!loop || !_bgLoopPlaying) return;
+    const originalVol = 0.36;
+    loop.volume = duckVolume;
+    setTimeout(() => {
+      if (_bgLoopPlaying && loop) loop.volume = originalVol;
+    }, durationMs);
+  }
+
+  function shakeScreen(durationMs = 1500, intensity = 10) {
+    const stage = document.querySelector('.stage');
+    if (!stage) return;
+    const startTime = performance.now();
+    
+    function performShake(time) {
+      const elapsed = time - startTime;
+      if (elapsed < durationMs) {
+        // dampen intensity over time
+        const currentIntensity = intensity * (1 - (elapsed / durationMs));
+        const dx = (Math.random() - 0.5) * 2 * currentIntensity;
+        const dy = (Math.random() - 0.5) * 2 * currentIntensity;
+        stage.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+        requestAnimationFrame(performShake);
+      } else {
+        stage.style.transform = 'translate(-50%, -50%)'; // reset
+      }
+    }
+    requestAnimationFrame(performShake);
+  }
+
   function showBigWin(amount, play) {
     const x = amount / play;
     let label = null;
-    if (x >= 100)     { label = 'KNOCKOUT WIN'; }
-    else if (x >= 50) { label = 'EPIC FINISH'; }
-    else if (x >= 25) { label = 'MEGA FIGHT'; }
-    else if (x >= 10) { label = 'BIG WIN'; }
-    else if (x >= 5)  { label = 'NICE WIN'; }
+    let duration = 3000;
+    let shakeInt = 0;
+    if (x >= 100)     { label = 'KNOCKOUT WIN'; duration = 5000; shakeInt = 15; }
+    else if (x >= 50) { label = 'EPIC FINISH'; duration = 4000; shakeInt = 10; }
+    else if (x >= 25) { label = 'MEGA FIGHT'; duration = 3000; shakeInt = 8; }
+    else if (x >= 10) { label = 'BIG WIN'; duration = 3000; shakeInt = 5; }
+    else if (x >= 5)  { label = 'NICE WIN'; duration = 2000; }
     if (!label) return Promise.resolve();
     setMaxByWin(amount, play);
+
+    // Audio ducking and screen shake
+    duckBackgroundLoop(duration, 0.05);
+    if (shakeInt > 0) shakeScreen(duration * 0.7, shakeInt);
 
     return new Promise((resolve) => {
       if (state.mode === 'bonus') playCrownMusic(0.55, true);
@@ -8869,7 +9402,7 @@
   async function showStakeFeatureEntryIntro(kind) {
     state.mode = 'bonus';
     els.biNum.textContent = '×100';
-    els.biTitle.textContent = 'FREE FIGHTS';
+    els.biTitle.textContent = 'FREE SPINS BONUS';
     els.biIncoming.textContent = 'PAID FEATURE';
     els.biSub.textContent = 'THE CAGE OPENS FIRST · NO BASE TRIGGER SPIN';
     els.bonusIntro.classList.remove('retrigger');
@@ -9068,7 +9601,7 @@
     const realCost = play * costMult;
     const payoutMult = getRoundPayoutMultiplier(state.replayRound);
     const finalAmount = payoutMult * play;
-    const modeLabel = state.mode === 'bonus' ? 'FREE FIGHTS' : 'BASE GAME';
+    const modeLabel = state.mode === 'bonus' ? 'FREE SPINS BONUS' : 'BASE GAME';
     toast('REPLAY: ' + modeLabel + ' | PLAY ' + formatMoney(play, { withCurrency: true }) +
       ' | MULT ' + costMult.toFixed(2) + '× | WIN ' + formatMoney(finalAmount, { withCurrency: true }));
   }
@@ -9119,7 +9652,7 @@
     let grid = reviewSpin ? makeReviewBonusGrid() : spinResult();
     if (isReviewDemo()) state.reviewSpins++;
 
-    // Force VS Battle: inject a belt + fighters setup into the grid
+    // Force VS Bonus: inject a belt + fighters setup into the grid
     if (options.forceVsBattle && state.mode === 'base') {
       grid = forceVsBattleGrid(grid);
     }
@@ -9136,18 +9669,18 @@
       }
     }
 
-    // ===== VS BATTLE CHECK (base game only) =====
+    // ===== VS BONUS CHECK (base game only) =====
     const vsTriggers = state.mode === 'base' ? findVsBattleTriggers(grid) : [];
-    console.log('VS Battle triggers found:', vsTriggers.length, 'Mode:', state.mode);
+    console.log('VS Bonus triggers found:', vsTriggers.length, 'Mode:', state.mode);
     const vsBattles = [];
     for (const trigger of vsTriggers) {
       vsBattles.push(setupVsBattle(grid, trigger));
     }
     const vsTriggered = vsBattles.length > 0;
-    console.log('VS Battles setup:', vsBattles.length, 'Triggered:', vsTriggered);
+    console.log('VS Bonuss setup:', vsBattles.length, 'Triggered:', vsTriggered);
     let vsTotalWin = 0;
 
-    // Preload VS Battle images immediately so they're ready when overlay opens
+    // Preload VS Bonus images immediately so they're ready when overlay opens
     if (vsTriggered && vsBattles.length > 0) {
       const firstBattle = vsBattles[0];
       const metaA = VS_FIGHTER_META[firstBattle.fighterA];
@@ -9170,62 +9703,27 @@
         els.spinBtn.disabled = true;
       }
 
-      // ===== VS BATTLE EXECUTION (Player Choice) =====
+      // ===== VS BONUS EXECUTION (Player Choice) =====
       if (vsTriggered) {
         for (let battleIdx = 0; battleIdx < vsBattles.length; battleIdx++) {
           const battle = vsBattles[battleIdx];
-          const isLast = battleIdx === vsBattles.length - 1;
 
           // Step 1: Transform cells visually (only left and right of belt)
           await animateVsCellTransforms(battle.transformed, battle.fighterA, battle.fighterB);
           await wait(400);
 
-          // Step 2: Player picks a fighter
-          const playerPick = await runVsBattlePlayerChoice(battle.fighterA, battle.fighterB);
-
-          // Step 3: Reveal winner with suspense
-          const playerWon = await revealVsBattleWinner(
+          // Step 2: Run the multi-fight VS sequence
+          const triggerBet = state.vsTriggerBet || play;
+          vsTotalWin += await runVsBattleSequence(
             battle.fighterA,
             battle.fighterB,
             battle.winnerIsA,
             battle.winnerMult,
-            playerPick
+            triggerBet
           );
-
-          // Step 4: Apply win if player picked correctly
-          // Multiplier (5x-100x) applied directly to the triggering spin's total bet
-          if (playerWon) {
-            const triggerBet = state.vsTriggerBet || play;
-            const vsWinAmount = triggerBet * battle.winnerMult;
-            vsTotalWin += vsWinAmount;
-
-            state.balance += vsWinAmount;
-            state.lastWin = vsWinAmount;
-            showWin(vsWinAmount);
-            spawnSparkles(20);
-            triggerStageImpact('big');
-            playRoundHorn(0.14);
-            if (vsWinAmount >= play * 5) {
-              await showBigWin(vsWinAmount, play);
-            }
-            toast('YOU WIN! ' + VS_FIGHTER_META[battle.vsWinner].name + ' ×' + battle.winnerMult);
-          } else {
-            toast('YOU LOSE');
-            await wait(1000);
-          }
-
-          // Brief pause between multiple battles
-          if (!isLast) {
-            await wait(800);
-            els.vsBattleOverlay.classList.remove('show');
-            await wait(400);
-          }
         }
 
-        // Hide overlay after all battles complete
-        els.vsBattleOverlay.classList.remove('show', 'winner-revealed');
         updateHUD();
-        clearVsBattleState();
         state.spinning = false;
         notifyControls('spinEnd', {});
         if (els.spinBtn) els.spinBtn.disabled = false;
@@ -9306,7 +9804,7 @@
           state.freeSpinsLeft = Math.max(0, state.freeSpinsLeft - 1) + 5;
           pulseFreeFightsCounter();
           updateHUD();
-          toast('+5 FREE FIGHTS');
+          toast('+5 FREE SPINS BONUS');
           triggerBonus(true);
           setTimeout(continueBonus, 2400);
           return;
@@ -9352,7 +9850,7 @@
       els.biNum.textContent = '+5';
       els.biTitle.textContent = 'RETRIGGER';
       els.biIncoming.textContent = 'BONUS ROUND';
-      els.biSub.textContent = 'FIVE MORE FREE FIGHTS';
+      els.biSub.textContent = 'FIVE MORE FREE SPINS BONUS';
       els.bonusIntro.classList.add('retrigger');
       if (els.introBtn) els.introBtn.style.display = 'none'; // auto-continues, no button
     }
@@ -9360,6 +9858,38 @@
     els.bonusIntro.classList.remove('show');
     void els.bonusIntro.offsetWidth;
     els.bonusIntro.classList.add('show');
+
+    // Trigger WAAPI cinematic sequence
+    document.querySelector('.bi-flash').animate([
+      { opacity: 0, background: '#fff' },
+      { opacity: 0.95, background: '#fff', offset: 0.2 },
+      { opacity: 0.7, background: '#cc1a2e', offset: 0.5 },
+      { opacity: 0 }
+    ], { duration: 350, easing: 'ease-out' });
+
+    document.querySelector('.bi-scan').animate([
+      { opacity: 0, left: '-40%' },
+      { opacity: 1, offset: 0.3 },
+      { opacity: 0, left: '100%' }
+    ], { duration: 1200, easing: 'ease-out', delay: 200 });
+
+    document.querySelector('.bi-bar-top').animate([
+      { transform: 'translateY(-100%)', opacity: 0 },
+      { opacity: 1, offset: 0.6 },
+      { transform: 'translateY(0)', opacity: 1 }
+    ], { duration: 500, easing: 'cubic-bezier(0.25, 1, 0.5, 1)', delay: 300, fill: 'forwards' });
+
+    document.querySelector('.bi-bar-bot').animate([
+      { transform: 'translateY(100%)', opacity: 0 },
+      { opacity: 1, offset: 0.6 },
+      { transform: 'translateY(0)', opacity: 1 }
+    ], { duration: 500, easing: 'cubic-bezier(0.25, 1, 0.5, 1)', delay: 300, fill: 'forwards' });
+
+    document.querySelector('.bi-incoming').animate([
+      { opacity: 0, transform: 'scale(3) rotate(-3deg)', filter: 'blur(20px)' },
+      { opacity: 1, transform: 'scale(1.15) rotate(1deg)', filter: 'blur(0)', offset: 0.5 },
+      { opacity: 1, transform: 'scale(1) rotate(0)' }
+    ], { duration: 450, easing: 'cubic-bezier(0.34, 1.8, 0.64, 1)', delay: 550, fill: 'forwards' });
 
     beep(80, 0.1, 0.08);
     setTimeout(() => beep(220, 0.1, 0.06), 50);
@@ -9408,6 +9938,11 @@
     const el = document.getElementById('inlineBuyBonus');
     if (el) {
       el.classList.add('show');
+      el.animate([
+        { opacity: 0, backdropFilter: 'blur(0px)' },
+        { opacity: 1, backdropFilter: 'blur(20px)' }
+      ], { duration: 300, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'forwards' });
+
       // Update costs
       const play = getBet();
       const freeEl = document.getElementById('ibbCostFree');
@@ -9419,7 +9954,13 @@
 
   function closeFeatureMenu() {
     const el = document.getElementById('inlineBuyBonus');
-    if (el) el.classList.remove('show');
+    if (el) {
+      const anim = el.animate([
+        { opacity: 1 },
+        { opacity: 0 }
+      ], { duration: 250, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' });
+      anim.onfinish = () => el.classList.remove('show');
+    }
   }
 
   function chooseFeatureWithClick(kind) {
@@ -9475,7 +10016,7 @@
       playCrownMusic(0.58, true);
       triggerBonus(false);
     } else if (kind === 'vs') {
-      // Buy Championship: 5 back-to-back VS Battle rounds
+      // Buy Championship: 5 back-to-back VS Bonus rounds
       if (els.spinBtn) els.spinBtn.disabled = true;
       updateHUD();
       startChampionshipMode();
@@ -9623,7 +10164,7 @@
     }
   }
 
-  // ---------- VS BATTLE VISUAL HELPERS ----------
+  // ---------- VS BONUS VISUAL HELPERS ----------
   async function animateVsCellTransforms(cells, fighterA, fighterB) {
     const metaA = VS_FIGHTER_META[fighterA];
     const metaB = VS_FIGHTER_META[fighterB];
@@ -9663,7 +10204,7 @@
   async function showReviewFeaturePreview() {
     els.biNum.textContent = '×4';
     els.biTitle.textContent = 'FIGHTER PICK BONUS';
-    els.biIncoming.textContent = 'FREE FIGHTS';
+    els.biIncoming.textContent = 'FREE SPINS BONUS';
     els.biSub.textContent = 'CAGES OPEN THE FEATURE · FIGHTER MULTIPLIERS';
     els.bonusIntro.classList.remove('retrigger');
     if (els.introBtn) els.introBtn.style.display = 'none';
@@ -9677,14 +10218,14 @@
   }
 
   // ============= PICK YOUR FIGHTER =============
-  // 4 fighter archetypes for Free Fights. Client pick biases reel strips (+6 of chosen fighter symbol)
+  // 4 fighter archetypes for Free Spins Bonus. Client pick biases reel strips (+6 of chosen fighter symbol)
   // for frequent "takeover" moments and persistent multiplier across the awarded spins.
   // Values chosen for premium feel, clear risk/reward, and balanced presentation EV.
   const FIGHTERS = [
-    { spins: 5,  mult: 6.0,  color: 'red',    name: 'CHAMP',     sym: 'symbols/sym_champion.png', symKey: 'H2' },     // High-risk, explosive
-    { spins: 8,  mult: 4.0,  color: 'orange', name: 'CHIEF',     sym: 'symbols/sym_chief.png',    symKey: 'H4' },     // Classic power
-    { spins: 10, mult: 3.5,  color: 'purple', name: 'RAGE',      sym: 'symbols/sym_shouter.png',  symKey: 'H5' },     // Volume + steady
-    { spins: 12, mult: 3.0,  color: 'green',  name: 'MCWHISKEY', sym: 'symbols/sym_conor.png?v=2',symKey: 'H3' },     // Technical, long haul
+    { spins: 5,  mult: 6.0,  color: 'red',    name: 'CHAMP',     sym: 'assets/symbols/CHAMP.png', symKey: 'H2' },     // High-risk, explosive
+    { spins: 8,  mult: 4.0,  color: 'orange', name: 'CHIEF',     sym: 'assets/symbols/CHIEF.png',    symKey: 'H4' },     // Classic power
+    { spins: 10, mult: 3.5,  color: 'purple', name: 'RAGE',      sym: 'assets/symbols/RAGE.png',  symKey: 'H5' },     // Volume + steady
+    { spins: 12, mult: 3.0,  color: 'green',  name: 'MCWHISKEY', sym: 'assets/symbols/MCWHISKEY.png',symKey: 'H3' },     // Technical, long haul
   ];
 
   let pickedFighter = null;
@@ -9694,6 +10235,11 @@
     const el = document.getElementById('inlinePickFighter');
     if (el) {
       el.classList.add('show');
+      el.animate([
+        { opacity: 0, transform: 'scale(1.05)' },
+        { opacity: 1, transform: 'scale(1)' }
+      ], { duration: 400, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'forwards' });
+
       // Update balance display
       const balEl = document.getElementById('ipfBalance');
       if (balEl) balEl.textContent = '$' + state.balance.toFixed(2);
@@ -9706,7 +10252,13 @@
 
   function hideFighterPicker() {
     const el = document.getElementById('inlinePickFighter');
-    if (el) el.classList.remove('show');
+    if (el) {
+      const anim = el.animate([
+        { opacity: 1, transform: 'scale(1)' },
+        { opacity: 0, transform: 'scale(0.95)' }
+      ], { duration: 300, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' });
+      anim.onfinish = () => el.classList.remove('show');
+    }
   }
 
   function onFighterPicked(fid) {
@@ -9748,7 +10300,7 @@
     // arm start button
     setTimeout(() => startBtn.classList.add('armed'), 600);
     const f = FIGHTERS[fid];
-    toast(f.name + ' SELECTED · ' + f.spins + ' FREE FIGHTS · ×' + f.mult);
+    toast(f.name + ' SELECTED · ' + f.spins + ' FREE SPINS BONUS · ×' + f.mult);
 
     // sounds
     beep(523, 0.15, 0.08);
@@ -9762,7 +10314,9 @@
     const stakeFeatureEntry = state.pendingFeatureEntry === 'free' && !!getStakeBridge();
     state.pendingFeatureEntry = null;
     state.mode = 'bonus';
-    document.getElementById('bgImg').src = 'art/rfc_bg.png';
+    document.getElementById('stage').setAttribute('data-fighter', f.color);
+    const bg = document.getElementById('bgImg');
+    if (bg) bg.src = './assets/main-bg.png';
     startBackgroundLoop();
 
     state.freeSpinsLeft = f.spins;
@@ -9796,7 +10350,11 @@
   }
 
   function endBonus() {
-    state.mode = 'base'; document.getElementById('bgImg').src = 'art/rfc_bg.png'; startBackgroundLoop();
+    state.mode = 'base'; 
+    const bg = document.getElementById('bgImg');
+    if (bg) bg.src = './assets/main-bg.png';
+    startBackgroundLoop();
+    document.getElementById('stage').removeAttribute('data-fighter');
     els.tallyTotal.textContent = formatMoney(0, { withCurrency: false });
     els.tallySpins.textContent = state.bonusSpinsPlayed;
     els.tallyBest.textContent = formatMoney(state.bonusBestWin, { withCurrency: false });
@@ -9947,12 +10505,17 @@
   function drawWinTracers(wins, grid) {
     clearWinTracers();
     if (!wins || wins.length === 0) return;
+
+    // On mobile / small screens the tracer coordinates are broken after layout changes.
+    // The cell highlighting (.win-cell) is sufficient and much cleaner.
+    if (window.innerWidth < 820) {
+      return;
+    }
+
     const tracer = els.winTracer;
     const svgNS = 'http://www.w3.org/2000/svg';
+
     wins.forEach((w, i) => {
-      // For each reel up to reelCount, pick the winning rows and draw polylines across.
-      // We draw one polyline per row-path: connect midpoints of matching cells on each reel.
-      // Simpler: draw a polyline through each pairing of first matching row per reel.
       const points = [];
       for (let col = 0; col < w.reelCount; col++) {
         let row = 1; // default mid
@@ -9962,14 +10525,15 @@
         const { cx, cy } = cellCenter(col, row);
         points.push(`${cx},${cy}`);
       }
+
       const line = document.createElementNS(svgNS, 'polyline');
       line.setAttribute('points', points.join(' '));
-      // pick a color band based on symbol tier
       let color = '#cc1a2e';
       if (w.symbol === 'H1') color = '#ffcc22';
       else if (w.symbol.startsWith('US')) color = '#3388ff';
       else if (w.symbol.startsWith('IF')) color = '#ff3322';
       else if (w.symbol.startsWith('L')) color = '#ffaa55';
+
       line.setAttribute('stroke', color);
       line.style.filter = `drop-shadow(0 0 12px ${color})`;
       line.style.animationDelay = (i * 120) + 'ms';
@@ -10006,7 +10570,7 @@
     initErrorHandling();
     initStartupIntro();
     initReelsStatic();
-    // Preload fighter images for instant VS Battle display
+    // Preload fighter images for instant VS Bonus display
     preloadFighterImages();
     // Bonus buy buttons are visible by default in demo mode
     if (isReviewDemo()) {
@@ -10186,7 +10750,7 @@
     if (els.featureFreeBtn) els.featureFreeBtn.addEventListener('click', () => chooseFeatureWithClick('free'));
     if (els.featureVsBtn) els.featureVsBtn.addEventListener('click', () => chooseFeatureWithClick('vs'));
 
-    // ----- Cancel Free Fights button -----
+    // ----- Cancel Free Spins Bonus button -----
     if (els.fsCancel) els.fsCancel.addEventListener('click', () => {
       if (state.mode === 'bonus' && !state.spinning) {
         state.freeSpinsLeft = 0;
@@ -10282,6 +10846,7 @@
     }
 
     // Buy Bonus inline handlers
+    window.ibbShow = function() { openFeatureMenu(); };
     window.ibbSelectFeature = function(feature) {
       closeFeatureMenu();
       enterFeature(feature);
@@ -10294,10 +10859,10 @@
     let ipfCurrentId = 0;
     const ipfColors = { 0: 'active-red', 1: 'active-gold', 2: 'active-blue', 3: 'active-purple' };
     const ipfMeta = [
-      { name: 'CHAMP', spins: 4, mult: 12, selectedImg: 'assets/fighter-select/champ_pick.gif' },
-      { name: 'CHIEF', spins: 6, mult: 8, selectedImg: 'assets/fighter-select/chief_pick.gif' },
-      { name: 'RAGE', spins: 8, mult: 6, selectedImg: 'assets/fighter-select/rage_pick.gif' },
-      { name: 'MCWHISKEY', spins: 16, mult: 3, selectedImg: 'assets/fighter-select/mcwhiskey_pick.gif' }
+      { name: 'CHAMP', spins: 4, mult: 12, selectedImg: 'assets/NEW_FIGHTER_ANIMATIONS/CHAMPSELECT.gif' },
+      { name: 'CHIEF', spins: 6, mult: 8, selectedImg: 'assets/NEW_FIGHTER_ANIMATIONS/CHIEFSELECT.gif' },
+      { name: 'RAGE', spins: 8, mult: 6, selectedImg: 'assets/NEW_FIGHTER_ANIMATIONS/RAGESELECT.gif' },
+      { name: 'MCWHISKEY', spins: 16, mult: 3, selectedImg: 'assets/NEW_FIGHTER_ANIMATIONS/MCWHISKEYSELECT.gif' }
     ];
     window.ipfSelectFighter = function(id) {
       ipfCurrentId = id;
@@ -10472,7 +11037,7 @@
     var vv = window.visualViewport;
     var vw = Math.max(1, Math.round((vv && vv.width) || window.innerWidth || document.documentElement.clientWidth || 1));
     var vh = Math.max(1, Math.round((vv && vv.height) || window.innerHeight || document.documentElement.clientHeight || 1));
-    var portraitPhone = vw <= 820 && vh > vw;
+    var portraitPhone = vw <= 1700 && vh > vw;
     var containScale = Math.min(vw / 1920, vh / 1080);
     var playScale = Math.min(vw / 1020, vh / 1080);
     var scale = portraitPhone ? Math.max(containScale, playScale) : containScale;
@@ -10485,815 +11050,1869 @@
   window.addEventListener('load', function(){ applyMobileStageScale(); setTimeout(applyMobileStageScale, 250); });
   applyMobileStageScale();
 })();
+
+<script>
+// Force girl visible — runs after all other scripts
+(function() {
+  function showGirl() {
+    var g = document.getElementById('maxCharacter');
+    if (!g) return;
+    // Do not hardcode bottom/right anymore — this was stomping on RLE/DEV girl positioning.
+    // Let the CSS vars (--dev-max-right, --dev-max-bottom, etc.) control position.
+    g.style.cssText = [
+      'display:block',
+      'position:fixed',
+      'z-index:9999',
+      'opacity:1',
+      'overflow:hidden',
+      'pointer-events:none'
+    ].join(';') + ';';
+  }
+  showGirl();
+  window.addEventListener('load', showGirl);
+  setTimeout(showGirl, 200);
+  setTimeout(showGirl, 800);
+})();
 </script>
-<!-- ==================== DEV LAYOUT TOOL ==================== -->
-<style id="dev-tool-styles">
-  #dev-layout-tool {
-    position: fixed;
-    top: 12px;
-    left: 12px;
-    z-index: 999999;
-    background: rgba(20, 20, 24, 0.96);
-    border: 1px solid #3a3a42;
-    border-radius: 10px;
-    padding: 12px 14px;
-    width: 280px;
-    font-family: 'Barlow', system-ui, sans-serif;
+</body>
+
+    <div class="dev-tools">
+      <label class="dev-check">
+        <input type="checkbox" id="devOutlines">
+        <span>Show bounds</span>
+      </label>
+      <div class="dev-status" id="devStatus">Auto-saved • Press <strong>D</strong> to toggle</div>
+    </div>
+  </div>
+</div>
+
+<!-- Max Character (bottom-right, legs cut off at page bottom) -->
+<div class="max-character" id="maxCharacter" aria-hidden="true" style="display:block !important;position:fixed !important;left:50% !important;top:50% !important;transform:translate(-50%,-50%) !important;width:247px !important;height:418px !important;z-index:99999 !important;opacity:1 !important;">
+  <img class="max-sprite" id="maxSprite" src="./assets/fighter-max/frame_021.png" alt="" style="width:100%;height:100%;object-fit:cover;">
+</div>
+
+<style>
+/* ============================================
+   LAYOUT DEV TOOLS - Desktop Refined
+   ============================================ */
+
+#devBtn {
+  display: none !important; /* Hidden for final submission */
+  position: fixed;
+  top: 14px;
+  left: 14px;
+  z-index: 99999;
+  background: rgba(0,0,0,0.65);
+  color: #ff4d5e;
+  border: 1px solid #cc1a2e;
+  font-family: 'Barlow Condensed', system-ui, sans-serif;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  padding: 5px 11px 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  user-select: none;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.7);
+  transition: all 0.1s ease;
+}
+#devBtn:hover {
+  background: #cc1a2e;
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(204,26,46,0.5);
+  transform: translateY(-1px);
+}
+
+#devPanel {
+  display: none !important; /* Hidden for final submission */
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  width: 420px;
+  max-height: calc(100vh - 28px);
+  background: rgba(15, 10, 10, 0.78);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(63, 47, 47, 0.6);
+  border-radius: 10px;
+  box-shadow: 0 25px 70px rgba(0,0,0,0.75), 0 0 0 1px rgba(204,26,46,0.12);
+  z-index: 100000;
+  font-family: 'Barlow Condensed', system-ui, sans-serif;
+  color: #e5e5e5;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: opacity 0.12s ease, transform 0.12s ease;
+}
+#devPanel.dev-hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-10px);
+}
+
+.dev-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: rgba(26, 18, 18, 0.72);
+  border-bottom: 1px solid rgba(58, 42, 42, 0.5);
+}
+.dev-title {
+  font-size: 12.5px;
+  font-weight: 900;
+  letter-spacing: 1.8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #ff8a9a;
+}
+.dev-dot {
+  width: 8px;
+  height: 8px;
+  background: #ff2e44;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #ff2e44, 0 0 16px rgba(204,26,46,0.6);
+  flex-shrink: 0;
+}
+.dev-actions {
+  display: flex;
+  gap: 7px;
+}
+
+.dev-btn {
+  background: rgba(31, 23, 23, 0.75);
+  border: 1px solid rgba(74, 54, 54, 0.7);
+  color: #d1d1d1;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.1s ease;
+  letter-spacing: 0.6px;
+}
+.dev-btn:hover {
+  border-color: #664444;
+  background: rgba(42, 31, 31, 0.85);
+  color: #fff;
+}
+.dev-btn-primary {
+  background: rgba(196, 31, 50, 0.9);
+  border-color: #ff3a52;
+  color: #fff;
+  font-weight: 900;
+  box-shadow: 0 2px 8px rgba(196,31,50,0.5);
+}
+.dev-btn-primary:hover {
+  background: rgba(224, 42, 63, 0.95);
+  border-color: #ff5c6f;
+  box-shadow: 0 4px 14px rgba(224,42,63,0.6);
+}
+.dev-btn-close {
+  font-size: 17px;
+  line-height: 1;
+  padding: 3px 10px;
+  font-weight: 400;
+  width: 28px;
+  text-align: center;
+}
+
+.dev-body {
+  overflow-y: auto;
+  padding: 11px 13px 13px;
+  max-height: calc(100vh - 110px);
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+.dev-section {
+  margin-bottom: 11px;
+  background: rgba(21, 16, 16, 0.68);
+  border: 1px solid rgba(47, 37, 37, 0.5);
+  border-radius: 7px;
+  padding: 9px 10px 10px;
+}
+.dev-section:last-child {
+  margin-bottom: 0;
+}
+
+.dev-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  color: #ff8a9a;
+  margin-bottom: 7px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #2f2525;
+}
+
+.dev-mini-btn {
+  font-size: 9px;
+  padding: 2px 8px 1px;
+  background: transparent;
+  border: 1px solid #4a3636;
+  color: #8a7a7a;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.1s;
+}
+.dev-mini-btn:hover {
+  color: #ff8a9a;
+  border-color: #cc1a2e;
+  background: rgba(204,26,46,0.1);
+}
+
+.dev-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.dev-group {
+  background: rgba(255,255,255,0.022);
+  border: 1px solid #2a2020;
+  border-radius: 5px;
+  padding: 6px 8px 5px;
+}
+.dev-group-label {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 1.3px;
+  color: #9a8888;
+  margin-bottom: 4px;
+  padding-left: 1px;
+}
+
+.dev-row {
+  display: grid;
+  grid-template-columns: 38px 1fr 62px 20px;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 2px;
+  padding: 1px 0;
+}
+.dev-row:last-child {
+  margin-bottom: 0;
+}
+.dev-row label {
+  font-size: 10.5px;
+  color: #b8a8a8;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+.dev-row input[type="range"] {
+  accent-color: #ff2e44;
+  width: 100%;
+  height: 4px;
+  background: #3a2a2a;
+  border-radius: 2px;
+  cursor: pointer;
+}
+.dev-row input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 13px;
+  height: 13px;
+  background: #ff2e44;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.6);
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+.dev-row input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+  background: #ff4d5e;
+}
+.dev-num {
+  background: #0a0606;
+  border: 1px solid #443333;
+  color: #f0e8e8;
+  font-size: 10.5px;
+  padding: 2px 5px;
+  border-radius: 4px;
+  width: 100%;
+  font-family: ui-monospace, monospace;
+  text-align: right;
+  font-weight: 600;
+}
+.dev-num:focus {
+  border-color: #ff2e44;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255,46,68,0.2);
+}
+.dev-unit {
+  font-size: 9.5px;
+  color: #776666;
+  text-align: right;
+  font-weight: 500;
+}
+
+.dev-tools {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 8px;
+  border-top: 1px solid #2f2525;
+  margin-top: 3px;
+}
+.dev-check {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10.5px;
+  color: #9a8888;
+  cursor: pointer;
+  user-select: none;
+}
+.dev-check input {
+  accent-color: #ff2e44;
+}
+.dev-status {
+  font-size: 9.5px;
+  color: #665555;
+  font-family: ui-monospace, monospace;
+  letter-spacing: 0.2px;
+}
+
+/* Scrollbar */
+#devPanel ::-webkit-scrollbar { width: 6px; }
+#devPanel ::-webkit-scrollbar-thumb { 
+  background: #4a3636; 
+  border-radius: 3px; 
+}
+#devPanel ::-webkit-scrollbar-thumb:hover { 
+  background: #664444; 
+}
+
+/* Debug outlines */
+.dev-outline-reels { outline: 2px solid #22dd22 !important; outline-offset: -1px; }
+.dev-outline-frame { outline: 2px solid #ffcc22 !important; outline-offset: -1px; }
+.dev-outline-girl  { outline: 2px solid #4488ff !important; outline-offset: -1px; }
+
+/* ============================================
+   MOBILE / SMALL SCREEN ADAPTATION
+   Bottom sheet style for phones & tablets
+   ============================================ */
+@media (max-width: 820px) {
+  #devBtn {
+    top: 10px;
+    left: 10px;
+    font-size: 9px;
+    padding: 4px 8px 3px;
+  }
+
+  #devPanel {
+    width: calc(100% - 16px) !important;
+    left: 8px !important;
+    right: 8px !important;
+    top: auto !important;
+    bottom: 8px !important;
+    max-height: 68vh;
+    border-radius: 14px 14px 0 0;
+    border-bottom: none;
+    background: rgba(15, 10, 10, 0.82);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 -10px 40px rgba(0,0,0,0.75), 0 0 0 1px rgba(204,26,46,0.15);
+  }
+
+  .dev-header {
+    padding: 8px 12px 6px;
+    position: relative;
+  }
+
+  /* Nice mobile drag handle */
+  .dev-mobile-handle {
+    position: absolute;
+    top: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 42px;
+    height: 4px;
+    background: #554444;
+    border-radius: 2px;
+    pointer-events: none;
+  }
+
+  .dev-title {
+    font-size: 11.5px;
+    gap: 6px;
+  }
+  .dev-dot {
+    width: 7px;
+    height: 7px;
+  }
+
+  .dev-body {
+    padding: 8px 11px 10px;
     font-size: 12px;
-    color: #ddd;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-    display: none;
-    flex-direction: column;
-    gap: 8px;
-  }
-  #dev-layout-tool.show { display: flex; }
-
-  #dev-layout-tool h3 {
-    margin: 0 0 4px;
-    font-size: 13px;
-    color: #ff7722;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  #dev-layout-tool .close {
-    margin-left: auto;
-    background: none;
-    border: none;
-    color: #888;
-    font-size: 16px;
-    cursor: pointer;
-    line-height: 1;
   }
 
-  #dev-layout-tool select,
-  #dev-layout-tool input[type="text"] {
-    width: 100%;
-    background: #111;
-    border: 1px solid #333;
-    color: #fff;
-    padding: 5px 6px;
-    border-radius: 4px;
+  .dev-section {
+    margin-bottom: 9px;
+    padding: 7px 8px 8px;
+    border-radius: 6px;
+  }
+
+  .dev-section-header {
+    font-size: 10px;
+    margin-bottom: 5px;
+    padding-bottom: 4px;
+  }
+
+  .dev-row {
+    grid-template-columns: 36px 1fr 64px 18px;
+    gap: 5px;
+    margin-bottom: 1px;
+  }
+  .dev-row label {
     font-size: 11px;
   }
 
-  .dev-slider-row {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .dev-slider-row label {
-    width: 38px;
-    font-size: 10px;
-    color: #aaa;
-    flex-shrink: 0;
-  }
-  .dev-slider-row input[type="range"] {
-    flex: 1;
-  }
-  .dev-slider-row .val {
-    width: 42px;
-    text-align: right;
-    font-size: 10px;
-    color: #ff7722;
-    font-family: monospace;
+  .dev-num {
+    font-size: 11.5px;
+    padding: 3px 5px;
   }
 
-  #dev-layout-tool .buttons {
-    display: flex;
-    gap: 6px;
-    margin-top: 4px;
+  .dev-group {
+    padding: 5px 6px 4px;
   }
-  #dev-layout-tool button {
-    flex: 1;
-    background: #222;
-    border: 1px solid #444;
-    color: #ccc;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 10px;
-    cursor: pointer;
-  }
-  #dev-layout-tool button:hover {
-    background: #333;
-    border-color: #ff7722;
-  }
-  #dev-layout-tool .hint {
+
+  .dev-group-label {
     font-size: 9px;
-    color: #666;
+    margin-bottom: 3px;
+  }
+
+  .dev-tools {
+    padding-top: 6px;
     margin-top: 2px;
   }
-
-  /* Highlight for picked draggable element */
-  .dev-picked-for-drag {
-    outline: 3px solid #ff7722 !important;
-    outline-offset: 0px !important;
-    box-shadow: 0 0 0 8px rgba(255, 119, 34, 0.35) !important;
-    z-index: 99999 !important;
+  .dev-check {
+    font-size: 11px;
   }
+  .dev-status {
+    font-size: 10px;
+  }
+
+  /* Hide desktop-only drag hint on mobile */
+  .dev-header {
+    cursor: default !important;
+  }
+}
+
+/* Desktop: completely hide the mobile bottom sheet handle */
+@media (min-width: 821px) {
+  .dev-mobile-handle {
+    display: none !important;
+  }
+}
 </style>
 
-<div id="dev-layout-tool">
-  <h3>
-    DEV LAYOUT
-    <button class="close" onclick="document.getElementById('dev-layout-tool').classList.remove('show')">×</button>
-  </h3>
-
-  <select id="dev-target">
-    <option value="">-- Select element --</option>
-    <option value=".max-character">Max Character (side guy)</option>
-    <option value="#winDisplay">Win Display</option>
-    <option value="#inlineControls">Bottom HUD / Controls</option>
-    <option value="#reels">Reels Container</option>
-    <option value=".stage">Whole Stage</option>
-    <option value="#bgImg">Background Image (girl)</option>
-    <option value="#maxSprite">Max Sprite (inside character)</option>
-    <option value=".champ-mult">Championship Multiplier</option>
-    <option value="#winLayer">Win Layer (above reels)</option>
-    <option value="[class*='spin'],[id*='spin']">Spin Button (main)</option>
-  </select>
-
-  <input type="text" id="dev-custom-selector" placeholder="Or type any CSS selector (e.g. .my-class)">
-
-  <div class="dev-slider-row">
-    <label>X</label>
-    <input type="range" id="dev-x" min="-600" max="600" step="1" value="0">
-    <input type="number" id="dev-x-num" step="1" style="width:58px;background:#111;border:1px solid #333;color:#fff;padding:2px 4px;border-radius:3px;font-size:11px;">
-  </div>
-  <div class="dev-slider-row">
-    <label>Y</label>
-    <input type="range" id="dev-y" min="-400" max="400" step="1" value="0">
-    <input type="number" id="dev-y-num" step="1" style="width:58px;background:#111;border:1px solid #333;color:#fff;padding:2px 4px;border-radius:3px;font-size:11px;">
-  </div>
-  <div class="dev-slider-row">
-    <label>Scale</label>
-    <input type="range" id="dev-scale" min="0.2" max="3" step="0.01" value="1">
-    <input type="number" id="dev-scale-num" step="0.01" style="width:58px;background:#111;border:1px solid #333;color:#fff;padding:2px 4px;border-radius:3px;font-size:11px;">
-  </div>
-  <div class="dev-slider-row">
-    <label>Rot</label>
-    <input type="range" id="dev-rot" min="-90" max="90" step="1" value="0">
-    <input type="number" id="dev-rot-num" step="1" style="width:58px;background:#111;border:1px solid #333;color:#fff;padding:2px 4px;border-radius:3px;font-size:11px;">
-  </div>
-
-  <!-- Independent Width & Height -->
-  <div style="border-top:1px solid #333;margin:6px 0 2px;padding-top:6px;font-size:10px;color:#ff7722;">Independent Size</div>
-  <div class="dev-slider-row">
-    <label>W</label>
-    <input type="range" id="dev-w" min="0.2" max="4" step="0.01" value="1">
-    <input type="number" id="dev-w-num" step="0.01" style="width:58px;background:#111;border:1px solid #333;color:#fff;padding:2px 4px;border-radius:3px;font-size:11px;">
-  </div>
-  <div class="dev-slider-row">
-    <label>H</label>
-    <input type="range" id="dev-h" min="0.2" max="4" step="0.01" value="1">
-    <input type="number" id="dev-h-num" step="0.01" style="width:58px;background:#111;border:1px solid #333;color:#fff;padding:2px 4px;border-radius:3px;font-size:11px;">
-  </div>
-
-  <div class="buttons">
-    <button onclick="devApplyTransform()">Apply</button>
-    <button onclick="devResetCurrent()">Reset</button>
-    <button onclick="devLogCSS()">Log CSS</button>
-  </div>
-  <div class="buttons">
-    <button onclick="devClearAllTweaks()">Clear All Tweaks</button>
-  </div>
-
-  <!-- Selected Element Controls (appears when you Ctrl+Click something) -->
-  <div id="dev-selected-box" style="display:none; margin-top:8px; padding:8px; background:#2a1a00; border:2px solid #ff7722; border-radius:8px;">
-    <div style="font-size:11px; color:#ffaa22; font-weight:700; margin-bottom:6px;">
-      SELECTED: <span id="dev-selected-name" style="color:#fff;">—</span>
-    </div>
-
-    <!-- Dedicated X/Y sliders for the highlighted element -->
-    <div style="display:flex; flex-direction:column; gap:6px;">
-      <div style="display:flex; align-items:center; gap:6px;">
-        <span style="width:18px; font-size:10px; color:#ccc;">X</span>
-        <input type="range" id="dev-sel-x" min="-800" max="800" step="1" value="0" style="flex:1;">
-        <input type="number" id="dev-sel-x-num" style="width:60px; background:#111; border:1px solid #444; color:#fff; padding:2px 4px; font-size:11px;">
-      </div>
-      <div style="display:flex; align-items:center; gap:6px;">
-        <span style="width:18px; font-size:10px; color:#ccc;">Y</span>
-        <input type="range" id="dev-sel-y" min="-600" max="600" step="1" value="0" style="flex:1;">
-        <input type="number" id="dev-sel-y-num" style="width:60px; background:#111; border:1px solid #444; color:#fff; padding:2px 4px; font-size:11px;">
-      </div>
-    </div>
-
-    <div style="margin-top:8px; display:flex; gap:6px;">
-      <button id="dev-delete-btn" style="flex:1; background:#5c1a1a; border:1px solid #aa3333; color:#ffaaaa; font-size:10px; padding:4px;">
-        🗑️ Delete This Element
-      </button>
-      <button id="dev-restore-btn" style="flex:1; background:#1a3a1a; border:1px solid #33aa33; color:#aaffaa; font-size:10px; padding:4px;">
-        Restore Last Deleted
-      </button>
-    </div>
-  </div>
-
-
-
-  <div class="hint">Press <b>D</b> to toggle • Changes are live but temporary</div>
-</div>
-
 <script>
-(function() {
-  'use strict';
 
-  const tool = document.getElementById('dev-layout-tool');
-  const originalTransforms = new Map();
 
-  // === Helper: get the currently targeted element ===
-  function getTargetElement() {
-    const select = document.getElementById('dev-target');
-    const custom = document.getElementById('dev-custom-selector').value.trim();
-    const selector = custom || select.value;
-    if (!selector) return null;
+  const els = {
+    exportBtn: document.getElementById('devExportBtn'),
+    resetAll: document.getElementById('devResetAllBtn'),
+    close: document.getElementById('devCloseBtn'),
+    outlines: document.getElementById('devOutlines'),
+    status: document.getElementById('devStatus')
+  };
+
+  // Default values (user's preferred persistent artistic settings)
+  // NOTE: Mobile defaults are kept separate from desktop updates.
+  const defaults = {
+    // MOBILE SETTINGS (exactly as user previously gave and told to save for mobile/JS defaults)
+    // DO NOT OVERWRITE THESE WITH DESKTOP VALUES
+    'r-c-y': 72,
+    'r-c-w': 842,
+    'r-c-h': 439,
+    'r-x': 1,
+    'r-y': 112,
+    'r-w': 348,
+    'r-h': 161,
+    'f-x': -15,
+    'f-y': 1.4,
+    'f-s': 0.91,
+    'g-l': 0,
+    'g-r': 192,
+    'g-t': 0,
+    'g-b': 0,
+    'g-w': 167,
+    'g-h': 320
+  };
+
+  let state = { ...defaults };
+  let touched = new Set();
+
+  // Load from localStorage
+  function loadState() {
     try {
-      return document.querySelector(selector);
-    } catch (e) {
-      console.warn('Bad selector:', selector);
-      return null;
-    }
+      const saved = localStorage.getItem('rfc_dev_layout');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        state = { ...defaults, ...parsed };
+        // Mark all loaded values as touched so export includes them
+        Object.keys(parsed).forEach(k => touched.add(k));
+      }
+    } catch (e) {}
   }
 
-  // === Parse current transform values (now includes scaleX / scaleY) ===
-  function parseTransform(el) {
-    const t = el.style.transform || '';
-
-    const xMatch   = t.match(/translateX\(([-\d.]+)px\)/);
-    const yMatch   = t.match(/translateY\(([-\d.]+)px\)/);
-    const sxMatch  = t.match(/scaleX\(([-\d.]+)\)/);
-    const syMatch  = t.match(/scaleY\(([-\d.]+)\)/);
-    const sMatch   = t.match(/(?<!scale[XY])\bscale\(([-\d.]+)\)/); // plain scale (not scaleX/Y)
-    const rMatch   = t.match(/rotate\(([-\d.]+)deg\)/);
-
-    // Prefer explicit scaleX/scaleY. Fall back to uniform scale if present.
-    let w = sxMatch ? parseFloat(sxMatch[1]) : (sMatch ? parseFloat(sMatch[1]) : 1);
-    let h = syMatch ? parseFloat(syMatch[1]) : (sMatch ? parseFloat(sMatch[1]) : 1);
-
-    return {
-      x: xMatch ? parseFloat(xMatch[1]) : 0,
-      y: yMatch ? parseFloat(yMatch[1]) : 0,
-      w: w,
-      h: h,
-      rot: rMatch ? parseFloat(rMatch[1]) : 0
-    };
+  function saveState() {
+    try {
+      localStorage.setItem('rfc_dev_layout', JSON.stringify(state));
+    } catch (e) {}
   }
 
-  // === Save original transform if we haven't yet ===
-  function ensureOriginalSaved(el) {
-    if (el && !originalTransforms.has(el)) {
-      originalTransforms.set(el, el.style.transform || '');
-    }
-  }
+  // Apply all current values to DOM
+  // Only apply vars/styles for controls the user has actually touched.
+  // This preserves the original artistic CSS values (e.g. the -3px top on reels-container).
+  function applyAll() {
+    const root = document.documentElement;
 
-  // === Build and apply the full transform string ===
-  function applyLiveTransform(el) {
-    if (!el) return;
+    // === REELS CONTAINER ===
+    if (touched.has('r-c-y')) root.style.setProperty('--dev-reels-container-y', state['r-c-y'] + 'px');
+    if (touched.has('r-c-w')) root.style.setProperty('--dev-reels-container-w', state['r-c-w'] + 'px');
+    if (touched.has('r-c-h')) root.style.setProperty('--dev-reels-container-h', state['r-c-h'] + 'px');
 
-    const x   = document.getElementById('dev-x').value;
-    const y   = document.getElementById('dev-y').value;
-    const w   = document.getElementById('dev-w').value;
-    const h   = document.getElementById('dev-h').value;
-    const rot = document.getElementById('dev-rot').value;
+    // === INNER REELS ===
+    if (touched.has('r-x')) root.style.setProperty('--dev-reels-offset-x', state['r-x'] + 'px');
+    if (touched.has('r-y')) root.style.setProperty('--dev-reels-y', state['r-y'] + 'px');
+    if (touched.has('r-w') && state['r-w']) root.style.setProperty('--dev-reels-w', state['r-w'] + 'px');
+    if (touched.has('r-h') && state['r-h']) root.style.setProperty('--dev-reels-h', state['r-h'] + 'px');
 
-    let t = `translateX(${x}px) translateY(${y}px)`;
+    // === REEL FRAME (#reel-frame-ov) ===
+    const frame = document.getElementById('reel-frame-ov');
+    if (frame && (touched.has('f-x') || touched.has('f-y') || touched.has('f-s'))) {
+      const x = touched.has('f-x') ? state['f-x'] : -2;
+      const y = touched.has('f-y') ? state['f-y'] : -4;
+      const scale = touched.has('f-s') ? state['f-s'] : 1;
 
-    // Independent width/height via scaleX / scaleY
-    const wVal = parseFloat(w);
-    const hVal = parseFloat(h);
-    if (wVal !== 1 || hVal !== 1) {
-      t += ` scaleX(${wVal}) scaleY(${hVal})`;
+      // Update CSS variables so both desktop and mobile rules react (fixes size/scale not working on mobile)
+      root.style.setProperty('--dev-reel-frame-x', x + '%');
+      root.style.setProperty('--dev-reel-frame-y', y + '%');
+      root.style.setProperty('--dev-reel-frame-scale', scale);
+
+      frame.style.left = x + '%';
+      frame.style.right = x + '%';
+      frame.style.top = y + '%';
+      frame.style.bottom = y + '%';
+      frame.style.transform = scale !== 1 ? `scale(${scale})` : '';
+      frame.style.transformOrigin = 'center';
     }
 
-    if (parseFloat(rot) !== 0) t += ` rotate(${rot}deg)`;
+    // === GIRL (max-character) ===
+    const girl = document.getElementById('maxCharacter');
+    if (girl) {
+      const l = state['g-l'];
+      const r = state['g-r'];
+      const t = state['g-t'];
+      const b = state['g-b'];
+      const w = state['g-w'];
+      const h = state['g-h'];
 
-    el.style.transform = t;
+      // Only clear/override if the user touched that axis.
+      // We now allow explicit 0 values for full-range positioning.
+      // girl position controlled by CSS vars only — inline style preserved
+
+      if (touched.has('g-w') && w) {
+        girl.style.width = w + 'px';
+        root.style.setProperty('--dev-max-w', w + 'px');
+      }
+      if (touched.has('g-h') && h) {
+        girl.style.height = h + 'px';
+        root.style.setProperty('--dev-max-h', h + 'px');
+      }
+    }
+
+    updateOutlines();
   }
 
-  // === Load current values of the selected element into ALL controls ===
-  function loadTargetIntoControls() {
-    const el = getTargetElement();
-    if (!el) return;
+  function updateOutlines() {
+    const frame = document.getElementById('reel-frame-ov');
+    const reelsContainer = document.querySelector('.reels-container');
+    const girl = document.getElementById('maxCharacter');
+    const enabled = els.outlines && els.outlines.checked;
 
-    ensureOriginalSaved(el);
-
-    const vals = parseTransform(el);
-
-    // Update ranges
-    document.getElementById('dev-x').value     = vals.x;
-    document.getElementById('dev-y').value     = vals.y;
-    document.getElementById('dev-w').value     = vals.w;
-    document.getElementById('dev-h').value     = vals.h;
-    document.getElementById('dev-rot').value   = vals.rot;
-
-    // Update number inputs
-    document.getElementById('dev-x-num').value     = vals.x;
-    document.getElementById('dev-y-num').value     = vals.y;
-    document.getElementById('dev-w-num').value     = vals.w.toFixed(2);
-    document.getElementById('dev-h-num').value     = vals.h.toFixed(2);
-    document.getElementById('dev-rot-num').value   = vals.rot;
+    if (reelsContainer) reelsContainer.classList.toggle('dev-outline-reels', enabled);
+    if (frame) frame.classList.toggle('dev-outline-frame', enabled);
+    if (girl) girl.classList.toggle('dev-outline-girl', enabled);
   }
 
-  // === Sync a single control (range ↔ number) and apply live ===
-  function syncAndApply(changedId) {
-    const el = getTargetElement();
-    if (!el) return;
-
-    const isNum = changedId.includes('-num');
-    const base = changedId.replace('-num', '');
-
-    const range = document.getElementById(base);
-    const num   = document.getElementById(base + '-num');
-
+  // Sync a single control pair (range + num)
+  function wireControl(prefix, key, {min, max, step = 1}) {
+    const range = document.getElementById(prefix + '-range');
+    const num = document.getElementById(prefix + '-num');
     if (!range || !num) return;
 
-    // Keep them in sync
-    if (isNum) {
-      range.value = num.value;
-    } else {
-      const isFloat = (base === 'dev-w' || base === 'dev-h' || base === 'dev-scale');
-      num.value = isFloat ? parseFloat(range.value).toFixed(2) : range.value;
+    // Set initial
+    range.value = state[key];
+    num.value = state[key];
+
+    function update(val, fromUser = true) {
+      val = parseFloat(val);
+      if (isNaN(val)) return;
+      // clamp
+      if (min != null) val = Math.max(min, val);
+      if (max != null) val = Math.min(max, val);
+
+      state[key] = val;
+      touched.add(key);
+
+      range.value = val;
+      num.value = val;
+
+      applyAll();
+      saveState();
+      if (fromUser) els.status.textContent = 'Updated • ' + key;
     }
 
-    applyLiveTransform(el);
+    range.addEventListener('input', e => update(e.target.value));
+    num.addEventListener('input', e => update(e.target.value));
+    num.addEventListener('change', e => update(e.target.value));
   }
 
-  // === RESET (now handles W/H too) ===
-  function devResetCurrent() {
-    const el = getTargetElement();
-    if (!el) {
-      alert('No element selected');
-      return;
-    }
+  function resetGroup(group) {
+    const keys = {
+      'reels': ['r-c-y','r-c-w','r-c-h','r-x','r-y','r-w','r-h'],
+      'frame': ['f-x','f-y','f-s'],
+      'girl':  ['g-l','g-r','g-t','g-b','g-w','g-h']
+    }[group] || [];
 
-    const original = originalTransforms.get(el);
-    if (original !== undefined) {
-      el.style.transform = original;
-    } else {
-      el.style.transform = '';
-    }
-
-    loadTargetIntoControls();
-  }
-
-  function devLogCSS() {
-    const el = getTargetElement();
-    if (!el) return;
-
-    const sel = document.getElementById('dev-custom-selector').value.trim() ||
-                document.getElementById('dev-target').value ||
-                (el.id ? '#' + el.id : '.' + el.className.split(' ')[0]);
-
-    console.log(`\n/* === Dev tweak for ${sel} === */`);
-    console.log(`${sel} { transform: ${el.style.transform || 'none'}; }`);
-  }
-
-  function devClearAllTweaks() {
-    originalTransforms.forEach((orig, el) => {
-      el.style.transform = orig;
-    });
-    originalTransforms.clear();
-    loadTargetIntoControls();
-    console.log('%c[Dev] All tweaks cleared', 'color:#0f0');
-  }
-
-  // === Attach live listeners to all new + old controls ===
-  function attachControls() {
-    const ids = [
-      'dev-x', 'dev-y', 'dev-w', 'dev-h', 'dev-rot',
-      'dev-x-num', 'dev-y-num', 'dev-w-num', 'dev-h-num', 'dev-rot-num'
-    ];
-
-    ids.forEach(id => {
-      const input = document.getElementById(id);
-      if (!input) return;
-
-      input.addEventListener('input', () => syncAndApply(id));
-      input.addEventListener('change', () => syncAndApply(id));
+    keys.forEach(k => {
+      state[k] = defaults[k];
+      touched.delete(k);
     });
 
-    // Reload controls when user picks a different target
-    document.getElementById('dev-target').addEventListener('change', loadTargetIntoControls);
-    document.getElementById('dev-custom-selector').addEventListener('input', loadTargetIntoControls);
+    // Refresh UI inputs
+    syncAllInputs();
+    applyAll();
+    saveState();
+    els.status.textContent = group.toUpperCase() + ' reset';
   }
 
-  function toggleDevTool() {
-    tool.classList.toggle('show');
-    if (tool.classList.contains('show')) {
-      setTimeout(loadTargetIntoControls, 40);
-    }
+  function syncAllInputs() {
+    // Reels container
+    syncOne('r-c-y', 'r-c-y');
+    syncOne('r-c-w', 'r-c-w');
+    syncOne('r-c-h', 'r-c-h');
+    // Inner reels
+    syncOne('r-x', 'r-x');
+    syncOne('r-y', 'r-y');
+    syncOne('r-w', 'r-w');
+    syncOne('r-h', 'r-h');
+    // Frame
+    syncOne('f-x', 'f-x');
+    syncOne('f-y', 'f-y');
+    syncOne('f-s', 'f-s');
+    // Girl
+    syncOne('g-l', 'g-l');
+    syncOne('g-r', 'g-r');
+    syncOne('g-t', 'g-t');
+    syncOne('g-b', 'g-b');
+    syncOne('g-w', 'g-w');
+    syncOne('g-h', 'g-h');
   }
 
-  // Keyboard shortcuts
-  document.addEventListener('keydown', (e) => {
-    if (e.key.toLowerCase() === 'd' && !e.target.matches('input, textarea, select')) {
-      e.preventDefault();
-      toggleDevTool();
-    }
-    if (e.key === 'Escape') {
-      if (pickedDragElement) {
-        clearPickedElement();       // Clear picked draggable element
-      } else if (tool.classList.contains('show')) {
-        tool.classList.remove('show');
+  function syncOne(prefix, key) {
+    const r = document.getElementById(prefix + '-range');
+    const n = document.getElementById(prefix + '-num');
+    if (r) r.value = state[key];
+    if (n) n.value = state[key];
+  }
+
+  function resetAll() {
+    state = { ...defaults };
+    touched.clear();
+    syncAllInputs();
+    applyAll();
+    saveState();
+    els.status.textContent = 'Everything reset to defaults';
+  }
+
+  function exportChanges() {
+    const lines = [];
+    const varMap = {
+      'r-c-y': '--dev-reels-container-y',
+      'r-c-w': '--dev-reels-container-w',
+      'r-c-h': '--dev-reels-container-h',
+      'r-x': '--dev-reels-offset-x',
+      'r-y': '--dev-reels-y',
+      'r-w': '--dev-reels-w',
+      'r-h': '--dev-reels-h',
+      'f-x': '--dev-reel-frame-x',
+      'f-y': '--dev-reel-frame-y',
+      'f-s': '--dev-reel-frame-scale',
+      'g-l': '--dev-max-x',
+      'g-r': '--dev-max-right',
+      'g-t': '--dev-max-y',
+      'g-b': '--dev-max-bottom',
+      'g-w': '--dev-max-w',
+      'g-h': '--dev-max-h'
+    };
+
+    let hasAny = false;
+    Object.keys(state).forEach(k => {
+      const v = state[k];
+      const d = defaults[k];
+      if (touched.has(k) || v !== d) {
+        hasAny = true;
+        const cssVar = varMap[k] || '--dev-' + k;
+        const unit = (k.startsWith('f-') && k !== 'f-s') ? '%' : (k === 'f-s' ? '' : 'px');
+        lines.push(`  ${cssVar}: ${v}${unit};`);
       }
+    });
+
+    const css = hasAny
+      ? `:root {\n${lines.join('\n')}\n}`
+      : '/* No custom values — everything is at default */';
+
+    // Always log to console (most reliable way for devs)
+    console.log('%c[DEV LAYOUT] Exported CSS — copy from here if needed:', 'color:#cc1a2e; font-weight:600', '\n' + css);
+    console.log('%c[DEV LAYOUT] Full state:', 'color:#888', state);
+
+    // === Robust copy with multiple fallbacks ===
+    const doCopy = async () => {
+      // 1. Modern Clipboard API (best)
+      try {
+        await navigator.clipboard.writeText(css);
+        els.status.textContent = '✓ Copied to clipboard!';
+        setTimeout(() => {
+          els.status.textContent = window.innerWidth <= 820 
+            ? 'Changes saved • Press D or tap DEV' 
+            : 'Changes auto-saved • Press D to toggle';
+        }, 2200);
+        return true;
+      } catch (e) {
+        // continue to next fallback
+      }
+
+      // 2. Old-school execCommand fallback (works in more restricted contexts)
+      try {
+        const textarea = document.createElement('textarea');
+        textarea.value = css;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        textarea.style.left = '-9999px';
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+
+        const successful = document.execCommand('copy');
+        document.body.removeChild(textarea);
+
+        if (successful) {
+          els.status.textContent = '✓ Copied!';
+          setTimeout(() => {
+            els.status.textContent = window.innerWidth <= 820 
+              ? 'Changes saved • Press D or tap DEV' 
+              : 'Changes auto-saved • Press D to toggle';
+          }, 2200);
+          return true;
+        }
+      } catch (e) {}
+
+      // 3. Last resort: show the CSS in status + tell user to copy from console
+      els.status.innerHTML = 'Copy failed — CSS is in <strong>Console</strong> (F12)';
+      setTimeout(() => {
+        els.status.textContent = 'Press D to close panel';
+      }, 4500);
+
+      return false;
+    };
+
+    doCopy();
+  }
+
+  // Wire all controls
+  function initControls() {
+    // Reels container
+    wireControl('r-c-y', 'r-c-y', {min: -200, max: 200});
+    wireControl('r-c-w', 'r-c-w', {min: 100, max: 1800});
+    wireControl('r-c-h', 'r-c-h', {min: 80, max: 1200});
+
+    // Inner reels
+    wireControl('r-x', 'r-x', {min: -300, max: 300});
+    wireControl('r-y', 'r-y', {min: -100, max: 400});
+    wireControl('r-w', 'r-w', {min: 60, max: 1600});
+    wireControl('r-h', 'r-h', {min: 50, max: 1000});
+
+    // Frame
+    wireControl('f-x', 'f-x', {min: -15, max: 15, step: 0.1});
+    wireControl('f-y', 'f-y', {min: -15, max: 15, step: 0.1});
+    wireControl('f-s', 'f-s', {min: 0.6, max: 1.6, step: 0.01});
+
+    // Girl - very wide ranges for full-screen motion
+    wireControl('g-l', 'g-l', {min: -1200, max: 2000});
+    wireControl('g-r', 'g-r', {min: -1200, max: 2000});
+    wireControl('g-t', 'g-t', {min: -1200, max: 2000});
+    wireControl('g-b', 'g-b', {min: -1200, max: 2000});
+    wireControl('g-w', 'g-w', {min: 80, max: 900});
+    wireControl('g-h', 'g-h', {min: 120, max: 1400});
+
+    // Mini reset buttons
+    document.querySelectorAll('.dev-mini-btn').forEach(b => {
+      b.addEventListener('click', () => {
+        const group = b.getAttribute('data-reset');
+        resetGroup(group);
+      });
+    });
+
+    // Outlines
+    if (els.outlines) {
+      els.outlines.addEventListener('change', () => {
+        updateOutlines();
+        saveState();
+      });
+    }
+
+    // Top buttons
+    els.exportBtn.addEventListener('click', exportChanges);
+    els.resetAll.addEventListener('click', resetAll);
+    els.close.addEventListener('click', () => panel.classList.add('dev-hidden'));
+  }
+
+  // Toggle panel
+  function togglePanel(show) {
+    if (typeof show === 'boolean') {
+      panel.classList.toggle('dev-hidden', !show);
+    } else {
+      panel.classList.toggle('dev-hidden');
+    }
+    if (!panel.classList.contains('dev-hidden')) {
+      els.status.textContent = 'Live editing • Auto-saved';
+    }
+  }
+
+  // Keyboard: D toggles
+  document.addEventListener('keydown', (e) => {
+    if (e.key.toLowerCase() === 'd' && document.activeElement.tagName === 'BODY') {
+      e.preventDefault();
+      togglePanel();
+    }
+    if (e.key === '?' && panel.classList.contains('dev-hidden') === false) {
+      e.preventDefault();
+      exportChanges();
     }
   });
 
-  // === CTRL + CLICK DRAG PICKER ===
-  let pickedDragElement = null;
-  let dragStartMouseX = 0, dragStartMouseY = 0;
-  let dragStartX = 0, dragStartY = 0;
-  let isCurrentlyDragging = false;
-
-  function getStageScaleForDrag() {
-    const stage = document.querySelector('.stage');
-    if (!stage) return 1;
-    const t = stage.style.transform || '';
-    const m = t.match(/scale\(([-\d.]+)\)/);
-    return m ? parseFloat(m[1]) : 1;
-  }
-
-  function clearPickedHighlight() {
-    if (pickedDragElement) {
-      pickedDragElement.classList.remove('dev-picked-for-drag');
-    }
-  }
-
-  function setPickedElement(el) {
-    clearPickedHighlight();
-
-    pickedDragElement = el;
-
-    const box = document.getElementById('dev-selected-box');
-    const nameEl = document.getElementById('dev-selected-name');
-
-    if (el) {
-      el.classList.add('dev-picked-for-drag');
-
-      // Show the dedicated controls box
-      if (box) box.style.display = 'block';
-
-      // Show a friendly name
-      let name = el.id ? `#${el.id}` : '';
-      if (el.className) {
-        const cls = el.className.split(' ')[0];
-        name += name ? ` .${cls}` : `.${cls}`;
-      }
-      if (nameEl) nameEl.textContent = name || el.tagName.toLowerCase();
-
-      // Load current position into the dedicated X/Y sliders
-      loadSelectedPositionSliders();
-
-      console.log('[Dev Drag] Picked element:', el);
-    } else {
-      if (box) box.style.display = 'none';
-      if (nameEl) nameEl.textContent = '—';
-    }
-  }
-
-  function findGoodDraggableElement(target) {
-    if (!target) return null;
-    if (target.closest('#dev-layout-tool')) return null;
-
-    const stage = document.querySelector('.stage');
-    if (!stage || !stage.contains(target)) return null;
-
-    let current = target;
-
-    // Walk up from the exact clicked element.
-    while (current && current !== stage && stage.contains(current)) {
-
-      // === SPECIAL PRIORITY FOR IMPORTANT GAME ELEMENTS ===
-
-      // 1. The side character (fighter on the right) — always select the outer container
-      if (current.classList.contains('max-character') || current.id === 'maxCharacter') {
-        return current;
-      }
-      if (current.id === 'maxSprite' || current.classList.contains('max-sprite')) {
-        const parentChar = current.closest('.max-character') || current.closest('#maxCharacter');
-        if (parentChar) return parentChar;
-      }
-
-      // 2. Reels area — prefer the main reels container
-      if (current.id === 'reels') {
-        return current;
-      }
-      if (current.classList.contains('reels-wrap') || current.classList.contains('reels-container')) {
-        const reels = current.querySelector('#reels');
-        return reels || current;
-      }
-
-      // 3. Background girl (the ring girl baked into the right side of the bg image)
-      if (current.id === 'bgImg' || current.classList.contains('bg')) {
-        return current;
-      }
-
-      // 4. Main Spin Button (very common request)
-      const ccls = (current.className || '').toLowerCase();
-      if (ccls.includes('spin') || ccls.includes('medallion') || current.id === 'spinBtn' || current.id === 'spin-button') {
-        return current;
-      }
-
-      // === Balance / Bet boxes ===
-      const cls = (current.className || '').toLowerCase();
-      const isValueText = ['SPAN', 'DIV', 'P'].includes(current.tagName) &&
-                          (cls.includes('value') || cls.includes('amount') || cls.includes('balance') ||
-                           cls.includes('bet') || cls.includes('text') || cls.includes('number'));
-
-      if (isValueText) {
-        const parent = current.parentElement;
-        if (parent && stage.contains(parent)) {
-          const pCls = (parent.className || '').toLowerCase();
-          if (pCls.includes('box') || pCls.includes('container') || pCls.includes('hud') ||
-              pCls.includes('balance') || pCls.includes('bet') || pCls.includes('info') ||
-              pCls.includes('display') || pCls.includes('panel')) {
-            return parent;
-          }
-        }
-      }
-
-      // === Normal priority rules ===
-
-      // If we clicked directly on a button / svg / img / input → use it
-      if (current === target) {
-        const tag = current.tagName;
-        if (['BUTTON', 'SVG', 'IMG', 'INPUT', 'SELECT'].includes(tag)) {
-          return current;
-        }
-        if (current.children.length === 0 && current.textContent && current.textContent.trim().length > 0) {
-          return current;
-        }
-      }
-
-      // Has its own ID → very good
-      if (current.id) {
-        return current;
-      }
-
-      // Already has our dev transform
-      if (current.style && current.style.transform && current.style.transform.includes('translateX')) {
-        return current;
-      }
-
-      // Has a useful class
-      if (current.className && typeof current.className === 'string' && current.className.trim().length > 2) {
-        if (['BUTTON', 'SVG', 'IMG', 'SPAN'].includes(current.tagName)) {
-          return current;
-        }
-      }
-
-      // Never let the big control bar swallow a button or spin element
-      if (current.id === 'inlineControls') {
-        // Look for a better child (button or spin) from the original click
-        const better = target.closest('button, [class*="spin"], [id*="spin"]');
-        if (better) return better;
-        return current; // only if nothing better
-      }
-
-      current = current.parentElement;
-    }
-
-    // Last resort
-    return target;
-  }
-
-  // Simple direct Ctrl + Click picker (reverted to cleaner behavior)
-  function onPotentialCtrlDragStart(e) {
-    if (!e.ctrlKey) return;
-
-    const hit = document.elementFromPoint(e.clientX, e.clientY);
-    const target = findGoodDraggableElement(hit);
-
-    if (!target) {
-      console.log('[Dev Drag] Ctrl+Click: No suitable element found');
-      return;
-    }
-
-    // Select it
-    setPickedElement(target);
-
-    // Load into the main selector for visibility
-    const custom = document.getElementById('dev-custom-selector');
-    if (target.id) {
-      custom.value = '#' + target.id;
-    } else if (target.className) {
-      custom.value = '.' + target.className.split(' ')[0];
-    } else {
-      custom.value = '';
-    }
-
-    loadTargetIntoControls();
-
-    // Immediately start drag session
-    const vals = parseTransform(target);
-    dragStartX = vals.x;
-    dragStartY = vals.y;
-    dragStartMouseX = e.clientX;
-    dragStartMouseY = e.clientY;
-    isCurrentlyDragging = true;
-
-    document.body.style.cursor = 'grabbing';
-    e.preventDefault();
-    e.stopImmediatePropagation();
-  }
-
-  function onDragMove(e) {
-    if (!isCurrentlyDragging || !pickedDragElement) return;
-
-    const scale = getStageScaleForDrag();
-    const dx = (e.clientX - dragStartMouseX) / scale;
-    const dy = (e.clientY - dragStartMouseY) / scale;
-
-    const newX = dragStartX + dx;
-    const newY = dragStartY + dy;
-
-    // Update sliders live (main panel + selected box)
-    document.getElementById('dev-x').value = newX;
-    document.getElementById('dev-y').value = newY;
-    document.getElementById('dev-x-num').value = Math.round(newX);
-    document.getElementById('dev-y-num').value = Math.round(newY);
-
-    const sx = document.getElementById('dev-sel-x');
-    const sy = document.getElementById('dev-sel-y');
-    const sxn = document.getElementById('dev-sel-x-num');
-    const syn = document.getElementById('dev-sel-y-num');
-    if (sx) sx.value = newX;
-    if (sy) sy.value = newY;
-    if (sxn) sxn.value = Math.round(newX);
-    if (syn) syn.value = Math.round(newY);
-
-    // Apply transform
-    const w = document.getElementById('dev-w').value;
-    const h = document.getElementById('dev-h').value;
-    const rot = document.getElementById('dev-rot').value;
-
-    let t = `translateX(${newX}px) translateY(${newY}px)`;
-    if (parseFloat(w) !== 1 || parseFloat(h) !== 1) t += ` scaleX(${w}) scaleY(${h})`;
-    if (parseFloat(rot) !== 0) t += ` rotate(${rot}deg)`;
-
-    pickedDragElement.style.transform = t;
-  }
-
-  function onDragEnd() {
-    if (isCurrentlyDragging) {
-      isCurrentlyDragging = false;
-      document.body.style.cursor = pickedDragElement ? 'default' : '';
-
-      if (pickedDragElement) {
-        loadTargetIntoControls();
-        loadSelectedPositionSliders();
-        console.log('[Dev Drag] Finished dragging', pickedDragElement);
-      }
-    }
-  }
-
-  // Deselect with Escape
-  function clearPickedElement() {
-    clearPickedHighlight();
-    pickedDragElement = null;
-    isCurrentlyDragging = false;
-    document.body.style.cursor = '';
-
-    const box = document.getElementById('dev-selected-box');
-    if (box) box.style.display = 'none';
-
-    console.log('[Dev Drag] Cleared picked element');
-  }
-
-  // Dedicated X/Y sliders for the currently highlighted element
-  let deletedElements = []; // stack for restore
-
-  function loadSelectedPositionSliders() {
-    if (!pickedDragElement) return;
-
-    const vals = parseTransform(pickedDragElement);
-
-    const xRange = document.getElementById('dev-sel-x');
-    const yRange = document.getElementById('dev-sel-y');
-    const xNum   = document.getElementById('dev-sel-x-num');
-    const yNum   = document.getElementById('dev-sel-y-num');
-
-    if (xRange) xRange.value = vals.x;
-    if (yRange) yRange.value = vals.y;
-    if (xNum)   xNum.value = Math.round(vals.x);
-    if (yNum)   yNum.value = Math.round(vals.y);
-  }
-
-  function applySelectedPosition() {
-    if (!pickedDragElement) return;
-
-    const x = document.getElementById('dev-sel-x').value;
-    const y = document.getElementById('dev-sel-y').value;
-
-    const vals = parseTransform(pickedDragElement);
-    const w = vals.w;
-    const h = vals.h;
-    const rot = vals.rot;
-
-    let t = `translateX(${x}px) translateY(${y}px)`;
-    if (w !== 1 || h !== 1) t += ` scaleX(${w}) scaleY(${h})`;
-    if (rot !== 0) t += ` rotate(${rot}deg)`;
-
-    pickedDragElement.style.transform = t;
-
-    // Also sync the main panel sliders
-    document.getElementById('dev-x').value = x;
-    document.getElementById('dev-y').value = y;
-    document.getElementById('dev-x-num').value = x;
-    document.getElementById('dev-y-num').value = y;
-  }
-
-  function deletePickedElement() {
-    if (!pickedDragElement) return;
-
-    const el = pickedDragElement;
-
-    // Save for restore
-    deletedElements.push({
-      element: el,
-      display: el.style.display || '',
-      visibility: el.style.visibility || ''
-    });
-
-    el.style.display = 'none';
-
-    console.log('[Dev] Deleted element:', el);
-
-    // Deselect after delete
-    clearPickedElement();
-  }
-
-  function restoreLastDeleted() {
-    if (deletedElements.length === 0) {
-      alert('No deleted elements to restore');
-      return;
-    }
-
-    const last = deletedElements.pop();
-    if (last.element) {
-      last.element.style.display = last.display || '';
-      last.element.style.visibility = last.visibility || '';
-
-      // Re-pick it so user can adjust
-      setPickedElement(last.element);
-      console.log('[Dev] Restored element:', last.element);
-    }
-  }
-
-  // Global helpers
-  window.devLayout = {
-    show: () => { tool.classList.add('show'); loadTargetIntoControls(); },
-    hide: () => tool.classList.remove('show'),
-    clear: devClearAllTweaks,
-    reset: devResetCurrent,
-    clearPicked: clearPickedElement
-  };
+  // Floating button
+  btn.addEventListener('click', () => togglePanel());
 
   // Boot
-  attachControls();
+  function boot() {
+    loadState();
+    initControls();
+    syncAllInputs();
+    applyAll();
 
-  // === Attach Ctrl+Click + Drag listeners (always active) ===
-  document.addEventListener('mousedown', onPotentialCtrlDragStart, true);
-  document.addEventListener('mousemove', onDragMove, true);
-  document.addEventListener('mouseup', onDragEnd, true);
-
-  // Wire the dedicated selected-element sliders + delete/restore buttons
-  function attachSelectedElementControls() {
-    const ids = ['dev-sel-x', 'dev-sel-y', 'dev-sel-x-num', 'dev-sel-y-num'];
-
-    ids.forEach(id => {
-      const input = document.getElementById(id);
-      if (input) {
-        input.addEventListener('input', applySelectedPosition);
-        input.addEventListener('change', applySelectedPosition);
+    // Show small hint on first interaction
+    setTimeout(() => {
+      if (!localStorage.getItem('rfc_dev_layout_seen')) {
+        btn.style.boxShadow = '0 0 0 3px rgba(204,26,46,0.4)';
+        setTimeout(() => btn.style.boxShadow = '0 2px 8px rgba(0,0,0,0.6)', 2200);
+        localStorage.setItem('rfc_dev_layout_seen', '1');
       }
-    });
+    }, 1200);
 
-    const delBtn = document.getElementById('dev-delete-btn');
-    if (delBtn) delBtn.addEventListener('click', deletePickedElement);
+    // Optional: auto-open if ?dev=1
+    if (new URLSearchParams(location.search).get('dev') === '1') {
+      setTimeout(() => togglePanel(true), 300);
+    }
 
-    const restoreBtn = document.getElementById('dev-restore-btn');
-    if (restoreBtn) restoreBtn.addEventListener('click', restoreLastDeleted);
+    // Make sure outlines reflect saved state on load
+    if (els.outlines) {
+      els.outlines.checked = false; // default off
+    }
+
+    console.log('%c[DEV] Layout panel ready. Press D or click top-left DEV button.', 'color:#664');
+
+    // === Desktop: make panel draggable by header (disabled on mobile) ===
+    (function makeDraggable() {
+      const header = document.querySelector('#devPanel .dev-header');
+      const panelEl = document.getElementById('devPanel');
+      if (!header || !panelEl) return;
+
+      const isMobile = window.innerWidth <= 820;
+
+      if (isMobile) {
+        // Mobile: bottom sheet style — no horizontal drag
+        header.style.cursor = 'default';
+        return;
+      }
+
+      let isDragging = false;
+      let startX = 0, startY = 0;
+      let startRight = 0, startTop = 0;
+
+      header.style.cursor = 'move';
+      header.addEventListener('mousedown', (e) => {
+        if (e.target.tagName === 'BUTTON') return;
+        isDragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
+
+        const rect = panelEl.getBoundingClientRect();
+        startRight = window.innerWidth - rect.right;
+        startTop = rect.top;
+
+        panelEl.style.transition = 'none';
+        document.body.style.userSelect = 'none';
+      });
+
+      document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+
+        const newRight = Math.max(8, startRight - dx);
+        const newTop = Math.max(8, startTop + dy);
+
+        panelEl.style.right = newRight + 'px';
+        panelEl.style.top = newTop + 'px';
+        panelEl.style.left = 'auto';
+      });
+
+      document.addEventListener('mouseup', () => {
+        if (!isDragging) return;
+        isDragging = false;
+        panelEl.style.transition = 'opacity 0.12s ease, transform 0.12s ease';
+        document.body.style.userSelect = '';
+      });
+    })();
   }
 
-  attachSelectedElementControls();
-
-  // ?dev=1 shows a small floating button
-  if (new URLSearchParams(location.search).get('dev') === '1') {
-    const btn = document.createElement('div');
-    btn.textContent = 'DEV';
-    btn.style.cssText = 'position:fixed;top:8px;right:8px;background:#ff7722;color:#111;padding:3px 9px;border-radius:4px;font-size:10px;z-index:999999;cursor:pointer;font-weight:700';
-    btn.onclick = () => {
-      tool.classList.toggle('show');
-      if (tool.classList.contains('show')) loadTargetIntoControls();
-    };
-    document.body.appendChild(btn);
-  }
-
-  console.log('%c[Dev Layout Tool] Ctrl+Click to pick & drag elements is now active. Hold Ctrl and click anything.', 'color:#0f0');
 })();
 </script>
-<!-- ================== END DEV LAYOUT TOOL ================== -->
+
+<!-- ============================================ -->
+<!--   RFC LAYOUT EDITOR v3                       -->
+<!-- ============================================ -->
+<style>
+#rlePanel {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 999999;
+  background: rgba(8, 5, 5, 0.92);
+  border: 1px solid rgba(80, 55, 55, 0.65);
+  border-radius: 8px;
+  padding: 8px 10px 9px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 6px 24px rgba(0,0,0,0.7);
+  font-family: 'Barlow Condensed', system-ui, sans-serif;
+  min-width: 116px;
+  user-select: none;
+  display: none !important; /* Hidden for final submission */
+}
+
+/* Item rows */
+.rle-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 2px 0;
+  cursor: pointer;
+}
+.rle-item-label {
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: #776666;
+  transition: color 0.14s;
+}
+.rle-item.rle-on .rle-item-label {
+  color: #ffeb3b;
+  text-shadow: 0 0 8px rgba(255,235,59,0.3);
+}
+
+/* Pill switch */
+.rle-pill {
+  position: relative;
+  width: 32px;
+  height: 18px;
+  flex-shrink: 0;
+}
+.rle-pill input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.rle-track {
+  position: absolute;
+  inset: 0;
+  background: #1e1414;
+  border: 1px solid #3a2828;
+  border-radius: 9px;
+  transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
+  cursor: pointer;
+}
+.rle-item.rle-on .rle-track {
+  background: #b81828;
+  border-color: #ff3a52;
+  box-shadow: 0 0 7px rgba(204,26,46,0.45);
+}
+.rle-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 10px;
+  height: 10px;
+  background: #554040;
+  border-radius: 50%;
+  transition: left 0.14s, background 0.14s;
+  pointer-events: none;
+}
+.rle-item.rle-on .rle-thumb {
+  left: 17px;
+  background: #fff;
+}
+
+/* Divider */
+.rle-div {
+  height: 1px;
+  background: rgba(70,48,48,0.4);
+  margin: 5px 0 4px;
+}
+
+/* Action buttons */
+.rle-btns {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.rle-btn {
+  background: rgba(25, 17, 17, 0.9);
+  border: 1px solid #3a2626;
+  color: #9a7e7e;
+  font-family: 'Barlow Condensed', system-ui, sans-serif;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  padding: 3px 7px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.1s;
+}
+.rle-btn:hover:not(:disabled) {
+  border-color: #cc1a2e;
+  color: #fff;
+  background: rgba(40,25,25,0.95);
+}
+.rle-btn:disabled { opacity: 0.28; cursor: default; }
+.rle-btn-red {
+  background: rgba(160,24,38,0.85);
+  border-color: #ff3a52;
+  color: #fff;
+  font-weight: 900;
+}
+.rle-btn-red:hover:not(:disabled) { background: rgba(196,32,50,0.95); }
+
+/* Hint bar */
+#rleHint {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 999999;
+  background: rgba(8,6,10,0.96);
+  color: #aaa;
+  font-family: 'Barlow Condensed', system-ui, sans-serif;
+  font-size: 11px;
+  padding: 5px 14px;
+  border-radius: 6px;
+  border: 1px solid rgba(80,60,60,0.4);
+  display: none !important; /* Hidden for final submission */
+  white-space: nowrap;
+  pointer-events: none;
+}
+#rleHint b { color: #ffeb3b; font-weight: 700; }
+
+/* Text modal */
+#rleModal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000000;
+  background: rgba(0,0,0,0.65);
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+#rleModal.show { display: flex; }
+#rleModalInner {
+  background: #0c0808;
+  border: 1px solid #3a2626;
+  border-radius: 10px;
+  padding: 18px;
+  width: 620px;
+  max-width: 92vw;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.85);
+}
+#rleModalInner h3 {
+  margin: 0;
+  font-family: 'Barlow Condensed', system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  color: #ff8a9a;
+}
+#rleModalTxt {
+  min-height: 280px;
+  background: #040202;
+  color: #22dd22;
+  border: 1px solid #1e1414;
+  border-radius: 5px;
+  font-family: ui-monospace, monospace;
+  font-size: 12px;
+  padding: 10px;
+  resize: vertical;
+  outline: none;
+}
+#rleModalTxt:focus { border-color: #cc1a2e; }
+.rle-modal-btns { display: flex; gap: 8px; justify-content: flex-end; }
+
+/* Yellow selection outline */
+.rle-selected {
+  outline: 3px solid #ffeb3b !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 6px rgba(255,235,59,0.1) !important;
+}
+.rle-selected.rle-dragging {
+  outline: 4px solid #ffeb3b !important;
+  outline-offset: 5px !important;
+  box-shadow: 0 0 0 8px rgba(255,235,59,0.18) !important;
+  cursor: move !important;
+}
+.rle-selected.rle-dragging[data-drag-mode="resize"] {
+  cursor: nwse-resize !important;
+}
+</style>
+
+<div id="rlePanel">
+  <!-- Profile Switcher - this is the start of the proper system -->
+  <div style="display:flex; gap:4px; margin-bottom:6px; padding-bottom:6px; border-bottom:1px solid rgba(80,55,55,0.4);">
+    <!-- Dev profile buttons removed for submission -->
+  </div>
+
+  <div class="rle-item" id="rleItemReels" data-type="reels" onclick="rlePick('reels')" style="cursor:pointer">
+    <span class="rle-item-label">REELS</span>
+    <span class="rle-pill"><span class="rle-track"></span><span class="rle-thumb"></span></span>
+  </div>
+  <div class="rle-item" id="rleItemFrame" data-type="frame" onclick="rlePick('frame')" style="cursor:pointer">
+    <span class="rle-item-label">FRAME</span>
+    <span class="rle-pill"><span class="rle-track"></span><span class="rle-thumb"></span></span>
+  </div>
+  <div class="rle-item" id="rleItemGirl" data-type="girl" onclick="rlePick('girl')" style="cursor:pointer">
+    <span class="rle-item-label">GIRL</span>
+    <span class="rle-pill"><span class="rle-track"></span><span class="rle-thumb"></span></span>
+  </div>
+  <div class="rle-div"></div>
+  <div class="rle-btns">
+    <button class="rle-btn" id="rleBtnUndo" disabled onclick="rleUndo()" title="Ctrl+Z">&#x21A9;</button>
+    <button class="rle-btn" id="rleBtnRedo" disabled onclick="rleRedo()" title="Ctrl+Y">&#x21AA;</button>
+    <button class="rle-btn" onclick="rleSave()" title="S">Save</button>
+    <button class="rle-btn rle-btn-red" onclick="rleExport()" title="E">Export</button>
+    <button class="rle-btn" onclick="rleView()" title="V">View</button>
+  </div>
+</div>
+
+<div id="rleHint"><b>↑↓←→</b> Move &nbsp;·&nbsp; <b>Shift+↑↓←→</b> Resize (frame: w/h separate, reels: reel size) &nbsp;·&nbsp; <b>Drag</b> Move &nbsp;·&nbsp; <b>Shift+Drag</b> Resize &nbsp;·&nbsp; <b>Ctrl+Z/Y</b> Undo/Redo &nbsp;·&nbsp; <b>S</b> Save &nbsp;·&nbsp; <b>E</b> Export</div>
+
+<div id="rleModal">
+  <div id="rleModalInner">
+    <h3>RFC Layout Settings — paste into dev-layout-tweaks.css</h3>
+    <textarea id="rleModalTxt" spellcheck="false"></textarea>
+    <div class="rle-modal-btns">
+      <button class="rle-btn" onclick="rleMdCopy()">Copy to Clipboard</button>
+      <button class="rle-btn" onclick="rleMdDown()">Download .txt</button>
+      <button class="rle-btn" onclick="document.getElementById('rleModal').classList.remove('show')">Close</button>
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+(function () {
+  'use strict';
+
+  var sel = null; // 'reels'|'frame'|'girl'
+
+  // Two-stack undo/redo
+  var undoSt = [], redoSt = [], MAX = 50;
+
+  var CSS_VARS = [
+    '--dev-reels-container-y','--dev-reels-container-w','--dev-reels-container-h',
+    '--dev-reels-offset-x','--dev-reels-y','--dev-reels-w','--dev-reels-h',
+    '--dev-reel-frame-x','--dev-reel-frame-y','--dev-reel-frame-tx','--dev-reel-frame-ty','--dev-reel-frame-scale',
+    '--dev-max-x','--dev-max-right','--dev-max-y','--dev-max-bottom',
+    '--dev-max-w','--dev-max-h'
+  ];
+
+  function snap() {
+    var cs = getComputedStyle(document.documentElement), s = {};
+    CSS_VARS.forEach(function(v){ s[v] = cs.getPropertyValue(v).trim(); });
+    return s;
+  }
+  function applySnap(s) {
+    CSS_VARS.forEach(function(v){ if(s[v]!=null) document.documentElement.style.setProperty(v,s[v]); });
+    syncFrameEl();
+  }
+
+  function syncFrameEl() {
+    var el = document.getElementById('reel-frame-ov');
+    if (!el) return;
+    var x = gv('--dev-reel-frame-x');
+    var y = gv('--dev-reel-frame-y');
+    var tx = gv('--dev-reel-frame-tx');
+    var ty = gv('--dev-reel-frame-ty');
+    var sc = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--dev-reel-frame-scale')) || 0.93;
+
+    // Safety clamps — prevents the frame from disappearing on mobile when values go extreme
+    x = Math.max(-25, Math.min(25, x));
+    y = Math.max(-25, Math.min(25, y));
+
+    el.style.left = x + '%';
+    el.style.right = x + '%';
+    el.style.top = y + '%';
+    el.style.bottom = y + '%';
+    el.style.transform = 'translate(' + tx + '%, ' + ty + '%) scale(' + sc + ')';
+    el.style.transformOrigin = 'center';
+  }
+
+  function syncGirlEl() {
+    var el = document.getElementById('maxCharacter') || document.querySelector('.max-character');
+    if (!el) return;
+
+    var right = gv('--dev-max-right');
+    var bottom = gv('--dev-max-bottom');
+    var w = gv('--dev-max-w');
+    var h = gv('--dev-max-h');
+
+    // Apply direct styles so they win over the .dev-layout-active !important rules
+    // while the user is actively editing the girl in the RLE
+    el.style.right = right + 'px';
+    el.style.bottom = bottom + 'px';
+    el.style.width = w + 'px';
+    el.style.height = h + 'px';
+  }
+  function gv(n){ return parseFloat(getComputedStyle(document.documentElement).getPropertyValue(n))||0; }
+  function sv(n,v){ document.documentElement.style.setProperty(n,v); }
+
+  function pushU() {
+    undoSt.push(snap());
+    if(undoSt.length>MAX) undoSt.shift();
+    redoSt=[];
+    refreshBtns();
+  }
+  function refreshBtns() {
+    var u=document.getElementById('rleBtnUndo'), r=document.getElementById('rleBtnRedo');
+    if(u) u.disabled = undoSt.length===0;
+    if(r) r.disabled = redoSt.length===0;
+  }
+
+  window.rleUndo = function() {
+    if(!undoSt.length) return;
+    redoSt.push(snap()); applySnap(undoSt.pop()); refreshBtns();
+  };
+  window.rleRedo = function() {
+    if(!redoSt.length) return;
+    undoSt.push(snap()); applySnap(redoSt.pop()); refreshBtns();
+  };
+
+  // Selection
+  function getEl(t) {
+    if(t==='reels') return document.querySelector('.reels-container')||document.querySelector('.reels');
+    if(t==='frame') return document.getElementById('reel-frame-ov');
+    if(t==='girl')  return document.getElementById('maxCharacter');
+    return null;
+  }
+
+  function clearSel() {
+    document.querySelectorAll('.rle-selected').forEach(function(e){ e.classList.remove('rle-selected'); });
+    ['reels','frame','girl'].forEach(function(t){
+      var row=document.getElementById('rleItem'+t.charAt(0).toUpperCase()+t.slice(1));
+      if(row) row.classList.remove('rle-on');
+    });
+
+    // When leaving GIRL edit mode, remove direct styles so the profile CSS can take over again
+    var girl = document.getElementById('maxCharacter') || document.querySelector('.max-character');
+    if (girl) {
+      girl.style.right = '';
+      girl.style.bottom = '';
+      girl.style.width = '';
+      girl.style.height = '';
+    }
+
+    sel=null;
+    document.getElementById('rleHint').classList.remove('show');
+  }
+
+  window.rlePick = function(type) {
+    if(sel===type){ clearSel(); return; }
+    clearSel();
+    sel=type;
+    var row=document.getElementById('rleItem'+type.charAt(0).toUpperCase()+type.slice(1));
+    if(row) row.classList.add('rle-on');
+    var el=getEl(type);
+    if(el) el.classList.add('rle-selected');
+    if(type==='frame') syncFrameEl();
+    if(type==='girl') syncGirlEl();
+    document.getElementById('rleHint').classList.add('show');
+  };
+
+  // Move / Resize
+  function move(dx,dy) {
+    if(!sel) return;
+    var S=4;
+    if(sel==='reels'){
+      sv('--dev-reels-offset-x',   (gv('--dev-reels-offset-x')   +dx*S)+'px');
+      sv('--dev-reels-container-y',(gv('--dev-reels-container-y')+dy*S)+'px');
+    } else if(sel==='frame'){
+      // Real movement via dedicated translate vars (the old x/y control symmetric insets only)
+      sv('--dev-reel-frame-tx',(gv('--dev-reel-frame-tx')+dx*0.55)+'%');
+      sv('--dev-reel-frame-ty',(gv('--dev-reel-frame-ty')+dy*0.55)+'%');
+      syncFrameEl();
+    } else if(sel==='girl'){
+      sv('--dev-max-right', (gv('--dev-max-right') - dx*S)+'px');
+      sv('--dev-max-bottom',(gv('--dev-max-bottom') - dy*S)+'px');
+      syncGirlEl();
+    }
+  }
+  function resize(dw,dh) {
+    if(!sel) return;
+    var S=6;
+    if(sel==='reels'){
+      // Resize the actual reels (inner strip) — this is what users mean by "size of reels"
+      var innerW = gv('--dev-reels-w') + dw * S;
+      var innerH = gv('--dev-reels-h') + dh * S;
+      // Stronger clamps so reels never disappear on mobile or desktop
+      innerW = Math.max(160, Math.min(1400, innerW));
+      innerH = Math.max(80, Math.min(900, innerH));
+      sv('--dev-reels-w', innerW + 'px');
+      sv('--dev-reels-h', innerH + 'px');
+
+      // Also gently grow the outer container so the reels have room
+      sv('--dev-reels-container-w', (gv('--dev-reels-container-w') + dw * (S * 0.7)) + 'px');
+      sv('--dev-reels-container-h', (gv('--dev-reels-container-h') + dh * (S * 0.7)) + 'px');
+    } else if(sel==='frame'){
+      // Resize frame box independently: horizontal delta = width (via x inset), vertical = height (via y inset)
+      var fx = gv('--dev-reel-frame-x') + dw * 0.35;
+      var fy = gv('--dev-reel-frame-y') + dh * 0.35;
+      // Clamp hard so the frame never collapses or disappears (especially on mobile)
+      fx = Math.max(-25, Math.min(25, fx));
+      fy = Math.max(-25, Math.min(25, fy));
+      sv('--dev-reel-frame-x', fx + '%');
+      sv('--dev-reel-frame-y', fy + '%');
+      syncFrameEl();
+    } else if(sel==='girl'){
+      sv('--dev-max-w',(gv('--dev-max-w')+dw*S)+'px');
+      sv('--dev-max-h',(gv('--dev-max-h')+dh*S)+'px');
+      syncGirlEl();
+    }
+  }
+
+  // Export / Save / View
+  function buildCSS() {
+    var cs=getComputedStyle(document.documentElement), out=':root {\n';
+    CSS_VARS.forEach(function(v){ var val=cs.getPropertyValue(v).trim(); if(val) out+='  '+v+': '+val+';\n'; });
+    return out+'}';
+  }
+  function copyText(str) {
+    return navigator.clipboard.writeText(str).catch(function(){
+      try {
+        var ta=document.createElement('textarea');
+        ta.value=str; ta.style.cssText='position:fixed;opacity:0;left:-9999px';
+        document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+        document.body.removeChild(ta);
+      } catch(e){}
+    });
+  }
+  function flash(el,msg,ms){ var o=el.textContent; el.textContent=msg; setTimeout(function(){el.textContent=o;},ms||2000); }
+
+  window.rleExport = function() {
+    var css=buildCSS();
+    console.log('%c[RFC Layout] Export:','color:#cc1a2e;font-weight:600','\n'+css);
+    copyText(css).then(function(){ flash(document.querySelector('.rle-btn-red'),'✓ Copied!'); });
+  };
+  window.rleSave = function() {
+    try{ localStorage.setItem('rfc_layout_v3',buildCSS()); flash(document.querySelector('[onclick="rleSave()"]'),'✓ Saved!'); }
+    catch(e){}
+  };
+  window.rleView = function() {
+    document.getElementById('rleModalTxt').value=buildCSS();
+    document.getElementById('rleModal').classList.add('show');
+  };
+  window.rleMdCopy = function() {
+    copyText(document.getElementById('rleModalTxt').value).then(function(){
+      flash(document.querySelector('[onclick="rleMdCopy()"]'),'✓ Copied!');
+    });
+  };
+  window.rleMdDown = function() {
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([document.getElementById('rleModalTxt').value],{type:'text/plain'}));
+    a.download='rfc-layout-settings.txt'; a.click();
+  };
+
+  // Close modal on backdrop click
+  document.getElementById('rleModal').addEventListener('click',function(e){
+    if(e.target===this) this.classList.remove('show');
+  });
+
+  // Load saved settings
+  try {
+    var saved=localStorage.getItem('rfc_layout_v3');
+    if(saved) {
+      var re=/(-{2}[\w-]+)\s*:\s*([^;]+);/g, m;
+      while((m=re.exec(saved))!==null){
+        if(CSS_VARS.indexOf(m[1].trim())!==-1) sv(m[1].trim(),m[2].trim());
+      }
+    }
+  } catch(e){}
+
+  // Keyboard
+  document.addEventListener('keydown', function(e) {
+    if((e.ctrlKey||e.metaKey)&&e.key==='z'){ e.preventDefault(); rleUndo(); return; }
+    if((e.ctrlKey||e.metaKey)&&(e.key==='y'||e.key==='Z')){ e.preventDefault(); rleRedo(); return; }
+    if(!sel) return;
+    var tag=document.activeElement.tagName;
+    if(tag==='INPUT'||tag==='TEXTAREA') return;
+    if(e.key.toLowerCase()==='s'&&!e.ctrlKey){ e.preventDefault(); rleSave(); return; }
+    if(e.key.toLowerCase()==='e'&&!e.ctrlKey){ e.preventDefault(); rleExport(); return; }
+    if(e.key.toLowerCase()==='v'&&!e.ctrlKey){ e.preventDefault(); rleView(); return; }
+    var dx=0,dy=0;
+    if(e.key==='ArrowLeft')  dx=-1;
+    if(e.key==='ArrowRight') dx= 1;
+    if(e.key==='ArrowUp')    dy=-1;
+    if(e.key==='ArrowDown')  dy= 1;
+    if(!dx&&!dy) return;
+    if (dragState) return; // don't fight with active mouse drag
+    e.preventDefault();
+    pushU();
+    e.shiftKey ? resize(dx,dy) : move(dx,dy);
+  });
+
+  // =====================================================
+  // Drag & Drop (after selecting via the REELS/FRAME/GIRL toggle)
+  // Plain drag = move, Shift+drag = resize/scale. Works even on pointer-events:none elements.
+  // =====================================================
+  var dragState = null; // {type, startMouseX, startMouseY, startVals, mode:'move'|'resize', el}
+
+  function getCurrentValsForType(t) {
+    if (t === 'reels') {
+      return {
+        ox: gv('--dev-reels-offset-x'),
+        cy: gv('--dev-reels-container-y'),
+        cw: gv('--dev-reels-container-w'),
+        ch: gv('--dev-reels-container-h'),
+        // Inner reel strip size (what actually controls visible reel size)
+        iw: gv('--dev-reels-w'),
+        ih: gv('--dev-reels-h')
+      };
+    }
+    if (t === 'frame') {
+      return {
+        fx: gv('--dev-reel-frame-x'),
+        fy: gv('--dev-reel-frame-y'),
+        tx: gv('--dev-reel-frame-tx'),
+        ty: gv('--dev-reel-frame-ty'),
+        fs: parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--dev-reel-frame-scale')) || 0.93
+      };
+    }
+    if (t === 'girl') {
+      return {
+        gr: gv('--dev-max-right'),
+        gb: gv('--dev-max-bottom'),
+        gw: gv('--dev-max-w'),
+        gh: gv('--dev-max-h')
+      };
+    }
+    return {};
+  }
+
+  function startDrag(e) {
+    if (!sel) return;
+    var el = getEl(sel);
+    if (!el) return;
+
+    // Hit test works even when the element has pointer-events:none (frame/girl)
+    var hit = document.elementFromPoint(e.clientX, e.clientY);
+    var isHit = hit && (hit === el || (el.contains && el.contains(hit)));
+    if (!isHit) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    pushU(); // one undo snapshot per gesture
+
+    dragState = {
+      type: sel,
+      startMouseX: e.clientX,
+      startMouseY: e.clientY,
+      startVals: getCurrentValsForType(sel),
+      mode: e.shiftKey ? 'resize' : 'move',
+      el: el
+    };
+
+    el.classList.add('rle-dragging');
+    if (dragState.mode === 'resize') el.setAttribute('data-drag-mode', 'resize');
+
+    document.body.style.cursor = (dragState.mode === 'resize') ? 'nwse-resize' : 'move';
+
+    window.addEventListener('mousemove', doDrag, true);
+    window.addEventListener('mouseup', endDrag, true);
+  }
+
+  function doDrag(e) {
+    if (!dragState) return;
+    e.preventDefault();
+
+    var dx = e.clientX - dragState.startMouseX;
+    var dy = e.clientY - dragState.startMouseY;
+    var t = dragState.type;
+    var v = dragState.startVals;
+
+    if (dragState.mode === 'move') {
+      if (t === 'reels') {
+        sv('--dev-reels-offset-x', (v.ox + dx) + 'px');
+        sv('--dev-reels-container-y', (v.cy + dy) + 'px');
+      } else if (t === 'frame') {
+        // Real movement via tx/ty (independent of size)
+        var reels = document.querySelector('.reels-container') || document.querySelector('.reels');
+        var refW = reels ? reels.offsetWidth : Math.max(600, window.innerWidth * 0.6);
+        var refH = reels ? reels.offsetHeight : Math.max(300, window.innerHeight * 0.4);
+        sv('--dev-reel-frame-tx', (v.tx + dx / refW * 100 * 1.1) + '%');
+        sv('--dev-reel-frame-ty', (v.ty + dy / refH * 100 * 1.1) + '%');
+        syncFrameEl();
+      } else if (t === 'girl') {
+        sv('--dev-max-right', (v.gr - dx) + 'px');
+        sv('--dev-max-bottom', (v.gb - dy) + 'px');
+        syncGirlEl();
+      }
+    } else {
+      // Resize / uniform scale
+      if (t === 'reels') {
+        // Adjust actual reel size (inner strip) + outer container
+        var newIW = (v.iw || v.cw) + dx * 1.3;
+        var newIH = (v.ih || v.ch) + dy * 1.3;
+        // Strong clamps — prevent reels from vanishing on mobile
+        newIW = Math.max(160, Math.min(1400, newIW));
+        newIH = Math.max(80, Math.min(900, newIH));
+        sv('--dev-reels-w', newIW + 'px');
+        sv('--dev-reels-h', newIH + 'px');
+
+        sv('--dev-reels-container-w', Math.max(100, v.cw + dx * 0.9) + 'px');
+        sv('--dev-reels-container-h', Math.max(70, v.ch + dy * 0.9) + 'px');
+      } else if (t === 'frame') {
+        // Independent width/height for the frame box via insets (horizontal = width, vertical = height)
+        var newFx = (v.fx || 0) + dx * 0.012;
+        var newFy = (v.fy || 0) + dy * 0.012;
+        // Hard safety clamps so frame never disappears on mobile
+        newFx = Math.max(-22, Math.min(22, newFx));
+        newFy = Math.max(-22, Math.min(22, newFy));
+        sv('--dev-reel-frame-x', newFx + '%');
+        sv('--dev-reel-frame-y', newFy + '%');
+        syncFrameEl();
+      } else if (t === 'girl') {
+        sv('--dev-max-w', Math.max(30, v.gw + dx) + 'px');
+        sv('--dev-max-h', Math.max(30, v.gh + dy) + 'px');
+        syncGirlEl();
+      }
+    }
+  }
+
+  function endDrag() {
+    if (!dragState) return;
+
+    var el = dragState.el;
+    if (el) {
+      el.classList.remove('rle-dragging');
+      el.removeAttribute('data-drag-mode');
+    }
+
+    document.body.style.cursor = '';
+    window.removeEventListener('mousemove', doDrag, true);
+    window.removeEventListener('mouseup', endDrag, true);
+    dragState = null;
+  }
+
+  // Capture-phase mousedown so we can drag elements that have pointer-events:none
+  document.addEventListener('mousedown', startDrag, true);
+
+  // Safety: if user deselects while dragging, abort the gesture cleanly
+  var _origClearSel = clearSel;
+  clearSel = function () {
+    if (dragState) endDrag();
+    _origClearSel();
+  };
+
+  refreshBtns();
+  // Ensure frame element is in sync with current vars on startup (in case DEV sliders left inline styles)
+  syncFrameEl();
+
+  // Helper for the new profile buttons
+  window.rleRefreshHint = function() {
+    // Just a hook - can be expanded later to show current profile
+    console.log('%c[RLE] Profile switched. Current active profile:', 'color:#a78bfa', LayoutSystem.getCurrentProfile());
+  };
+
+  console.log('%c[RFC Layout Editor v3] REELS: arrows=move, Shift=resize reel size | FRAME: arrows=move (tx/ty), Shift=resize width vs height independently | GIRL: full. Drag + Shift+Drag supported.','color:#ffeb3b;font-weight:600');
+  console.log('%c[LayoutSystem] Proper system active. Use the three buttons at top of RLE panel to switch profiles.', 'color:#4ade80');
+})();
+
+/* =====================================================
+   DEVICE LAYOUT PROFILES
+   Auto-applies the correct tuned layout (desktop / iPad / iPhone)
+   based on screen size on load and window resize.
+
+   Values come from the three RLE exports you provided.
+===================================================== */
+(function() {
+  'use strict';
+
+  // Clean, versioned layout profiles (synced from your exports + Svelte source)
+  const LAYOUT_PROFILES = {
+    desktop: {
+      '--dev-reels-container-y': '122px',
+      '--dev-reels-container-w': '1163.2px',
+      '--dev-reels-container-h': '710.8px',
+      '--dev-reels-offset-x': '69px',
+      '--dev-reels-y': '209px',
+      '--dev-reels-w': '862px',
+      '--dev-reels-h': '212px',
+      '--dev-reel-frame-x': '1.7%',
+      '--dev-reel-frame-y': '-25%',
+      '--dev-reel-frame-tx': '6.6%',
+      '--dev-reel-frame-ty': '12.1%',
+      '--dev-reel-frame-scale': '0.93',
+      '--dev-max-right': '120px',
+      '--dev-max-bottom': '-216px',
+      '--dev-max-w': '211px',
+      '--dev-max-h': '406px'
+    },
+    ipad: {
+      '--dev-reels-container-y': '142px',
+      '--dev-reels-container-w': '898.6px',
+      '--dev-reels-container-h': '694px',
+      '--dev-reels-offset-x': '89px',
+      '--dev-reels-y': '209px',
+      '--dev-reels-w': '484px',
+      '--dev-reels-h': '188px',
+      '--dev-reel-frame-x': '8%',
+      '--dev-reel-frame-y': '7.2%',
+      '--dev-reel-frame-tx': '-8.25%',
+      '--dev-reel-frame-ty': '2.2%',
+      '--dev-reel-frame-scale': '0.93',
+      '--dev-max-right': '-84px',
+      '--dev-max-bottom': '-216px',
+      '--dev-max-w': '211px',
+      '--dev-max-h': '406px'
+    },
+    iphone: {
+      '--dev-reels-container-y': '86px',
+      '--dev-reels-container-w': '810.4px',
+      '--dev-reels-container-h': '710.8px',
+      '--dev-reels-offset-x': '21px',
+      '--dev-reels-y': '209px',
+      '--dev-reels-w': '358px',
+      '--dev-reels-h': '212px',
+      '--dev-reel-frame-x': '-12.65%',
+      '--dev-reel-frame-y': '12.8%',
+      '--dev-reel-frame-tx': '4.95%',
+      '--dev-reel-frame-ty': '7.7%',
+      '--dev-reel-frame-scale': '0.93',
+      '--dev-max-right': '-276px',
+      '--dev-max-bottom': '-308px',
+      '--dev-max-w': '247px',
+      '--dev-max-h': '406px'
+    }
+  };
+
+  window.LayoutSystem = {
+    profiles: LAYOUT_PROFILES,
+
+    getCurrentProfile() {
+      const w = window.innerWidth;
+      const isPortrait = window.innerHeight > w;
+
+      if (w <= 480 || (w <= 820 && isPortrait)) return 'iphone';
+      if (w >= 768 && w <= 1024 && isPortrait) return 'ipad';
+      return 'desktop';
+    },
+
+    apply(profileName) {
+      const profile = LAYOUT_PROFILES[profileName];
+      if (!profile) {
+        console.warn('Unknown layout profile:', profileName);
+        return;
+      }
+
+      const root = document.documentElement;
+      Object.entries(profile).forEach(([key, value]) => {
+        root.style.setProperty(key, value);
+      });
+
+      // Re-sync frame element if the RLE is active
+      if (window.syncFrameEl) window.syncFrameEl();
+
+      console.log('%c[LayoutSystem] Applied profile:', 'color:#4ade80', profileName);
+      return profileName;
+    },
+
+    applyCurrent() {
+      return this.apply(this.getCurrentProfile());
+    },
+
+    // For the RLE / DEV panel to use
+    getProfile(name) {
+      return LAYOUT_PROFILES[name];
+    },
+
+    listProfiles() {
+      return Object.keys(LAYOUT_PROFILES);
+    }
+  };
+
+  // Auto-apply correct profile on load + resize
+  function initLayoutSystem() {
+    LayoutSystem.applyCurrent();
+
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        LayoutSystem.applyCurrent();
+      }, 150);
+    });
+
+    // Layout system runs silently for clean submission build
+  }
+
+  // Boot after everything else
+  function bootLayoutSystem() {
+    initLayoutSystem();
+
+    // Ensure girl and frame get strong styles from the active profile
+    if (window.syncGirlEl) window.syncGirlEl();
+    if (window.syncFrameEl) window.syncFrameEl();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bootLayoutSystem);
+  } else {
+    bootLayoutSystem();
+  }
+
+})();
+
+
+</script>
+
+<!-- =====================================================
+     FINAL SUBMISSION LAYOUT OVERRIDES
+     These are your exact tuned values from the RLE exports.
+     They are placed at the very end so they win.
+     Do not remove this block for submission.
+===================================================== -->
+<style>
+/* DESKTOP - exact values from your desktop.txt */
+@media (min-width: 1025px) {
+  .reels-container {
+    top: 122px !important;
+    left: 50% !important;
+    transform: translateX(calc(-50% + 69px)) !important;
+    width: 1163px !important;
+    height: 711px !important;
+  }
+  .reels {
+    top: 209px !important;
+    left: 50% !important;
+    transform: translateX(calc(-50% + 69px)) !important;
+    width: 862px !important;
+    height: 212px !important;
+  }
+  #reel-frame-ov {
+    top: -25% !important;
+    left: 1.7% !important;
+    right: 1.7% !important;
+    bottom: -25% !important;
+    transform: translate(6.6%, 12.1%) scale(0.93) !important;
+  }
+  .max-character, #maxCharacter {
+    right: 120px !important;
+    bottom: -216px !important;
+    width: 211px !important;
+    height: 406px !important;
+  }
+}
+
+/* IPAD PORTRAIT - exact values from your ipad.txt */
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+  .reels-container {
+    top: 142px !important;
+    left: 50% !important;
+    transform: translateX(calc(-50% + 89px)) !important;
+    width: 899px !important;
+    height: 694px !important;
+  }
+  .reels {
+    top: 209px !important;
+    left: 50% !important;
+    transform: translateX(calc(-50% + 89px)) !important;
+    width: 484px !important;
+    height: 188px !important;
+  }
+  #reel-frame-ov {
+    top: 7.2% !important;
+    left: 8% !important;
+    right: 8% !important;
+    bottom: 7.2% !important;
+    transform: translate(-8.25%, 2.2%) scale(0.93) !important;
+  }
+  .max-character, #maxCharacter {
+    right: -84px !important;
+    bottom: -216px !important;
+    width: 211px !important;
+    height: 406px !important;
+  }
+}
+
+/* IPHONE / SMALL PORTRAIT - exact values from your iphone.txt */
+@media (max-width: 820px) and (orientation: portrait) {
+  .reels-container {
+    top: calc(8vh + 86px) !important;
+    left: 50% !important;
+    transform: translateX(calc(-50% + 21px)) !important;
+    width: min(98vw, 810px) !important;
+    height: 711px !important;
+  }
+  .reels {
+    top: 209px !important;
+    left: 21px !important;
+    width: 358px !important;
+    height: 212px !important;
+  }
+  #reel-frame-ov {
+    top: 12.8% !important;
+    left: -12.65% !important;
+    right: -12.65% !important;
+    bottom: 12.8% !important;
+    transform: translate(4.95%, 7.7%) scale(0.93) !important;
+  }
+  .max-character, #maxCharacter {
+    right: -276px !important;
+    bottom: -308px !important;
+    width: 247px !important;
+    height: 406px !important;
+  }
+}
+</style>
 
 </body>
 </html>
-

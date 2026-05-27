@@ -1,0 +1,38 @@
+- generic [ref=e5]:
+  - generic [ref=e6]:
+    - img "Stake Engine Logo" [ref=e7]
+    - heading "Sign into your Stake Engine account" [level=2] [ref=e8]:
+      - text: Sign into your
+      - text: Stake Engine account
+  - generic [ref=e9]:
+    - generic [ref=e14]: Terms & Conditions
+    - generic [ref=e15]:
+      - generic [ref=e16]:
+        - checkbox [ref=e17]:
+          - img [ref=e19]
+        - generic [ref=e20]:
+          - text: I have read and agree to the
+          - link "Privacy Policy" [ref=e21] [cursor=pointer]:
+            - /url: /docs/privacy
+      - generic [ref=e22]:
+        - checkbox [ref=e23]:
+          - img [ref=e25]
+        - generic [ref=e26]:
+          - text: I have read and agree to the
+          - link "Game Licence Terms and Conditions" [ref=e27] [cursor=pointer]:
+            - /url: /docs/terms
+    - generic [ref=e28]:
+      - generic [ref=e33]: Login with Github, Google or Discord
+      - generic [ref=e34]:
+        - link "Google" [ref=e35]:
+          - /url: "#"
+          - img [ref=e36]
+          - generic [ref=e41]: Google
+        - link "github Github" [ref=e42]:
+          - /url: "#"
+          - img "github" [ref=e43]
+          - generic [ref=e45]: Github
+        - link "Discord" [ref=e46]:
+          - /url: "#"
+          - img [ref=e47]
+          - generic [ref=e50]: Discord

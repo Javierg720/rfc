@@ -1,0 +1,219 @@
+- generic [active] [ref=e1]:
+  - button "Full Screen" [ref=e2] [cursor=pointer]:
+    - img [ref=e3]
+  - main [ref=e5]:
+    - region "Game board" [ref=e6]:
+      - img
+      - generic:
+        - generic:
+          - generic:
+            - generic: BONUS
+            - generic: FREE SPINS BONUS
+            - generic: PICK YOUR FIGHTER
+      - generic:
+        - generic:
+          - generic: BELT SHOWDOWN
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - generic: KNOCKOUT!
+                  - generic: ×5
+              - generic: FIGHTER A
+            - generic: VS
+            - generic:
+              - generic:
+                - generic:
+                  - generic: KNOCKOUT!
+                  - generic: ×5
+              - generic: FIGHTER B
+          - generic: PICK YOUR FIGHTER
+      - button "Toggle sounds" [ref=e11] [cursor=pointer]: S
+      - button "i" [ref=e12] [cursor=pointer]
+      - generic:
+        - generic: WIN
+        - generic: "0.00"
+      - generic:
+        - generic: BIG WIN
+        - generic: "0.00"
+    - generic:
+      - img
+      - button "BUY BONUS" [ref=e141] [cursor=pointer]
+      - generic [ref=e142]:
+        - generic [ref=e143]:
+          - generic [ref=e144]:
+            - generic [ref=e145]: Balance
+            - generic [ref=e146]: 1000.00 USD
+          - generic [ref=e147]:
+            - generic [ref=e148]: Total bet
+            - generic [ref=e149]: 1.00 USD
+        - generic [ref=e150]:
+          - button "Menu" [ref=e151] [cursor=pointer]:
+            - img [ref=e152]
+          - button "Auto play" [ref=e153] [cursor=pointer]:
+            - img [ref=e154]:
+              - generic [ref=e159]: A
+          - button "Spin" [ref=e161] [cursor=pointer]:
+            - img [ref=e162]
+          - button "Bet Settings" [ref=e168] [cursor=pointer]:
+            - img [ref=e169]
+          - button "Info" [ref=e173] [cursor=pointer]:
+            - img [ref=e174]
+        - generic [ref=e177]:
+          - generic [ref=e178]:
+            - generic [ref=e179]: BALANCE
+            - generic [ref=e180]: "1000.00"
+          - button "FEATURE BONUS" [ref=e181] [cursor=pointer]:
+            - generic [ref=e182]: FEATURE
+            - generic [ref=e183]: BONUS
+          - generic [ref=e184]:
+            - button "AUTO" [ref=e185] [cursor=pointer]:
+              - generic [ref=e186]: AUTO
+            - button "Decrease bet" [ref=e187] [cursor=pointer]:
+              - img [ref=e188]
+            - button "Spin" [ref=e189] [cursor=pointer]:
+              - img [ref=e190]
+            - button "Increase bet" [ref=e197] [cursor=pointer]:
+              - img [ref=e198]
+          - generic [ref=e200]:
+            - generic [ref=e201]: TOTAL BET
+            - generic [ref=e202]: "1.00"
+    - generic [ref=e203]:
+      - heading "Custom Layout Adjuster" [level=3] [ref=e204]
+      - generic [ref=e205]:
+        - generic [ref=e206]:
+          - generic [ref=e207]: Reels
+          - generic [ref=e208]:
+            - generic [ref=e209]: WIDTH
+            - slider [ref=e210]: "100"
+            - generic [ref=e211]: 100%
+          - generic [ref=e212]:
+            - generic [ref=e213]: HEIGHT
+            - slider [ref=e214]: "100"
+            - generic [ref=e215]: 100%
+          - generic [ref=e216]:
+            - generic [ref=e217]: TOP
+            - slider [ref=e218]: "0"
+            - generic [ref=e219]: 0%
+          - generic [ref=e220]:
+            - generic [ref=e221]: LEFT
+            - slider [ref=e222]: "0"
+            - generic [ref=e223]: 0%
+          - generic [ref=e224]:
+            - generic [ref=e225]: SCALE
+            - slider [ref=e226]: "1"
+            - generic [ref=e227]: "1"
+        - generic [ref=e228]:
+          - generic [ref=e229]: Cage Overlay
+          - generic [ref=e230]:
+            - generic [ref=e231]: WIDTH
+            - slider [ref=e232]: "115"
+            - generic [ref=e233]: 114.8%
+          - generic [ref=e234]:
+            - generic [ref=e235]: HEIGHT
+            - slider [ref=e236]: "124"
+            - generic [ref=e237]: 124.2%
+          - generic [ref=e238]:
+            - generic [ref=e239]: TOP
+            - slider [ref=e240]: "-12"
+            - generic [ref=e241]: "-12.1%"
+          - generic [ref=e242]:
+            - generic [ref=e243]: LEFT
+            - slider [ref=e244]: "-7"
+            - generic [ref=e245]: "-7.4%"
+          - generic [ref=e246]:
+            - generic [ref=e247]: SCALE
+            - slider [ref=e248]: "1"
+            - generic [ref=e249]: "1"
+        - generic [ref=e250]:
+          - generic [ref=e251]: Girl
+          - generic [ref=e252]:
+            - generic [ref=e253]: WIDTH
+            - slider [ref=e254]: "100"
+            - generic [ref=e255]: 100%
+          - generic [ref=e256]:
+            - generic [ref=e257]: HEIGHT
+            - slider [ref=e258]: "100"
+            - generic [ref=e259]: 100%
+          - generic [ref=e260]:
+            - generic [ref=e261]: TOP
+            - slider [ref=e262]: "0"
+            - generic [ref=e263]: 0%
+          - generic [ref=e264]:
+            - generic [ref=e265]: LEFT
+            - slider [ref=e266]: "0"
+            - generic [ref=e267]: 0%
+          - generic [ref=e268]:
+            - generic [ref=e269]: SCALE
+            - slider [ref=e270]: "1"
+            - generic [ref=e271]: "1"
+        - generic [ref=e272]:
+          - generic [ref=e273]: Reels
+          - generic [ref=e274]:
+            - generic [ref=e275]: WIDTH
+            - slider [ref=e276]: "79"
+            - generic [ref=e277]: 78.8%
+          - generic [ref=e278]:
+            - generic [ref=e279]: HEIGHT
+            - slider [ref=e280]: "140"
+            - generic [ref=e281]: 139.7%
+          - generic [ref=e282]:
+            - generic [ref=e283]: TOP
+            - slider [ref=e284]: "0"
+            - generic [ref=e285]: 0.0%
+          - generic [ref=e286]:
+            - generic [ref=e287]: LEFT
+            - slider [ref=e288]: "63"
+            - generic [ref=e289]: 62.5%
+          - generic [ref=e290]:
+            - generic [ref=e291]: SCALE
+            - slider [ref=e292]: "1"
+            - generic [ref=e293]: "1.0"
+        - generic [ref=e294]:
+          - generic [ref=e295]: Cage Overlay
+          - generic [ref=e296]:
+            - generic [ref=e297]: WIDTH
+            - slider [ref=e298]: "90"
+            - generic [ref=e299]: 90.4%
+          - generic [ref=e300]:
+            - generic [ref=e301]: HEIGHT
+            - slider [ref=e302]: "174"
+            - generic [ref=e303]: 173.5%
+          - generic [ref=e304]:
+            - generic [ref=e305]: TOP
+            - slider [ref=e306]: "0"
+            - generic [ref=e307]: 0.0%
+          - generic [ref=e308]:
+            - generic [ref=e309]: LEFT
+            - slider [ref=e310]: "0"
+            - generic [ref=e311]: 0.0%
+          - generic [ref=e312]:
+            - generic [ref=e313]: SCALE
+            - slider [ref=e314]: "1"
+            - generic [ref=e315]: "1.0"
+        - generic [ref=e316]:
+          - generic [ref=e317]: Girl
+          - generic [ref=e318]:
+            - generic [ref=e319]: WIDTH
+            - slider [ref=e320]: "35"
+            - generic [ref=e321]: 35.0%
+          - generic [ref=e322]:
+            - generic [ref=e323]: HEIGHT
+            - slider [ref=e324]: "100"
+            - generic [ref=e325]: 99.7%
+          - generic [ref=e326]:
+            - generic [ref=e327]: TOP
+            - slider [ref=e328]: "67"
+            - generic [ref=e329]: 66.5%
+          - generic [ref=e330]:
+            - generic [ref=e331]: LEFT
+            - slider [ref=e332]: "90"
+            - generic [ref=e333]: 90.0%
+          - generic [ref=e334]:
+            - generic [ref=e335]: SCALE
+            - slider [ref=e336]: "1"
+            - generic [ref=e337]: "1.0"
+      - button "CLOSE (Reload to restore)" [ref=e338] [cursor=pointer]
+    - generic [ref=e339]:
+      - heading "Custom Layout Adjuster" [level=3] [ref=e340]
+      - button "CLOSE (Reload to restore)" [ref=e341] [cursor=pointer]

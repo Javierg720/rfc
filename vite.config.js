@@ -1,7 +1,16 @@
+/// <reference types="vitest/config" />
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
+import { svelte } from '@sveltejs/vite-plugin-svelte';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
+import { playwright } from '@vitest/browser-playwright';
+const dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
 
+// More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 export default defineConfig({
+  plugins: [svelte()],
   root: '.',
   base: './',
   build: {
@@ -12,21 +21,21 @@ export default defineConfig({
       compress: {
         drop_console: true,
         drop_debugger: true,
-        passes: 2,
+        passes: 2
       },
       mangle: {
         properties: {
-          regex: /^_/, // Only mangle private properties
-        },
-      },
+          regex: /^_/ // Only mangle private properties
+        }
+      }
     },
     rollupOptions: {
       input: {
-        main: resolve(__dirname, 'index.html'),
+        main: resolve(__dirname, 'index.html')
       },
       output: {
         // manualChunks disabled — no vendor libraries to split yet
-        assetFileNames: (assetInfo) => {
+        assetFileNames: assetInfo => {
           const info = assetInfo.name.split('.');
           const ext = info[info.length - 1];
           if (/\.(png|jpe?g|gif|svg|webp|ico)$/i.test(assetInfo.name)) {
@@ -41,26 +50,49 @@ export default defineConfig({
           return 'assets/[name]-[hash][extname]';
         },
         chunkFileNames: 'assets/js/[name]-[hash].js',
-        entryFileNames: 'assets/js/[name]-[hash].js',
-      },
+        entryFileNames: 'assets/js/[name]-[hash].js'
+      }
     },
     // Asset inlining thresholds
-    assetsInlineLimit: 4096, // 4KB
+    assetsInlineLimit: 4096,
+    // 4KB
     // Source maps for production debugging (disable for final release)
     sourcemap: false,
     // Report bundle size
-    reportCompressedSize: true,
+    reportCompressedSize: true
   },
   server: {
     port: 3000,
     open: true,
-    cors: true,
+    cors: true
   },
   preview: {
-    port: 4173,
+    port: 4173
   },
   // Optimize dependencies
   optimizeDeps: {
-    include: [],
+    include: []
   },
+  test: {
+    projects: [{
+      extends: true,
+      plugins: [
+      // The plugin will run tests for the stories defined in your Storybook config
+      // See options at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon#storybooktest
+      storybookTest({
+        configDir: path.join(dirname, '.storybook')
+      })],
+      test: {
+        name: 'storybook',
+        browser: {
+          enabled: true,
+          headless: true,
+          provider: playwright({}),
+          instances: [{
+            browser: 'chromium'
+          }]
+        }
+      }
+    }]
+  }
 });

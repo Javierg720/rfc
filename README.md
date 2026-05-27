@@ -66,7 +66,7 @@ npm run optimize:images
 │   ├── ui/                 # HUD elements & menus
 │   ├── background_loop.mp3 # Bonus music
 │   └── King_Crowned.mp3    # Championship stinger
-├── symbols/
+├── assets/symbols/
 │   ├── sym_*.png           # Reel symbols
 │   └── moves/              # Bonus 2 move symbols
 ├── art/
@@ -118,4 +118,4 @@ UNLICENSED — Proprietary software. All rights reserved.
 
 ---
 
-**Build:** `rfc-frontend-5.6.1-production-audit-pass`
+**Build:** `rfc-frontend-5.7.0-3star-stake-original`
