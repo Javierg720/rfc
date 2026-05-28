@@ -28,38 +28,56 @@
 */
 
 /* ============================================
-   DESKTOP - Main tuned layout
-   (from desktop.txt export)
-============================================ */
-:root {
-  --dev-reels-container-y: 122px;
-  --dev-reels-container-w: 1163.2px;
-  --dev-reels-container-h: 710.8px;
+   DESKTOP - LOCKED FINAL VALUES (SUBMISSION READY)
+   ============================================
+   THESE VALUES ARE FROZEN.
+   DO NOT EDIT THIS SECTION.
 
-  /* Inner Reels */
-  --dev-reels-offset-x: 69px;
-  --dev-reels-y: 209px;
-  --dev-reels-w: 862px;
-  --dev-reels-h: 212px;
+   Any changes must be tested in the RLE panel,
+   then manually copied here AND into the baked
+   blocks at the end of index.html.
 
-  /* Reel Frame — now uses tx/ty for independent positioning */
-  --dev-reel-frame-x: 1.7%;
-  --dev-reel-frame-y: -25%;
-  --dev-reel-frame-tx: 6.6%;
-  --dev-reel-frame-ty: 12.1%;
-  --dev-reel-frame-scale: 0.93;
+   Current locked state includes:
+   - Reel frame artwork alignment: translate(3.4%, 9.4%) scale(0.93)
+   - Girl pushed back behind reel frame (z-index handled in baked CSS)
+   ============================================ */
+@media (min-width: 1024px) {
+  :root {
+    /* Reels container & reels — reset to neutral (no big accumulated shifts) */
+    --dev-reels-container-y: 0px;
+    --dev-reels-container-w: auto;
+    --dev-reels-container-h: auto;
 
-  /* Girl / Fighter */
-  --dev-max-right: 120px;
-  --dev-max-bottom: -216px;
-  --dev-max-w: 211px;
-  --dev-max-h: 406px;
+    /* Inner Reels */
+    --dev-reels-offset-x: 0px;
+    --dev-reels-y: 0px;
+    --dev-reels-w: auto;
+    --dev-reels-h: auto;
+
+    /* Reel Frame — LOCKED */
+    --dev-reel-frame-x: 0%;
+    --dev-reel-frame-y: 0%;
+    --dev-reel-frame-tx: 3.4%;
+    --dev-reel-frame-ty: 9.4%;
+    --dev-reel-frame-scale: 0.93;
+
+    /* Girl / Fighter character — LOCKED (z-index controlled in final baked CSS) */
+    --dev-max-right: 170px;   /* moved left 50px from previous 120px */
+    --dev-max-bottom: -216px;
+    --dev-max-w: 211px;
+    --dev-max-h: 406px;
+  }
 }
 
 /* ============================================
-   IPAD (Portrait)
-   (from ipad.txt export)
-============================================ */
+   IPAD (Portrait) - LOCKED FINAL VALUES (SUBMISSION READY)
+   ============================================
+   THESE VALUES ARE FROZEN.
+   DO NOT EDIT THIS SECTION.
+
+   Girl z-index pushed back (controlled in baked CSS).
+   Use RLE only for temp testing then re-bake manually.
+   ============================================ */
 @media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
   :root {
     --dev-reels-container-y: 142px;
@@ -67,19 +85,19 @@
     --dev-reels-container-h: 694px;
 
     /* Inner Reels */
-    --dev-reels-offset-x: 89px;
+    --dev-reels-offset-x: 410px;  /* adjusted for centered reels under frame on iPad */
     --dev-reels-y: 209px;
-    --dev-reels-w: 484px;
-    --dev-reels-h: 188px;
+    --dev-reels-w: 532px;   /* scaled 10% bigger on iPad */
+    --dev-reels-h: 207px;  /* scaled 10% bigger on iPad */
 
-    /* Reel Frame */
-    --dev-reel-frame-x: 8%;
-    --dev-reel-frame-y: 7.2%;
-    --dev-reel-frame-tx: -8.25%;
-    --dev-reel-frame-ty: 2.2%;
+    /* Reel Frame — LOCKED */
+    --dev-reel-frame-x: 30%;  /* made more narrow on iPad */
+    --dev-reel-frame-y: 34%;  /* frame height set to match reels height on iPad */
+    --dev-reel-frame-tx: -2%;   /* adjusted for tighter fit around centered reels on iPad */
+    --dev-reel-frame-ty: -34%;  /* pulled frame up significantly for vertical centering on iPad */
     --dev-reel-frame-scale: 0.93;
 
-    /* Girl */
+    /* Girl — LOCKED (z-index in final baked CSS) */
     --dev-max-right: -84px;
     --dev-max-bottom: -216px;
     --dev-max-w: 211px;
@@ -88,9 +106,17 @@
 }
 
 /* ============================================
-   IPHONE (Portrait)
-   (from iphone.txt export)
-============================================ */
+   IPHONE (Portrait) - LOCKED FINAL VALUES (SUBMISSION READY)
+   ============================================
+   THESE VALUES ARE FROZEN.
+   DO NOT EDIT THIS SECTION.
+
+   Includes the narrow BUY BONUS between Balance and Total Bet.
+   Girl is pushed back behind reels/frame (z-index in baked CSS).
+
+   Any experiments in RLE must be discarded unless
+   manually re-baked into the final blocks in index.html.
+   ============================================ */
 @media (max-width: 480px), (max-width: 820px) and (orientation: portrait) {
   :root {
     --dev-reels-container-y: 86px;
@@ -103,14 +129,14 @@
     --dev-reels-w: 358px;
     --dev-reels-h: 212px;
 
-    /* Reel Frame */
+    /* Reel Frame — LOCKED */
     --dev-reel-frame-x: -12.65%;
     --dev-reel-frame-y: 12.8%;
     --dev-reel-frame-tx: 4.95%;
-    --dev-reel-frame-ty: 7.7%;
+    --dev-reel-frame-ty: 3%;
     --dev-reel-frame-scale: 0.93;
 
-    /* Girl */
+    /* Girl — LOCKED (z-index controlled in final baked CSS) */
     --dev-max-right: -276px;
     --dev-max-bottom: -308px;
     --dev-max-w: 247px;
@@ -119,7 +145,8 @@
 }
 
 /* MOBILE settings (for JS defaults / RESET button in DEV panel)
-   These act as fallback values when no media query matches.
+   LOCKED FALLBACK - DO NOT EDIT
+   These are the final iPhone values used when no media query matches.
 */
 :root.mobile {
   --dev-reels-container-y: 86px;
@@ -130,12 +157,14 @@
   --dev-reels-w: 358px;
   --dev-reels-h: 212px;
 
+  /* Reel Frame — LOCKED */
   --dev-reel-frame-x: -12.65%;
   --dev-reel-frame-y: 12.8%;
   --dev-reel-frame-tx: 4.95%;
-  --dev-reel-frame-ty: 7.7%;
+  --dev-reel-frame-ty: 3%;
   --dev-reel-frame-scale: 0.93;
 
+  /* Girl — LOCKED */
   --dev-max-right: -276px;
   --dev-max-bottom: -308px;
   --dev-max-w: 247px;
@@ -163,3 +192,63 @@ To update in the future:
 */
 
 /* Paste future dev panel exports below this line */
+
+/* ============================================
+   ⚠️  LOCKED PROFILES WARNING
+   Desktop and iPhone values above are FROZEN for submission.
+   The RLE panel (in index.html) should be treated as a temporary
+   visual testing tool only. Final values live in:
+   - This file (for dev reference)
+   - The baked @media blocks at the very end of index.html
+   Any change requires manual update in both places + re-testing.
+   ============================================ */
+
+
+/* ============================================
+   DESKTOP-ONLY REELS + FRAME PIXEL NUDGES
+   (Strictly desktop, no mobile/iPad leakage)
+   Uses translate layering on top of existing transforms
+   to avoid fighting the two dev layout systems.
+
+   NOTE: The reel-frame *artwork centering* (making the decorative frame
+   visually align over the 5 reel cells) is set via 
+   transform: translate(3.4%, 9.4%) scale(0.93) in desktop CSS blocks.
+============================================ */
+@media (min-width: 1024px) {
+  /* 
+   * move BOTH reels container and reel frame together
+   * 30px up + 50px left (updated per request).
+   * 
+   * To apply a different amount, change the px values below then hard refresh.
+   * This will NOT affect mobile or tablet views.
+   */
+  .reels-container,
+  .reels-wrap,
+  .reels {
+    translate: -50px -30px !important;
+  }
+
+  /* The decorative reel frame overlay moves with the reels.
+     Fine artwork alignment (centering the frame graphic over reel symbols)
+     is handled by the transform: translate(3.4%, 9.4%) scale(0.93) baked
+     into index.html desktop styles + --dev-reel-frame-tx/ty vars. */
+  #reel-frame-ov {
+    translate: -50px -30px !important;
+  }
+
+  /* 
+   * If you ever want ONLY the frame moved independently, use this instead:
+   *
+   * #reel-frame-ov {
+   *   translate: -30px -30px !important;
+   * }
+   * 
+   * .reels-container, .reels { translate: none !important; }
+   */
+}
+
+/* One-time cleanup: if the old in-page DEV layout (localStorage rfc_dev_layout) 
+   is still fighting, open DevTools console and run:
+     localStorage.removeItem('rfc_dev_layout'); location.reload();
+   Then the CSS above will be in full control for desktop.
+*/

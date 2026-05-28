@@ -70,6 +70,8 @@
     box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
   }
 
+
+
   .reel {
     display: flex;
     flex-direction: column;

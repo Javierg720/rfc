@@ -65,3 +65,59 @@ All your carefully tuned values from the RLE arrows/drag now work consistently a
 - No more random `top: -50px` overrides fighting your settings
 
 This is the foundation for a real, professional layout workflow.
+
+---
+
+## RLEBridge — Connecting the Prototype to Real Code
+
+While the layout is still being tuned visually, **most of the real work happens in the giant `index.html`** using the powerful in-browser RLE panel (press **D**).
+
+The `RLEBridge.ts` exists to make the hand-off to the real Svelte code painless.
+
+### Current recommended flow (Option 3 style)
+
+1. Do all visual tweaking in the big `index.html` + RLE (fastest feedback).
+2. When a device looks good, press **P** in the RLE panel (or click the brown "Export Profile" button).
+3. Use the helpers in `RLEBridge.ts` (or just paste manually) to update `profiles.ts`.
+4. In Storybook or the Svelte app: `LayoutManager.apply('desktop')` now shows your latest visual work.
+
+### Useful functions in RLEBridge.ts
+
+```ts
+import {
+  parseRLECSS,
+  quickDesktopUpdate,
+  generateFullProfilesTS
+} from './RLEBridge';
+
+// After pressing P in the big HTML and copying the CSS:
+const rleOutput = `:root { --dev-reel-frame-tx: 3.4%; ... }`;
+
+const desktopBlock = quickDesktopUpdate(rleOutput);
+console.log(desktopBlock);           // Ready-to-paste "desktop: { ... }"
+
+// Or generate a full updated profiles.ts file:
+const fullTS = generateFullProfilesTS({
+  desktop: parseRLECSS(rleOutput)
+});
+```
+
+### Long-term direction
+
+Once the layout stabilizes, we can evolve this into:
+- A shared `layout-snapshot.json` that both the RLE tool and `LayoutManager` read in development.
+- A small dev-only page or Vite plugin that lets the RLE write directly to `profiles.ts`.
+- The RLE itself becoming a first-class design tool instead of living inside the giant index.html.
+
+`RLEBridge.ts` is the current pragmatic bridge while we are still in heavy visual iteration mode.
+
+---
+
+## Next Steps / Status
+
+- [x] RLE "Export Profile" button (P key) added to giant index.html
+- [x] `RLEBridge.ts` created with parsers + generators
+- [ ] (Future) Shared JSON snapshot format
+- [ ] (Future) One-click "Sync to profiles.ts" from the RLE when running under Vite
+
+Document last updated after choosing Option 3 (RLEBridge approach).

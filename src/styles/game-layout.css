@@ -2030,9 +2030,9 @@ html, body {
   /* Reel frame overlay */
   --dev-reel-frame-x: 0%;
   --dev-reel-frame-y: 0%;
-  --dev-reel-frame-tx: 0%;
-  --dev-reel-frame-ty: 0%;
-  --dev-reel-frame-scale: 1;
+  --dev-reel-frame-tx: 3.4%;
+  --dev-reel-frame-ty: 9.4%;
+  --dev-reel-frame-scale: 0.93;
 
   /* Host / Fighter character (the girl) */
   --dev-max-right: 20px;
@@ -2114,3 +2114,5 @@ html, body {
   top: var(--dev-reels-container-y, -85px);
   /* other adjustments can be added as needed */
 }
+
+/* Frame positioning reverted per user request */

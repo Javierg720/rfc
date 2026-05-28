@@ -2,5 +2,5 @@
   "reel_container": { "top": 118, "left": 72, "scale": 1.0 },
   "cage_overlay": { "top": 98, "left": 52, "bar_thickness": 14 },
   "mobile": { "scale": 0.68, "top_offset": 35 },
-  "note": "This file is used by the full_mcp_server.py (take_game_screenshot + layout tools). The project also has a more advanced layout system at src/lib/layout/."
+  "note": "Reverted to original desktop positioning"
 }

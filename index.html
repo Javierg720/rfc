@@ -859,7 +859,7 @@
     pointer-events: none;
     background: url('./assets/reel-frame.webp') center/100% 100% no-repeat;
     will-change: transform;
-    transform: translate(6.6%, 12.1%) scale(0.93) !important;
+    transform: translate(3.4%, 9.4%) scale(0.93) !important;
     transform-origin: center;
   }
 
@@ -870,7 +870,7 @@
     bottom: -216px !important;
     width: 211px !important;
     height: 406px !important;
-    z-index: 50;
+    z-index: 15;   /* pushed back a layer behind reel frame on desktop */
     pointer-events: none;
     overflow: hidden;
   }
@@ -960,7 +960,7 @@
       right: -276px !important;
       top: auto !important;
       bottom: -308px !important;
-      z-index: 50 !important;
+      z-index: 5 !important;   /* pushed back behind reels & frame on mobile */
       opacity: 1 !important;
       transform: none !important;
       pointer-events: none !important;
@@ -5613,6 +5613,56 @@
         pointer-events: auto;
         margin-bottom: 6px;
       }
+
+      /* iPhone: Narrow BUY BONUS between Balance and Total Bet */
+      #inlineControls .ic-buy-narrow {
+        display: none; /* hidden by default */
+        background: linear-gradient(180deg, #008060 0%, #004d3a 100%);
+        border: 2px solid #e1b353;
+        color: #fff;
+        font-weight: 900;
+        font-size: 9px;
+        line-height: 1.05;
+        text-align: center;
+        padding: 4px 10px;
+        border-radius: 10px;
+        box-shadow: 0 3px 8px rgba(0, 128, 96, 0.35);
+        min-width: 52px;
+        max-width: 62px;
+        flex-shrink: 0;
+        pointer-events: auto;
+      }
+
+      @media (max-width: 820px) and (orientation: portrait) {
+        #inlineControls .mobile-hud-row {
+          justify-content: space-between;
+          padding: 5px 14px;
+          gap: 6px;
+        }
+
+        /* Show the narrow center BUY BONUS only on iPhone portrait */
+        #inlineControls .ic-buy-narrow {
+          display: block;
+        }
+
+        /* Hide the floating version on iPhone */
+        #inlineControls .ic-bonus-float {
+          display: none !important;
+        }
+
+        /* Make the side boxes slightly smaller to give room to center button */
+        #inlineControls .mobile-hud-box {
+          flex: 1;
+          min-width: 0;
+        }
+
+        #inlineControls .hud-label {
+          font-size: 9px;
+        }
+        #inlineControls .hud-value {
+          font-size: 13px;
+        }
+      }
       #inlineControls .mobile-hud-box {
         display: flex;
         flex-direction: column;
@@ -5943,6 +5993,12 @@
             <span class="hud-label">Balance</span>
             <span class="hud-value font-heavy"><span id="icBalanceMob">949.00</span> USD</span>
           </div>
+
+          <!-- BUY BONUS placed between Balance and Total Bet on iPhone (narrow) -->
+          <button class="ic-buy-narrow" id="icBuyBonusCenter" onclick="document.getElementById('icBuyBonusMob')?.click() || document.getElementById('bonusBuyBtn')?.click()">
+            BUY<br>BONUS
+          </button>
+
           <div class="mobile-hud-box text-right">
             <span class="hud-label">Total bet</span>
             <span class="hud-value font-heavy"><span id="icBetMob">1.00</span> USD</span>
@@ -11087,7 +11143,7 @@
 </div>
 
 <!-- Max Character (bottom-right, legs cut off at page bottom) -->
-<div class="max-character" id="maxCharacter" aria-hidden="true" style="display:block !important;position:fixed !important;left:50% !important;top:50% !important;transform:translate(-50%,-50%) !important;width:247px !important;height:418px !important;z-index:99999 !important;opacity:1 !important;">
+<div class="max-character" id="maxCharacter" aria-hidden="true" style="display:block !important;position:fixed !important;left:50% !important;top:50% !important;transform:translate(-50%,-50%) !important;width:247px !important;height:418px !important;opacity:1 !important;">
   <img class="max-sprite" id="maxSprite" src="./assets/fighter-max/frame_021.png" alt="" style="width:100%;height:100%;object-fit:cover;">
 </div>
 
@@ -11744,6 +11800,8 @@
       'r-h': '--dev-reels-h',
       'f-x': '--dev-reel-frame-x',
       'f-y': '--dev-reel-frame-y',
+      'f-tx': '--dev-reel-frame-tx',
+      'f-ty': '--dev-reel-frame-ty',
       'f-s': '--dev-reel-frame-scale',
       'g-l': '--dev-max-x',
       'g-r': '--dev-max-right',
@@ -11886,20 +11944,17 @@
     }
   }
 
-  // Keyboard: D toggles
+  // Keyboard: D toggle removed (dev panel erased for final baked testing)
+  // Only ? key export remains when panel is open (kept for safety)
   document.addEventListener('keydown', (e) => {
-    if (e.key.toLowerCase() === 'd' && document.activeElement.tagName === 'BODY') {
-      e.preventDefault();
-      togglePanel();
-    }
     if (e.key === '?' && panel.classList.contains('dev-hidden') === false) {
       e.preventDefault();
       exportChanges();
     }
   });
 
-  // Floating button
-  btn.addEventListener('click', () => togglePanel());
+  // Floating DEV button disabled (erased per request)
+  // btn.addEventListener('click', () => togglePanel());
 
   // Boot
   function boot() {
@@ -11917,17 +11972,14 @@
       }
     }, 1200);
 
-    // Optional: auto-open if ?dev=1
-    if (new URLSearchParams(location.search).get('dev') === '1') {
-      setTimeout(() => togglePanel(true), 300);
-    }
+    // Auto-open on ?dev=1 removed (dev panel erased)
 
     // Make sure outlines reflect saved state on load
     if (els.outlines) {
       els.outlines.checked = false; // default off
     }
 
-    console.log('%c[DEV] Layout panel ready. Press D or click top-left DEV button.', 'color:#664');
+    console.log('%c[DEV] Layout panel disabled (erased). Use ?final=1 for clean baked testing.', 'color:#664');
 
     // === Desktop: make panel draggable by header (disabled on mobile) ===
     (function makeDraggable() {
@@ -12217,12 +12269,13 @@
     <button class="rle-btn" id="rleBtnUndo" disabled onclick="rleUndo()" title="Ctrl+Z">&#x21A9;</button>
     <button class="rle-btn" id="rleBtnRedo" disabled onclick="rleRedo()" title="Ctrl+Y">&#x21AA;</button>
     <button class="rle-btn" onclick="rleSave()" title="S">Save</button>
-    <button class="rle-btn rle-btn-red" onclick="rleExport()" title="E">Export</button>
+    <button class="rle-btn rle-btn-red" onclick="rleExport()" title="E">Export CSS</button>
+    <button class="rle-btn" onclick="rleExportProfile()" title="P" style="background:#3a2a1f;color:#ffcc99;border-color:#664422;">Export Profile</button>
     <button class="rle-btn" onclick="rleView()" title="V">View</button>
   </div>
 </div>
 
-<div id="rleHint"><b>↑↓←→</b> Move &nbsp;·&nbsp; <b>Shift+↑↓←→</b> Resize (frame: w/h separate, reels: reel size) &nbsp;·&nbsp; <b>Drag</b> Move &nbsp;·&nbsp; <b>Shift+Drag</b> Resize &nbsp;·&nbsp; <b>Ctrl+Z/Y</b> Undo/Redo &nbsp;·&nbsp; <b>S</b> Save &nbsp;·&nbsp; <b>E</b> Export</div>
+<div id="rleHint"><b>↑↓←→</b> Move &nbsp;·&nbsp; <b>Shift+↑↓←→</b> Resize (frame: w/h separate, reels: reel size) &nbsp;·&nbsp; <b>Drag</b> Move &nbsp;·&nbsp; <b>Shift+Drag</b> Resize &nbsp;·&nbsp; <b>Ctrl+Z/Y</b> Undo/Redo &nbsp;·&nbsp; <b>S</b> Save &nbsp;·&nbsp; <b>E</b> Export CSS &nbsp;·&nbsp; <b>P</b> Export Profile (for profiles.ts)</div>
 
 <div id="rleModal">
   <div id="rleModalInner">
@@ -12241,6 +12294,13 @@
 <script>
 (function () {
   'use strict';
+
+  // Completely disable the entire RLE / DEV editor when ?final=1 is used.
+  // This lets the final baked media query styles at the bottom of the file fully control the layout.
+  if (new URLSearchParams(window.location.search).has('final')) {
+    console.log('%c[RLE] Disabled via ?final=1 — using only baked final styles.', 'color:#22c55e');
+    return;
+  }
 
   var sel = null; // 'reels'|'frame'|'girl'
 
@@ -12441,6 +12501,62 @@
     console.log('%c[RFC Layout] Export:','color:#cc1a2e;font-weight:600','\n'+css);
     copyText(css).then(function(){ flash(document.querySelector('.rle-btn-red'),'✓ Copied!'); });
   };
+
+  // === NEW: Export as TypeScript profile for src/lib/layout/profiles.ts ===
+  function buildProfilesTS() {
+    var root = document.documentElement;
+    var cs = getComputedStyle(root);
+
+    function gv(name) {
+      return (cs.getPropertyValue(name) || '').trim() || '0';
+    }
+
+    var profile = {
+      '--dev-reels-container-y': gv('--dev-reels-container-y') || '0px',
+      '--dev-reels-container-w': gv('--dev-reels-container-w') || 'auto',
+      '--dev-reels-container-h': gv('--dev-reels-container-h') || 'auto',
+      '--dev-reels-offset-x': gv('--dev-reels-offset-x') || '0px',
+      '--dev-reels-y': gv('--dev-reels-y') || '0px',
+      '--dev-reels-w': gv('--dev-reels-w') || 'auto',
+      '--dev-reels-h': gv('--dev-reels-h') || 'auto',
+      '--dev-reel-frame-x': gv('--dev-reel-frame-x') || '0%',
+      '--dev-reel-frame-y': gv('--dev-reel-frame-y') || '0%',
+      '--dev-reel-frame-tx': gv('--dev-reel-frame-tx') || '0%',
+      '--dev-reel-frame-ty': gv('--dev-reel-frame-ty') || '0%',
+      '--dev-reel-frame-scale': gv('--dev-reel-frame-scale') || '1',
+      '--dev-max-right': gv('--dev-max-right') || '0px',
+      '--dev-max-bottom': gv('--dev-max-bottom') || '0px',
+      '--dev-max-w': gv('--dev-max-w') || 'auto',
+      '--dev-max-h': gv('--dev-max-h') || 'auto'
+    };
+
+    var lines = Object.keys(profile).map(function(k) {
+      return "    '" + k + "': '" + profile[k] + "',";
+    });
+
+    var ts = "  desktop: {\n" + lines.join('\n') + "\n  },";
+
+    return ts;
+  }
+
+  window.rleExportProfile = function() {
+    var ts = buildProfilesTS();
+    var fullOutput = '// === Paste this into src/lib/layout/profiles.ts (replace the desktop section) ===\n' +
+                     '// Values taken from your current RLE tuning\n\n' + ts + '\n\n' +
+                     '// After pasting, you can call LayoutManager.apply("desktop") in the Svelte app / Storybook';
+
+    console.log('%c[RFC Layout] Profile for profiles.ts:','color:#ffcc99;font-weight:600','\n' + fullOutput);
+
+    copyText(fullOutput).then(function() {
+      var btns = document.querySelectorAll('.rle-btns button');
+      for (var i=0; i<btns.length; i++) {
+        if (btns[i].textContent.indexOf('Profile') > -1) {
+          flash(btns[i], '✓ Copied!');
+          break;
+        }
+      }
+    });
+  };
   window.rleSave = function() {
     try{ localStorage.setItem('rfc_layout_v3',buildCSS()); flash(document.querySelector('[onclick="rleSave()"]'),'✓ Saved!'); }
     catch(e){}
@@ -12485,6 +12601,7 @@
     if(tag==='INPUT'||tag==='TEXTAREA') return;
     if(e.key.toLowerCase()==='s'&&!e.ctrlKey){ e.preventDefault(); rleSave(); return; }
     if(e.key.toLowerCase()==='e'&&!e.ctrlKey){ e.preventDefault(); rleExport(); return; }
+    if(e.key.toLowerCase()==='p'&&!e.ctrlKey){ e.preventDefault(); rleExportProfile(); return; }
     if(e.key.toLowerCase()==='v'&&!e.ctrlKey){ e.preventDefault(); rleView(); return; }
     var dx=0,dy=0;
     if(e.key==='ArrowLeft')  dx=-1;
@@ -12691,7 +12808,7 @@
       '--dev-reel-frame-tx': '6.6%',
       '--dev-reel-frame-ty': '12.1%',
       '--dev-reel-frame-scale': '0.93',
-      '--dev-max-right': '120px',
+      '--dev-max-right': '170px',  // moved left 50px
       '--dev-max-bottom': '-216px',
       '--dev-max-w': '211px',
       '--dev-max-h': '406px'
@@ -12700,19 +12817,20 @@
       '--dev-reels-container-y': '142px',
       '--dev-reels-container-w': '898.6px',
       '--dev-reels-container-h': '694px',
-      '--dev-reels-offset-x': '89px',
+      '--dev-reels-offset-x': '410px',  // adjusted for centered reels under frame on iPad
       '--dev-reels-y': '209px',
-      '--dev-reels-w': '484px',
-      '--dev-reels-h': '188px',
-      '--dev-reel-frame-x': '8%',
-      '--dev-reel-frame-y': '7.2%',
-      '--dev-reel-frame-tx': '-8.25%',
-      '--dev-reel-frame-ty': '2.2%',
+      '--dev-reels-w': '532px',   // scaled 10% bigger on iPad
+      '--dev-reels-h': '207px',  // scaled 10% bigger on iPad
+      '--dev-reel-frame-x': '30%',  // made more narrow on iPad
+      '--dev-reel-frame-y': '34%',  // frame height set to match reels height on iPad
+      '--dev-reel-frame-tx': '-2%',   // adjusted for tighter fit around centered reels on iPad
+      '--dev-reel-frame-ty': '-34%',  // pulled frame up significantly for vertical centering on iPad
       '--dev-reel-frame-scale': '0.93',
       '--dev-max-right': '-84px',
       '--dev-max-bottom': '-216px',
       '--dev-max-w': '211px',
       '--dev-max-h': '406px'
+      // Note: z-index for girl locked in baked CSS (15 on iPad)
     },
     iphone: {
       '--dev-reels-container-y': '86px',
@@ -12803,10 +12921,50 @@
     if (window.syncFrameEl) window.syncFrameEl();
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', bootLayoutSystem);
+  // Final mode: ?final=1 disables the RLE profile auto-apply system.
+  // This lets the baked media queries at the bottom of the file actually control the layout
+  // so you can safely test per-device (iPad, iPhone, desktop) values without the RLE fighting you.
+  const urlParams = new URLSearchParams(window.location.search);
+  const isFinalMode = urlParams.has('final');
+
+  if (!isFinalMode) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', bootLayoutSystem);
+    } else {
+      bootLayoutSystem();
+    }
   } else {
-    bootLayoutSystem();
+    console.log('%c[Layout] Final mode enabled (?final=1) — RLE profile system disabled. Baked media queries control the layout.', 'color:#22c55e');
+
+    // Hide the DEV button and RLE panel in final mode for clean testing
+    const style = document.createElement('style');
+    style.textContent = `
+      #devBtn, #rlePanel, #rleHint { display: none !important; }
+    `;
+    document.head.appendChild(style);
+
+    // Force-remove any inline styles the RLE may have left on key elements
+    // so the final baked media queries can actually win.
+    const clearInline = () => {
+      const elements = [
+        document.querySelector('.reels-container'),
+        document.querySelector('.reels'),
+        document.getElementById('reel-frame-ov'),
+        document.getElementById('maxCharacter'),
+        document.querySelector('.max-character')
+      ];
+      elements.forEach(el => {
+        if (el) {
+          el.style.cssText = ''; // clear all inline styles
+        }
+      });
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', clearInline);
+    } else {
+      clearInline();
+    }
   }
 
 })();
@@ -12821,7 +12979,13 @@
      Do not remove this block for submission.
 ===================================================== -->
 <style>
-/* DESKTOP - exact values from your desktop.txt */
+/* ============================================
+   DESKTOP - LOCKED FINAL VALUES
+   These values are frozen for submission.
+   DO NOT EDIT THIS BLOCK.
+   Any visual experiments must be done in the RLE panel
+   and then manually re-baked here if approved.
+   ============================================ */
 @media (min-width: 1025px) {
   .reels-container {
     top: 122px !important;
@@ -12842,48 +13006,75 @@
     left: 1.7% !important;
     right: 1.7% !important;
     bottom: -25% !important;
-    transform: translate(6.6%, 12.1%) scale(0.93) !important;
+    transform: translate(3.4%, 9.4%) scale(0.93) !important;
   }
   .max-character, #maxCharacter {
-    right: 120px !important;
+    right: 170px !important;   /* moved left 50px from previous 120px */
     bottom: -216px !important;
     width: 211px !important;
     height: 406px !important;
+    z-index: 15 !important;   /* LOCKED: pushed back a layer behind reel frame */
+  }
+
+  /* DEV / RLE panel erased for final baked testing */
+  #devBtn, #rlePanel, #rleHint {
+    display: none !important;
   }
 }
 
-/* IPAD PORTRAIT - exact values from your ipad.txt */
+/* ============================================
+   IPAD PORTRAIT - LOCKED FINAL VALUES
+   These values are frozen for submission.
+   DO NOT EDIT THIS BLOCK.
+   Girl pushed back behind reel frame for consistency with desktop/iPhone.
+   ============================================ */
 @media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
   .reels-container {
     top: 142px !important;
     left: 50% !important;
-    transform: translateX(calc(-50% + 89px)) !important;
+    transform: translateX(calc(-50% + 410px)) !important;  /* adjusted for centered reels under frame on iPad */
     width: 899px !important;
     height: 694px !important;
   }
   .reels {
     top: 209px !important;
     left: 50% !important;
-    transform: translateX(calc(-50% + 89px)) !important;
-    width: 484px !important;
-    height: 188px !important;
+    transform: translateX(calc(-50% + 410px)) !important;  /* adjusted for centered reels under frame on iPad */
+    width: 532px !important;   /* scaled 10% bigger on iPad */
+    height: 207px !important;  /* scaled 10% bigger on iPad */
   }
   #reel-frame-ov {
-    top: 7.2% !important;
-    left: 8% !important;
-    right: 8% !important;
-    bottom: 7.2% !important;
-    transform: translate(-8.25%, 2.2%) scale(0.93) !important;
+    top: 34% !important;
+    left: 30% !important;
+    right: 30% !important;
+    bottom: 34% !important;
+    transform: translate(-2%, -34%) scale(0.93) !important;  /* pulled frame up significantly for vertical centering on iPad */
   }
   .max-character, #maxCharacter {
     right: -84px !important;
     bottom: -216px !important;
     width: 211px !important;
     height: 406px !important;
+    z-index: 15 !important;   /* LOCKED: pushed back a layer behind reel frame on iPad */
+  }
+
+  /* Hide floating BUY BONUS on iPad (use desktop style or adjust separately) */
+  .ic-bonus-float {
+    display: none !important;
+  }
+
+  /* DEV / RLE panel completely erased for final baked testing */
+  #devBtn, #rlePanel, #rleHint {
+    display: none !important;
   }
 }
 
-/* IPHONE / SMALL PORTRAIT - exact values from your iphone.txt */
+/* ============================================
+   IPHONE / SMALL PORTRAIT - LOCKED FINAL VALUES
+   These values are frozen for submission.
+   DO NOT EDIT THIS BLOCK.
+   Includes the narrow BUY BONUS placed between Balance and Total Bet.
+   ============================================ */
 @media (max-width: 820px) and (orientation: portrait) {
   .reels-container {
     top: calc(8vh + 86px) !important;
@@ -12910,6 +13101,35 @@
     bottom: -308px !important;
     width: 247px !important;
     height: 406px !important;
+    z-index: 5 !important;   /* LOCKED: pushed back behind reels & frame on iPhone */
+  }
+
+  /* Narrow BUY BONUS locked between Balance and Total Bet (iPhone only) */
+  .ic-buy-narrow {
+    display: block !important;
+    background: linear-gradient(180deg, #008060 0%, #004d3a 100%) !important;
+    border: 2px solid #e1b353 !important;
+    color: #fff !important;
+    font-weight: 900 !important;
+    font-size: 9px !important;
+    line-height: 1.05 !important;
+    text-align: center !important;
+    padding: 4px 10px !important;
+    border-radius: 10px !important;
+    box-shadow: 0 3px 8px rgba(0, 128, 96, 0.35) !important;
+    min-width: 52px !important;
+    max-width: 62px !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* Hide old floating bonus button on locked iPhone */
+  .ic-bonus-float {
+    display: none !important;
+  }
+
+  /* DEV / RLE panel erased for final baked testing */
+  #devBtn, #rlePanel, #rleHint {
+    display: none !important;
   }
 }
 </style>

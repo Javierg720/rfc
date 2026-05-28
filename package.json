@@ -13,7 +13,8 @@
     "optimize:images": "node scripts/optimize-images.js",
     "audit": "npm audit",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "align:ipad": "node scripts/align-ipad-reels.js"
   },
   "keywords": [
     "slot-game",

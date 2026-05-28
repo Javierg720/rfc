@@ -36,3 +36,13 @@ export function switchLayoutProfile(profile: DeviceProfile) {
 // Re-export the manager for advanced use
 export { LayoutManager };
 export type { DeviceProfile };
+
+// Re-export the RLE <-> production bridge (very useful while layout is still being tuned visually)
+export {
+  parseRLECSS,
+  profileToTypeScript,
+  generateFullProfilesTS,
+  quickDesktopUpdate,
+  createSnapshot,
+  type RLELayoutSnapshot
+} from './RLEBridge';

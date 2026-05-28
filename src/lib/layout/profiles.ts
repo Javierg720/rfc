@@ -46,8 +46,8 @@ export const LAYOUT_PROFILES: Record<DeviceProfile, LayoutProfile> = {
     '--dev-reels-h': '212px',
     '--dev-reel-frame-x': '1.7%',
     '--dev-reel-frame-y': '-25%',
-    '--dev-reel-frame-tx': '6.6%',
-    '--dev-reel-frame-ty': '12.1%',
+    '--dev-reel-frame-tx': '3.4%',
+    '--dev-reel-frame-ty': '9.4%',
     '--dev-reel-frame-scale': '0.93',
     '--dev-max-right': '120px',
     '--dev-max-bottom': '-216px',
@@ -59,14 +59,14 @@ export const LAYOUT_PROFILES: Record<DeviceProfile, LayoutProfile> = {
     '--dev-reels-container-y': '142px',
     '--dev-reels-container-w': '898.6px',
     '--dev-reels-container-h': '694px',
-    '--dev-reels-offset-x': '89px',
+    '--dev-reels-offset-x': '410px',  // adjusted for centered reels under frame on iPad
     '--dev-reels-y': '209px',
-    '--dev-reels-w': '484px',
-    '--dev-reels-h': '188px',
-    '--dev-reel-frame-x': '8%',
-    '--dev-reel-frame-y': '7.2%',
-    '--dev-reel-frame-tx': '-8.25%',
-    '--dev-reel-frame-ty': '2.2%',
+    '--dev-reels-w': '532px',   // scaled 10% bigger on iPad
+    '--dev-reels-h': '207px',  // scaled 10% bigger on iPad
+    '--dev-reel-frame-x': '30%',  // made more narrow on iPad
+    '--dev-reel-frame-y': '34%',  // frame height set to match reels height on iPad
+    '--dev-reel-frame-tx': '-2%',
+    '--dev-reel-frame-ty': '-34%',  // pulled frame up significantly for vertical centering on iPad
     '--dev-reel-frame-scale': '0.93',
     '--dev-max-right': '-84px',
     '--dev-max-bottom': '-216px',
